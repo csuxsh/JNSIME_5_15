@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_marginLeft="20dp"
+    android:orientation="horizontal" >
+    
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="130"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" >
+                <Button
+                    android:id="@+id/dian1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/dian1" />
+                <ImageView
+                    android:id="@+id/dian_c1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/dian2" />
+            </FrameLayout>
+
+            <Button
+                android:id="@+id/default_button_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/default_button_1" />
+
+            <Button
+                android:id="@+id/default_keymapping1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/default_mapping" />
+
+            <Button
+                android:id="@+id/default_delete1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:background="@drawable/default_delete" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+             <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+                <Button
+                    android:id="@+id/dian2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/dian1" />
+                <ImageView
+                    android:id="@+id/dian_c2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/dian2" />
+            </FrameLayout>
+
+            <Button
+                android:id="@+id/default_button_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/default_button_2" />
+
+            <Button
+                android:id="@+id/default_keymapping2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/default_mapping" />
+
+            <Button
+                android:id="@+id/default_delete2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                 android:visibility="gone"
+                android:background="@drawable/default_delete" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/xian"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="3"
+        android:background="@drawable/xian" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="130"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+             <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+                <Button
+                    android:id="@+id/dian3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/dian1" />
+                <ImageView
+                    android:id="@+id/dian_c3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/dian2" />
+            </FrameLayout>
+
+            <Button
+                android:id="@+id/default_button_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/default_button_3" />
+
+            <Button
+                android:id="@+id/default_keymapping3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/default_mapping" />
+
+            <Button
+                android:id="@+id/default_delete3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                 android:visibility="gone"
+                android:background="@drawable/default_delete" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+             <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" >
+                <Button
+                    android:id="@+id/dian4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/dian1" />
+                <ImageView
+                    android:id="@+id/dian_c4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/dian2" />
+            </FrameLayout>
+
+            <Button
+                android:id="@+id/default_button_4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/default_button_4" />
+
+            <Button
+                android:id="@+id/default_keymapping4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/default_mapping" />
+
+            <Button
+                android:id="@+id/default_delete4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                 android:visibility="gone"
+                android:background="@drawable/default_delete" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

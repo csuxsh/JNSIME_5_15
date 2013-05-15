@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Keyboard 
+    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:horizontalGap="2px"
+    android:keyHeight="50px"
+    android:keyWidth="10%p"
+    android:verticalGap="2px"
+     >
+
+    <Row android:keyWidth="32px" >
+        <Key android:keyLabel="Q" />
+        <Key android:keyLabel="W" />
+        <Key android:keyLabel="E" />
+        <Key android:keyLabel="R" />
+        <Key android:keyLabel="T" />
+        <Key android:keyLabel="Y" />
+        <Key android:keyLabel="Q" />
+        <Key android:keyLabel="U" />
+        <Key android:keyLabel="I" />
+        <Key android:keyLabel="O" />
+        <Key android:keyLabel="P" />
+    </Row>
+       <Row android:keyWidth="32px" >
+        <Key android:keyLabel="Q" />
+        <Key android:keyLabel="W" />
+        <Key android:keyLabel="E" />
+        <Key android:keyLabel="R" />
+        <Key android:keyLabel="T" />
+        <Key android:keyLabel="Y" />
+        <Key android:keyLabel="Q" />
+        <Key android:keyLabel="U" />
+        <Key android:keyLabel="I" />
+        <Key android:keyLabel="O" />
+        <Key android:keyLabel="P" />
+    </Row>
+       <Row android:keyWidth="32px" >
+        <Key android:keyLabel="Q" />
+        <Key android:keyLabel="W" />
+        <Key android:keyLabel="E" />
+        <Key android:keyLabel="R" />
+        <Key android:keyLabel="T" />
+        <Key android:keyLabel="Y" />
+        <Key android:keyLabel="Q" />
+        <Key android:keyLabel="U" />
+        <Key android:keyLabel="I" />
+        <Key android:keyLabel="O" />
+        <Key android:keyLabel="P" />
+    </Row>
+
+</Keyboard>

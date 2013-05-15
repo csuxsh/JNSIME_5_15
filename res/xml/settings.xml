@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="@string/about" >
+        <PreferenceScreen
+            android:key="@string/about"
+            android:title="@string/about" >
+            <Preference
+                android:key="@string/version"
+                android:summary="@string/version_num"
+                android:title="@string/version" />
+        </PreferenceScreen>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/help" >
+        <Preference
+            android:key="@string/help"
+            android:title="@string/help" />
+
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/changeime" >
+        <Preference
+            android:key="@string/changeime"
+            android:summary="Click to change IME" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/quit" >
+        <Preference
+            android:key="@string/quit"
+            android:summary="@string/quit" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

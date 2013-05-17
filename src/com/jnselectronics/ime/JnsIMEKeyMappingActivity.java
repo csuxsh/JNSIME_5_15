@@ -99,6 +99,8 @@ public class JnsIMEKeyMappingActivity extends Activity implements OnClickListene
 		clear.setOnClickListener(this);
 		keyboardbutton.setOnClickListener(this);
 		gamepadbutton.setOnClickListener(this);
+		JnsIMECoreService.activitys.add(this);
+
 	} 
 
 	private boolean loadFile()
@@ -259,5 +261,10 @@ public class JnsIMEKeyMappingActivity extends Activity implements OnClickListene
 			break;
 		}
 	};
-
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
+		JnsIMECoreService.activitys.remove(this);
+	}
 }

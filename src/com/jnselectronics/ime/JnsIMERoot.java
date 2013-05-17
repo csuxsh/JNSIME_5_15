@@ -8,17 +8,16 @@ import java.io.FileDescriptor;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-
 import com.jnselectronics.ime.jni.JnsIMEConsole;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 
+@SuppressLint("SdCardPath")
 public class JnsIMERoot {
 	private static final String TAG = "JnsIMERoot";
 	private static FileOutputStream fos;
-	private static DataInputStream des;
 	private static Context mContext = null;
 	private static DataOutputStream dos = null;
 
@@ -44,6 +43,7 @@ public class JnsIMERoot {
 		}
 	}
 
+	@SuppressLint("SdCardPath")
 	public static boolean movingJNSInput() {
 		try {
 			InputStream is = mContext.getAssets().open("jnsinput.jar");
@@ -72,6 +72,7 @@ public class JnsIMERoot {
 	}
 
 
+	@SuppressLint("SdCardPath")
 	private static boolean moveJNSInput() {
 		File file = new File("/mnt/sdcard/jnsinput");
 		if (file.exists()) {
@@ -117,10 +118,11 @@ public class JnsIMERoot {
 				process = Runtime.getRuntime().exec("su");
 				dos = new DataOutputStream(process.getOutputStream());
 				DataInputStream dis = new DataInputStream(process.getInputStream());
-				des = new DataInputStream(process.getErrorStream());
+				new DataInputStream(process.getErrorStream());
 				try {
 					dos.write("id \n".getBytes());
 					dos.flush();
+					@SuppressWarnings("deprecation")
 					String line = dis.readLine();
 					Log.e(TAG, "fffffffff line = " + line);
 					if (line == null) return false;

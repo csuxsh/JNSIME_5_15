@@ -21,7 +21,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -60,7 +59,7 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 	private ImageView backGrand;
 	private int screenWidth = 0;
 	private int screeanHeight = 0;
-	@SuppressLint("NewApi")
+	@SuppressLint({ "NewApi", "HandlerLeak" })
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -86,15 +85,19 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
 		screenWidth = dm.widthPixels;
 		screeanHeight = dm.heightPixels;
-		
+
 		final Handler handle = new Handler()
 		{
-			@SuppressLint({ "HandlerLeak", "HandlerLeak", "HandlerLeak", "HandlerLeak" })
+			@SuppressLint({ "HandlerLeak", "HandlerLeak", "HandlerLeak", "HandlerLeak", "SdCardPath" })
 			public void handleMessage(Message msg) 
 			{
 				if(JnsEnvInit.rooted)
-				{
-					Drawable draw_bmp  = Drawable.createFromPath("/mnt/sdcard/jnsinput/tmp.bmp");
+				{	
+					Drawable draw_bmp = null;
+					while(draw_bmp ==null)
+					{	
+						draw_bmp  = Drawable.createFromPath("/mnt/sdcard/jnsinput/tmp.bmp");
+					}
 					// 如果是是手机则需要旋转切图
 					if((screeanHeight - screenWidth) * (draw_bmp.getIntrinsicHeight() - draw_bmp.getIntrinsicWidth()) < 0)
 					{
@@ -151,6 +154,10 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 		super.onDestroy();
 		Log.e(TAG, "onDestroy");
 		JnsIMECoreService.touchConfiging = false;
+		for(Activity activity : JnsIMECoreService.activitys)
+		{
+			activity.finish();
+		}
 	}
 	@SuppressLint("NewApi")
 	@Override
@@ -159,7 +166,12 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 		switch(arg0.getId())
 		{
 		case R.id.cancel:
-			this.finish();
+			//this.finish();
+			// cancle  清楚当前操作。
+			screenView.drawNow(true, false);
+			touched = false;
+			JnsIMECoreService.gameStart = true;
+			touchR = 0;
 			break;
 		case R.id.reset:
 			screenView.posList.clear();

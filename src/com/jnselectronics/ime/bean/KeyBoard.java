@@ -17,7 +17,7 @@ public class KeyBoard {
 	public static  final String keyboard_123[][]=
 	{
 		{"1","2","3","4","5","6","7","8","9","0"},
-		{"Esc","Tab","","","","","","","Inset","Del"},
+		{"Esc","Tab","","","","","","Back","Inset","Del"},
 		{"F1","F2","F3","F4","F5","F6","F7","F8","F9","F10"},
 		{"abc","F11","F12","","","","P-Up","P-Down","Home","End"}
 	};
@@ -131,6 +131,7 @@ public class KeyBoard {
 		keyMap.put("F12", KeyEvent.KEYCODE_F12); 
 		keyMap.put("Esc", KeyEvent.KEYCODE_ESCAPE); 
 		keyMap.put("Tab", KeyEvent.KEYCODE_TAB); 
+		keyMap.put("Back", KeyEvent.KEYCODE_BACK);
 		keyMap.put("Inset", KeyEvent.KEYCODE_INSERT); 
 		keyMap.put("Del", KeyEvent.KEYCODE_DEL); 
 		keyMap.put("P-Up", KeyEvent.KEYCODE_PAGE_UP); 

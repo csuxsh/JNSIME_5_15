@@ -54,7 +54,6 @@ public class JnsIMEPopAddAdapter extends BaseAdapter {
 		return arg0;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		// TODO Auto-generated method stub

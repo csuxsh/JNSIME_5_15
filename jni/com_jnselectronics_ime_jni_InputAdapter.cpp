@@ -124,6 +124,7 @@ static void doOnJoystickDataChange(int scanCode, int value) {
 		break;
 	case ABS_HAT0Y:
 		joyStickEvent.hat_y = value;
+		break;
 	}
 }
 void delay(int i)
@@ -165,11 +166,12 @@ public:
 			LOGE("[%s][%d] ==> waitForgetJoy", __FUNCTION__, __LINE__);
 		}
 		pthread_mutex_lock(&joyMutex);
-		doOnJoystickDataChange(scanCode, value);
+		if(rawEvent->type != 0)
+			doOnJoystickDataChange(scanCode, value);
 		pthread_cond_signal(&joyCond);
 		pthread_mutex_unlock(&joyMutex);
 		LOGE("[%s][%d] ==> notify getjoy ", __FUNCTION__, __LINE__);
-		delay(1000);
+		//delay(1000);
 		return 1; 
 	};
 };

@@ -20,7 +20,7 @@ import com.jnselectronics.ime.jni.RawEvent;
 
 public class SendEvent {
 
-	
+
 	public final static String TAG= "SendEvent";
 	public final static String pkgName ="com.jnselectronics.ime";
 	private final static int  STICK_MOVE_IRQ_TIME = 5;
@@ -44,6 +44,15 @@ public class SendEvent {
 	private boolean RightJoystickPresed = false;
 	private long last_left_press_time = 0;
 	private long last_right_press_time = 0;
+	private boolean joy_xi_pressed = false;
+	private boolean joy_xp_pressed =false;
+	private boolean joy_yi_pressed = false;
+	private boolean joy_yp_pressed =false;
+	private boolean joy_zi_pressed = false;
+	private boolean joy_zp_pressed =false;
+	private boolean joy_rzi_pressed = false;
+	private boolean joy_rzp_pressed =false;
+
 
 	private static SendEvent sendEvent = null;
 	private SendEvent()
@@ -151,7 +160,7 @@ public class SendEvent {
 		}
 		catch(Exception e)
 		{
-		//	e.printStackTrace();
+			//	e.printStackTrace();
 			//connectJNSInputServer();
 		}
 		return true;
@@ -299,6 +308,119 @@ public class SendEvent {
 				}
 			}
 		}
+		Log.d(TAG,"z="+ux+", rz="+uy);
+		if(!touchMapped)
+		{
+			int z = ux;
+			int rz = uy;
+			RawEvent keyevent;
+
+			if(JnsIMECoreService.keyMap.containsKey(JoyStickTypeF.BUTTON_ZP_SCANCODE))
+			{
+				if(z > 200 )
+				{
+					if(!joy_zp_pressed)
+					{
+						joy_zp_pressed = true;
+						keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_ZP_SCANCODE),
+								JoyStickTypeF.BUTTON_ZP_SCANCODE, KeyEvent.ACTION_DOWN);
+						pw.print(keyString(keyevent));
+						pw.flush();
+					}
+				}
+				else
+				{
+					if(joy_zp_pressed)
+					{
+						joy_zp_pressed = false;
+						keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_ZP_SCANCODE),
+								JoyStickTypeF.BUTTON_ZP_SCANCODE, KeyEvent.ACTION_UP);
+						pw.print(keyString(keyevent));
+						pw.flush();
+					}
+				}
+			}
+
+			if(JnsIMECoreService.keyMap.containsKey(JoyStickTypeF.BUTTON_ZI_SCANCODE))
+			{
+				if(z < 50)
+				{
+					if(!joy_zi_pressed)
+					{
+						joy_zi_pressed = true;
+						keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_ZI_SCANCODE),
+								JoyStickTypeF.BUTTON_ZI_SCANCODE, KeyEvent.ACTION_DOWN);
+						pw.print(keyString(keyevent));
+						pw.flush();
+					}
+					if(joy_zi_pressed)
+					{
+						joy_zi_pressed = false;
+						keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_ZI_SCANCODE),
+								JoyStickTypeF.BUTTON_ZI_SCANCODE, KeyEvent.ACTION_UP);
+						pw.print(keyString(keyevent));
+						pw.flush();
+					}
+				}
+			}
+
+			if(JnsIMECoreService.keyMap.containsKey(JoyStickTypeF.BUTTON_RZI_SCANCODE))
+			{				
+				if(rz > 200)
+				{
+
+					if(!joy_rzi_pressed)
+					{
+
+						joy_rzi_pressed = true;
+						keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_RZI_SCANCODE),
+								JoyStickTypeF.BUTTON_RZI_SCANCODE, KeyEvent.ACTION_DOWN);
+						pw.print(keyString(keyevent));
+						pw.flush();
+					}
+				}
+				else
+				{	
+					if(joy_rzi_pressed)
+					{
+
+						joy_rzi_pressed = false;
+						keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_RZI_SCANCODE),
+								JoyStickTypeF.BUTTON_RZI_SCANCODE, KeyEvent.ACTION_UP);
+						pw.print(keyString(keyevent));
+						pw.flush();
+					}
+				}
+
+			}
+
+			if( JnsIMECoreService.keyMap.containsKey(JoyStickTypeF.BUTTON_RZP_SCANCODE))
+			{
+				if(rz < 50)
+				{
+					if(!joy_rzp_pressed)
+					{
+						joy_rzp_pressed = true;
+						keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_RZP_SCANCODE),
+								JoyStickTypeF.BUTTON_RZP_SCANCODE, KeyEvent.ACTION_DOWN);
+						pw.print(keyString(keyevent));
+						pw.flush();
+					}
+				}
+				else
+				{
+					if(joy_rzp_pressed)
+					{
+						joy_rzp_pressed = false;
+						keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_RZP_SCANCODE),
+								JoyStickTypeF.BUTTON_RZP_SCANCODE, KeyEvent.ACTION_UP);
+						pw.print(keyString(keyevent));
+						pw.flush();
+					}
+				}
+			}
+		}
+		/*
 		if(!touchMapped)
 		{
 			int z = ux;
@@ -328,19 +450,7 @@ public class SendEvent {
 				pw.flush();
 				last_right_press_time = System.currentTimeMillis();
 			}
-			if(rz > 200 && JnsIMECoreService.keyMap.containsKey(JoyStickTypeF.BUTTON_RZP_SCANCODE)&& 
-					((System.currentTimeMillis() - last_right_press_time) > 200))
-			{
-				keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_RZP_SCANCODE),
-						JoyStickTypeF.BUTTON_RZP_SCANCODE, KeyEvent.ACTION_DOWN);
-				pw.print(keyString(keyevent));
-				pw.flush();
-				keyevent.value = KeyEvent.ACTION_UP;
-				pw.print(keyString(keyevent));
-				pw.flush();
-				last_right_press_time = System.currentTimeMillis();
-			}
-			if(rz < 50 && JnsIMECoreService.keyMap.containsKey(JoyStickTypeF.BUTTON_RZI_SCANCODE)&& 
+			if(rz > 200 && JnsIMECoreService.keyMap.containsKey(JoyStickTypeF.BUTTON_RZI_SCANCODE)&& 
 					((System.currentTimeMillis() - last_right_press_time) > 200))
 			{
 				keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_RZI_SCANCODE),
@@ -352,7 +462,20 @@ public class SendEvent {
 				pw.flush();
 				last_right_press_time = System.currentTimeMillis();
 			}
+			if(rz < 50 && JnsIMECoreService.keyMap.containsKey(JoyStickTypeF.BUTTON_RZP_SCANCODE)&& 
+					((System.currentTimeMillis() - last_right_press_time) > 200))
+			{
+				keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_RZP_SCANCODE),
+						JoyStickTypeF.BUTTON_RZP_SCANCODE, KeyEvent.ACTION_DOWN);
+				pw.print(keyString(keyevent));
+				pw.flush();
+				keyevent.value = KeyEvent.ACTION_UP;
+				pw.print(keyString(keyevent));
+				pw.flush();
+				last_right_press_time = System.currentTimeMillis();
+			}
 		}
+		 */
 	}
 
 	private void processLeftJoystickData(int i, int j) { // x = buffer[3] y = buffer[4]
@@ -466,6 +589,122 @@ public class SendEvent {
 				}
 			}
 		}
+		Log.d(TAG,"z="+ux+", y="+uy);
+		if(!touchMapped)
+		{
+			int x = ux;
+			int y = uy;
+			RawEvent keyevent;
+			// ½«ÓÒÒ¡¸Ë×ª»¯³É°´¼üÓ³Éä
+
+			// Ò¡¸ËÉÏÒÆ
+			if(JnsIMECoreService.keyMap.containsKey(JoyStickTypeF.BUTTON_XP_SCANCODE))
+			{	
+				if(x > 200)
+				{	
+					if(!joy_xp_pressed)
+					{	
+						joy_xp_pressed = true;
+						keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_XP_SCANCODE),
+								JoyStickTypeF.BUTTON_XP_SCANCODE, KeyEvent.ACTION_DOWN);
+						pw.print(keyString(keyevent));
+						pw.flush();
+					}
+				}
+				else 
+				{
+					if(joy_xp_pressed)
+					{
+						joy_xp_pressed=false;
+						keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_XP_SCANCODE),
+								JoyStickTypeF.BUTTON_XP_SCANCODE, KeyEvent.ACTION_UP);
+						pw.print(keyString(keyevent));
+						pw.flush();
+					}
+				}
+			}
+
+			// Ò¡¸ËÏÂÒÆ
+			if(JnsIMECoreService.keyMap.containsKey(JoyStickTypeF.BUTTON_XI_SCANCODE))
+			{
+				if(x < 50)
+				{
+					if(!joy_xi_pressed)
+					{	
+						this.joy_xi_pressed = true;
+						keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_XI_SCANCODE),
+								JoyStickTypeF.BUTTON_XI_SCANCODE, KeyEvent.ACTION_DOWN);
+						pw.print(keyString(keyevent));
+						pw.flush();
+					}
+				}
+				else
+				{
+					if(joy_xi_pressed)
+					{	
+						this.joy_xi_pressed = false;
+						keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_XI_SCANCODE),
+								JoyStickTypeF.BUTTON_XI_SCANCODE, KeyEvent.ACTION_UP);
+						pw.print(keyString(keyevent));
+						pw.flush();
+					}
+				}
+			}
+
+			if(JnsIMECoreService.keyMap.containsKey(JoyStickTypeF.BUTTON_YI_SCANCODE))
+			{		
+				if(y > 200)
+				{
+					if(!joy_yi_pressed)
+					{	
+						joy_yi_pressed = true;
+						keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_YI_SCANCODE),
+								JoyStickTypeF.BUTTON_YI_SCANCODE, KeyEvent.ACTION_DOWN);
+						pw.print(keyString(keyevent));
+						pw.flush();
+					}
+				}
+				else
+				{
+					if(joy_yi_pressed)
+					{	
+						joy_yi_pressed = false;
+						keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_YI_SCANCODE),
+								JoyStickTypeF.BUTTON_YI_SCANCODE, KeyEvent.ACTION_UP);
+						pw.print(keyString(keyevent));
+						pw.flush();
+					}
+
+				}
+			}
+
+			if(JnsIMECoreService.keyMap.containsKey(JoyStickTypeF.BUTTON_YP_SCANCODE))
+			{	
+				if(y < 50)
+				{
+					if(!joy_yp_pressed)
+					{
+						joy_yp_pressed = true;
+						keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_YP_SCANCODE),
+								JoyStickTypeF.BUTTON_YP_SCANCODE, KeyEvent.ACTION_DOWN);
+						pw.print(keyString(keyevent));
+						pw.flush();
+					}
+				}
+				else
+				{
+					if(joy_yp_pressed)
+					{
+						joy_yp_pressed = false;
+						keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_YP_SCANCODE),
+								JoyStickTypeF.BUTTON_YP_SCANCODE, KeyEvent.ACTION_UP);
+						pw.print(keyString(keyevent));
+						pw.flush();
+					}
+				}
+			}
+		}
+		/*
 		if(!touchMapped)
 		{
 			int x = ux;
@@ -495,20 +734,8 @@ public class SendEvent {
 				pw.flush();
 				last_left_press_time = System.currentTimeMillis();
 			}
-			if(y > 200 && JnsIMECoreService.keyMap.containsKey(JoyStickTypeF.BUTTON_YP_SCANCODE)&& 
+			if(y > 200 && JnsIMECoreService.keyMap.containsKey(JoyStickTypeF.BUTTON_YI_SCANCODE)&& 
 					((System.currentTimeMillis() - last_left_press_time) > 200))
-			{
-				keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_YP_SCANCODE),
-						JoyStickTypeF.BUTTON_YP_SCANCODE, KeyEvent.ACTION_DOWN);
-				pw.print(keyString(keyevent));
-				pw.flush();
-				keyevent.value = KeyEvent.ACTION_UP;
-				pw.print(keyString(keyevent));
-				pw.flush();
-				last_left_press_time = System.currentTimeMillis();
-			}
-			if(y < 50 && JnsIMECoreService.keyMap.containsKey(JoyStickTypeF.BUTTON_YI_SCANCODE)&& 
-					((System.currentTimeMillis() - last_left_press_time) >200))
 			{
 				keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_YI_SCANCODE),
 						JoyStickTypeF.BUTTON_YI_SCANCODE, KeyEvent.ACTION_DOWN);
@@ -519,7 +746,20 @@ public class SendEvent {
 				pw.flush();
 				last_left_press_time = System.currentTimeMillis();
 			}
+			if(y < 50 && JnsIMECoreService.keyMap.containsKey(JoyStickTypeF.BUTTON_YP_SCANCODE)&& 
+					((System.currentTimeMillis() - last_left_press_time) >200))
+			{
+				keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_YP_SCANCODE),
+						JoyStickTypeF.BUTTON_YP_SCANCODE, KeyEvent.ACTION_DOWN);
+				pw.print(keyString(keyevent));
+				pw.flush();
+				keyevent.value = KeyEvent.ACTION_UP;
+				pw.print(keyString(keyevent));
+				pw.flush();
+				last_left_press_time = System.currentTimeMillis();
+			}
 		}
+		 */
 	}
 
 }

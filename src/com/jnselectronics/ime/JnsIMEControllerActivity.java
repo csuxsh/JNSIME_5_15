@@ -67,6 +67,7 @@ public class JnsIMEControllerActivity  extends Activity{
 			}
 
 		}).start();
+		JnsIMECoreService.activitys.add(this);
 	}
 
 
@@ -79,5 +80,11 @@ public class JnsIMEControllerActivity  extends Activity{
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		Log.e(TAG, " onkeydown keycode = " + keyCode + " scancode = " + event.getScanCode());
 		return super.onKeyDown(keyCode, event);
+	}
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
+		JnsIMECoreService.activitys.remove(this);
 	}
 }

@@ -61,6 +61,7 @@ public class JnsIMEGameListActivity extends Activity{
         defaultMap[1].setOnClickListener(ocl);
         defaultMap[2].setOnClickListener(ocl);
         defaultMap[3].setOnClickListener(ocl);
+        JnsIMECoreService.activitys.add(this);
     }
 	
 	private void chageDefaultCheckBox(int index)
@@ -178,6 +179,12 @@ public class JnsIMEGameListActivity extends Activity{
 		}
 		
 	};
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
+		JnsIMECoreService.activitys.remove(this);
+	}
 	@Override
 	public void onResume()
 	{

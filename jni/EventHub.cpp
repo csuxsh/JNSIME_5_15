@@ -440,7 +440,7 @@ EventHub::Device::Device(int dfd, int32_t did, char* dpath, struct InputDeviceId
 			pthread_mutex_unlock(mDeviceMutex);
 			LOGE("[%s][%d] ==> resume", __FUNCTION__,
 					__LINE__);
-		//	return -1;
+			return -1;
 		}
 
 #else

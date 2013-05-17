@@ -19,6 +19,7 @@ import com.jnselectronics.ime.util.JnsEnvInit;
 import com.jnselectronics.ime.util.SendEvent;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Notification;
@@ -62,6 +63,7 @@ public class JnsIMECoreService extends Service {
 	public static  Queue<RawEvent> keyQueue = new ConcurrentLinkedQueue<RawEvent>();
 	public static  Queue<JoyStickEvent> stickQueue = new ConcurrentLinkedQueue<JoyStickEvent>();
 	public static int currentDeaultIndex = 0;
+	static List<Activity> activitys = new ArrayList<Activity>();
 
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -69,6 +71,7 @@ public class JnsIMECoreService extends Service {
 		return null;
 	}
 
+	@SuppressLint("HandlerLeak")
 	private void startDataProcess()
 	{
 		DataProcessHandler = new Handler()
@@ -150,6 +153,7 @@ public class JnsIMECoreService extends Service {
 		};
 		Alerthandle  = new Handler()
 		{
+			@SuppressWarnings("deprecation")
 			public void handleMessage(Message msg)
 			{
 				Log.d("JnsEnvInit", "alertDialogEnable="+alertDialogEnable);
@@ -192,6 +196,7 @@ public class JnsIMECoreService extends Service {
 			}
 		};
 	}
+	@SuppressWarnings("deprecation")
 	public  void updateNotification(String info) {
 		NotificationManager notificationManager = (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);
 		Notification notification = new Notification(R.drawable.ic_launcher, this.getString(R.string.app_name) + info, System.currentTimeMillis());

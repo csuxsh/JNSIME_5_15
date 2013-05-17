@@ -6,6 +6,7 @@ import com.jnselectronics.im.hardware.JoyStickTypeF;
 import com.jnselectronics.ime.JnsIMECoreService;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -51,7 +52,7 @@ public class InputAdapter {
 			while (true) {
 				getKey(keyEvent);
 				Log.d(TAG, "keyEvent.scanCode="+keyEvent.scanCode+"keyEvent.value"+keyEvent.value );
-
+				
 				if (keyEvent.value == 1) 
 				{
 					keyEvent.value = KeyEvent.ACTION_DOWN;
@@ -161,6 +162,7 @@ public class InputAdapter {
 		{
 			//	Toast.makeText(mcontext, "qiehuan ime", Toast.LENGTH_LONG).show();
 			//String imeStr = "";
+			/*
 			if (!mIMEMode) 
 			{
 				//imeStr = BlueoceanCore.JNSIMEID;
@@ -175,7 +177,11 @@ public class InputAdapter {
 			//	intent.setAction("COM.BLUEOCEAN_IME_SWITCH_IME");
 			//	intent.putExtra("COM.BLUEOCEAN_IME_IMEID", imeStr);
 			//	mcontext.sendBroadcast(intent);
+			*/
 			mCheckByte = 0x00;
+			Intent intent = new Intent();
+			intent.setAction("android.settings.SHOW_INPUT_METHOD_PICKER");
+			mcontext.sendBroadcast(intent);
 		}
 	}
 	private static void onRawKeyDown(RawEvent keyEvent) {

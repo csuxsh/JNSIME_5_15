@@ -19,6 +19,7 @@ public class JnsIMESettingActivity extends PreferenceActivity implements OnPrefe
 	Preference changeime;
 	Preference help;
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -29,6 +30,7 @@ public class JnsIMESettingActivity extends PreferenceActivity implements OnPrefe
 		quit.setOnPreferenceClickListener(this);
 		changeime.setOnPreferenceClickListener(this);
 		help.setOnPreferenceClickListener(this);
+		JnsIMECoreService.activitys.add(this);
 	}
 
 
@@ -62,5 +64,11 @@ public class JnsIMESettingActivity extends PreferenceActivity implements OnPrefe
 			this.startActivity(intent);
 		}
 		return false;
+	}
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
+		JnsIMECoreService.activitys.remove(this);
 	}
 }

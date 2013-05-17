@@ -1,8 +1,10 @@
 package com.jnselectronics.ime;
 
 import android.os.Bundle;
+import android.app.Activity;
 import android.app.TabActivity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.widget.LinearLayout;
@@ -27,6 +29,7 @@ public class JnsIME extends TabActivity {
         	return;
         Intent intent = new Intent("com.jnselectronics.ime.JnsIMECore");
 		this.startService(intent);
+		JnsIMECoreService.activitys.add(this);
     }
     
     private void createTab() {
@@ -61,8 +64,21 @@ public class JnsIME extends TabActivity {
     	settingsIntent.setClass(this, JnsIMESettingActivity.class);
     	TabHost.TabSpec settingsSpec = mTabHost.newTabSpec("setting").setIndicator(tabIndicator3).setContent(settingsIntent);
     	mTabHost.addTab(settingsSpec);
-    	
-    	mTabHost.setCurrentTab(0); 
+    	SharedPreferences perfer = this.getSharedPreferences("guide", Activity.MODE_PRIVATE);
+    	boolean guide = perfer.getBoolean("guide", true);
+    	if(guide)
+    	{
+    		mTabHost.setCurrentTab(2);
+    		SharedPreferences.Editor  edit = perfer.edit();
+    		edit.putBoolean("guide", false);
+    		Intent intent = new Intent();
+			intent.setAction("android.settings.SHOW_INPUT_METHOD_PICKER");
+			edit.commit();
+			this.sendBroadcast(intent);
+			
+    	}
+    	else
+    		mTabHost.setCurrentTab(0); 
     }
 
     @Override
@@ -70,6 +86,10 @@ public class JnsIME extends TabActivity {
         getMenuInflater().inflate(R.menu.activity_main, menu);
         return true;
     }
-
-    
+    @Override
+	public void onDestroy()
+	{
+		super.onDestroy();
+		JnsIMECoreService.activitys.remove(this);
+	}
 }

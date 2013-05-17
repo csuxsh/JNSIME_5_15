@@ -173,6 +173,7 @@ void InputAdapter::processRawEventLocked(const RawEvent *eventBuffer) {
 			if(per_EV == EV_ABS)
 			{
 				mJoystickChanged = 1;
+				mJoystick->joystickProcess(eventBuffer);
 				LOGE("[%s][%d] ==> joystickchanged ok", __FUNCTION__, __LINE__);
 			}
 			break;

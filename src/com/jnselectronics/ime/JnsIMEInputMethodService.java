@@ -24,7 +24,6 @@ import android.os.Build;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 public class JnsIMEInputMethodService extends InputMethodService {
@@ -38,15 +37,12 @@ public class JnsIMEInputMethodService extends InputMethodService {
 	private boolean jnsIMEInUse = false;
 	private static Process process=null;
 	private static DataOutputStream dos = null;
-	private InputMethodManager imm; 
-
 	@SuppressLint("SdCardPath")
 	@Override
 	public void onCreate()
 	{
 		super.onCreate();
 		jnsIMEInUse = true;
-		imm = (InputMethodManager) this.getSystemService(INPUT_METHOD_SERVICE);
 		new Thread(new Runnable()
 		{
 
@@ -113,9 +109,10 @@ public class JnsIMEInputMethodService extends InputMethodService {
 	{
 		if(KeyEvent.KEYCODE_SEARCH == keyCode && (!JnsIMECoreService.touchConfiging) && JnsEnvInit.rooted)
 		{
-			Toast.makeText(this, this.getString(R.string.screen_shot), Toast.LENGTH_LONG).show();
-
-			Runnable th = new Runnable()
+			JnsIMECoreService.touchConfiging = true;
+			Toast.makeText(this, this.getString(R.string.screen_shot), Toast.LENGTH_SHORT).show();
+			
+			new Thread(new Runnable()
 			{
 				@Override
 				public void run() 
@@ -130,8 +127,7 @@ public class JnsIMEInputMethodService extends InputMethodService {
 					in.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					JnsIMEInputMethodService.this.startActivity(in);
 				}
-			};
-			th.run();
+			}).start();
 			return true;
 		}
 		if(currentAppName.equals(this.getPackageName()))
@@ -189,6 +185,8 @@ public class JnsIMEInputMethodService extends InputMethodService {
 		if(currentAppName.equals(this.getPackageName()))
 			return false;
 		KeyEvent tmpEvent = mathJoyStick(event);
+		if(keyCode == KeyEvent.KEYCODE_SEARCH)
+			return true;
 		if(tmpEvent != null)
 		{
 			if( iteratorKeyList(JnsIMECoreService.keyList, tmpEvent.getScanCode())!= null)
@@ -256,6 +254,7 @@ public class JnsIMEInputMethodService extends InputMethodService {
 		try 
 		{
 			FileReader fr = new FileReader(this.getFilesDir() + "/" + name);
+			@SuppressWarnings("resource")
 			BufferedReader br = new BufferedReader(fr);
 			Log.d(TAG, "find file"+name);
 			String val = br.readLine();
@@ -304,6 +303,7 @@ public class JnsIMEInputMethodService extends InputMethodService {
 		}
 		return true;
 	}
+	@SuppressWarnings("resource")
 	@SuppressLint("UseSparseArrays")
 	private boolean reloadKeyMap(String name)
 	{
@@ -331,7 +331,7 @@ public class JnsIMEInputMethodService extends InputMethodService {
 				while (val != null)
 				{
 					String data[] = val.split(":");
-					JnsIMECoreService.keyMap.put(Integer.getInteger(data[2]), Integer.getInteger(data[3]));
+					JnsIMECoreService.keyMap.put(Integer.parseInt(data[2]), Integer.parseInt(data[3]));
 					val = br.readLine();
 				}
 			} catch (FileNotFoundException e1) {

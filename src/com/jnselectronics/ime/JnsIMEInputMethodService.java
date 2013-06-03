@@ -12,6 +12,7 @@ import java.util.List;
 
 import com.jnselectronics.im.hardware.JoyStickTypeF;
 import com.jnselectronics.ime.bean.JnsIMEProfile;
+import com.jnselectronics.ime.jni.InputAdapter;
 import com.jnselectronics.ime.util.JnsEnvInit;
 import com.jnselectronics.ime.util.SendEvent;
 
@@ -31,7 +32,7 @@ public class JnsIMEInputMethodService extends InputMethodService {
 	private final static String TAG = "JnsIMEMethod";
 	public final static String KEY_MAP_FILE_TAG = ".keymap";
 	private boolean isTakePic = false;
-	static String validAppName = "";
+	public static String validAppName = "";
 	static String lastAppName = "";
 	public static  String currentAppName = "";
 	private boolean jnsIMEInUse = false;
@@ -89,19 +90,60 @@ public class JnsIMEInputMethodService extends InputMethodService {
 	{
 		if(event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP && event.getScanCode() == 0)
 		{
-			return new KeyEvent(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_UP, 0, 0, 0, JoyStickTypeF.BUTTON_YP_SCANCODE, 0);
+			if(InputAdapter.gHatUpPressed)
+			{	
+				if(event.getAction() == KeyEvent.ACTION_UP)
+					InputAdapter.gHatUpPressed = false;
+				return new KeyEvent(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(),
+						event.getAction(), KeyEvent.KEYCODE_DPAD_UP, 0, 0, 0, 
+						JoyStickTypeF.BUTTON_UP_SCANCODE, 0);
+			}
+			return new KeyEvent(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(),
+					event.getAction(), KeyEvent.KEYCODE_DPAD_UP, 0, 0, 0, 
+					JoyStickTypeF.BUTTON_YP_SCANCODE, 0);
 		}
 		if(event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN && event.getScanCode() == 0)
-		{
-			return new KeyEvent(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_DOWN, 0, 0, 0, JoyStickTypeF.BUTTON_YI_SCANCODE, 0);
+		{	
+			if(InputAdapter.gHatDownPressed)
+			{
+				if(event.getAction() == KeyEvent.ACTION_UP)
+					InputAdapter.gHatDownPressed = false;
+				return new KeyEvent(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), 
+						event.getAction(), KeyEvent.KEYCODE_DPAD_DOWN, 0, 0, 0, 
+						JoyStickTypeF.BUTTON_DOWN_SCANCODE, 0);
+
+			}
+			return new KeyEvent(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), 
+					event.getAction(), KeyEvent.KEYCODE_DPAD_DOWN, 0, 0, 0,
+					JoyStickTypeF.BUTTON_YI_SCANCODE, 0);
 		}
 		if(event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT && event.getScanCode() == 0)
 		{
-			return  new KeyEvent(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_LEFT, 0, 0, 0, JoyStickTypeF.BUTTON_XI_SCANCODE, 0);
+			if(InputAdapter.gHatLeftPressed)
+			{
+				if(event.getAction() == KeyEvent.ACTION_UP)
+					InputAdapter.gHatLeftPressed = false;
+				return  new KeyEvent(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(),
+						event.getAction(), KeyEvent.KEYCODE_DPAD_LEFT, 0, 0, 0, 
+						JoyStickTypeF.BUTTON_LEFT_SCANCODE, 0);
+			}
+			return  new KeyEvent(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), 
+					event.getAction(), KeyEvent.KEYCODE_DPAD_LEFT, 0, 0, 0, 
+					JoyStickTypeF.BUTTON_XI_SCANCODE, 0);
 		}
 		if(event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT && event.getScanCode() == 0)
 		{
-			return new KeyEvent(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_RIGHT, 0, 0, 0, JoyStickTypeF.BUTTON_XP_SCANCODE, 0);
+			if(InputAdapter.gHatRightPressed)
+			{
+				if(event.getAction() == KeyEvent.ACTION_UP)
+					InputAdapter.gHatRightPressed = false;
+					return new KeyEvent(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), 
+							event.getAction(), KeyEvent.KEYCODE_DPAD_RIGHT, 0, 0, 0, 
+							JoyStickTypeF.BUTTON_RIGHT_SCANCODE, 0);
+			}
+			return new KeyEvent(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), 
+					event.getAction(), KeyEvent.KEYCODE_DPAD_RIGHT, 0, 0, 0, 
+					JoyStickTypeF.BUTTON_XP_SCANCODE, 0);
 		}
 		return null;
 	}
@@ -124,7 +166,7 @@ public class JnsIMEInputMethodService extends InputMethodService {
 					Log.d("JnsIME", "take pic "+isTakePic);
 					Intent in = new Intent(JnsIMEInputMethodService.this.getApplicationContext(), JnsIMETpConfigActivity.class);
 					//in.putExtra("screenshot", isTakePic);
-					in.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					in.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					JnsIMEInputMethodService.this.startActivity(in);
 				}
 			}).start();
@@ -141,10 +183,10 @@ public class JnsIMEInputMethodService extends InputMethodService {
 		{	
 			if(!JnsEnvInit.rooted)
 			{	
-			//	event =  new KeyEvent(event.getDownTime(), event.getDownTime(), 
-			//			KeyEvent.ACTION_DOWN, JnsIMECoreService.keyMap.get(event.getScanCode()),
-			//			0, event.getMetaState(), event.getDeviceId(), 0);
-				event =  new KeyEvent(KeyEvent.ACTION_DOWN, JnsIMECoreService.keyMap.get(event.getScanCode()));
+				event =  new KeyEvent(event.getDownTime(), event.getDownTime(), 
+						KeyEvent.ACTION_DOWN, JnsIMECoreService.keyMap.get(event.getScanCode()),
+						0, event.getMetaState(), event.getDeviceId(), 0);
+				//event =  new KeyEvent(KeyEvent.ACTION_DOWN, JnsIMECoreService.keyMap.get(event.getScanCode()));
 				this.getCurrentInputConnection().sendKeyEvent(event);
 			}
 			return true;
@@ -209,9 +251,10 @@ public class JnsIMEInputMethodService extends InputMethodService {
 				//event =  new KeyEvent(event.getDownTime(), event.getDownTime(), 
 			///			KeyEvent.ACTION_UP, JnsIMECoreService.keyMap.get(event.getScanCode()),
 			//			0, event.getMetaState(), event.getDeviceId(), 0);
-				event =  new KeyEvent(KeyEvent.ACTION_UP, JnsIMECoreService.keyMap.get(event.getScanCode()));
+				event =  new KeyEvent(event.getDownTime(), event.getDownTime(), 
+						KeyEvent.ACTION_UP, JnsIMECoreService.keyMap.get(event.getScanCode()),
+						0, event.getMetaState(), event.getDeviceId(), 0);
 				this.getCurrentInputConnection().sendKeyEvent(event);
-				return true;
 			}
 			return true;
 		}

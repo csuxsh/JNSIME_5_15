@@ -30,6 +30,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -51,7 +52,7 @@ public class JnsIMECoreService extends Service {
 	private boolean alertDialogShow = false;
 
 	public static boolean initialed = false;
-	static boolean touchConfiging = false;
+	public static boolean touchConfiging = false;
 	static boolean gameStart = false;
 	public static Handler DataProcessHandler = null;
 	public static AppHelper  aph;
@@ -145,6 +146,14 @@ public class JnsIMECoreService extends Service {
 				case DialogInterface.BUTTON_NEGATIVE:
 					alertDialogEnable = false;
 					break;
+				case DialogInterface.BUTTON_POSITIVE:
+					 Uri uri = Uri.parse("http://forum.xda-developers.com/showthread.php?t=833953");  
+					 Intent intent = new Intent(Intent.ACTION_VIEW, uri);  
+					 intent.setClassName("com.android.browser", "com.android.browser.BrowserActivity");  
+					 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					 JnsIMECoreService.this.startActivity(intent);  
+					 
+					 break;
 				}
 				alertDialogShow = false;
 
@@ -159,11 +168,14 @@ public class JnsIMECoreService extends Service {
 				Log.d("JnsEnvInit", "alertDialogEnable="+alertDialogEnable);
 				switch(msg.what)
 				{
+				case JnsIMECoreService.ROOT_SUCCESE:
+					Toast.makeText(JnsIMECoreService.this, "root succese", Toast.LENGTH_LONG).show();
+					break;
 				case JnsIMECoreService.ROOT_FAILED:
 					if(alertDialogEnable)
 					{	
-						Dialog dialog = new AlertDialog.Builder(JnsIMECoreService.this).setMessage("Can not exec su, please root the device!").setPositiveButton("sure",
-								null).setNegativeButton("cancle", ocl).create();
+						Dialog dialog = new AlertDialog.Builder(JnsIMECoreService.this).setMessage(JnsIMECoreService.this.getString(R.string.root_notice) ).setPositiveButton("sure",
+								ocl).setNegativeButton("cancle", ocl).create();
 						dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);  
 
 						WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();    
@@ -187,9 +199,6 @@ public class JnsIMECoreService extends Service {
 							alertDialogShow = true;
 						}
 					}
-					break;
-				case JnsIMECoreService.ROOT_SUCCESE:
-					Toast.makeText(JnsIMECoreService.this, "root succese", Toast.LENGTH_LONG).show();
 					break;
 				}
 				super.handleMessage(msg);
@@ -215,6 +224,7 @@ public class JnsIMECoreService extends Service {
 		Log.d("JnsIME", "JnsIMECore start");
 		if(aph == null)
 			aph = new AppHelper(this);
+		CheckInit();
 		new Thread(new Runnable()
 		{
 			@Override
@@ -226,7 +236,6 @@ public class JnsIMECoreService extends Service {
 		}).start();
 		createTmpDir();
 		startDataProcess();
-		CheckInit();
 		JnsIMEScreenView.context = this;
 		JnsIMEScreenView.loadTpMapRes();
 		new Thread(new Runnable()

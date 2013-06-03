@@ -3,7 +3,7 @@ package com.jnselectronics.im.hardware;
 
 
 public class JoyStickTypeF {
-	
+	public static final int BUTTON_SEARCH_SCANCODE = 217;
 	public static final int BUTTON_A_SCANCODE = 304;
 	public static final int BUTTON_B_SCANCODE = 305;
 	public static final int BUTTON_X_SCANCODE = 307;

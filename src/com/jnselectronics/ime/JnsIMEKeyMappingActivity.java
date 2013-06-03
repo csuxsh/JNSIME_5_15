@@ -18,6 +18,8 @@ import com.jnselectronics.ime.uiadapter.JnsIMEKeyboardView;
 import com.jnselectronics.ime.uiadapter.JnsIMEKeyMapView;
 import com.jnselectronics.ime.util.DrawableUtil;
 
+import dalvik.system.VMRuntime;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -37,6 +39,7 @@ import android.widget.TextView;
 public class JnsIMEKeyMappingActivity extends Activity implements OnClickListener{
 
 	private final static String TOKEN=":";
+	private final static float TARGET_HEAP_UTILIZATION = 0.75f;
 	public int curentKeyBoard;
 	private String fileName;
 	JnsIMEKeyboardView keyboard_a;
@@ -56,6 +59,8 @@ public class JnsIMEKeyMappingActivity extends Activity implements OnClickListene
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		VMRuntime.getRuntime().setMinimumHeapSize(16 * 1024 * 1024); 
+		VMRuntime.getRuntime().setTargetHeapUtilization(TARGET_HEAP_UTILIZATION);
 		this.setContentView(R.layout.activity_keymapping);
 		TextView title = (TextView) this.findViewById(R.id.keymap_title);
 		Intent in = this.getIntent();
@@ -210,8 +215,8 @@ public class JnsIMEKeyMappingActivity extends Activity implements OnClickListene
 			if(mappedKey.containsValue(currentet_keymap.getGamPadIndex()))
 			{
 				Log.d("tag", "rm currentet_keymap.getGamPadIndex()"+currentet_keymap.getGamPadIndex());
+				mappedKey.remove(keys.get(currentet_keymap.getGamPadIndex()).getLable());
 				keys.remove(currentet_keymap.getGamPadIndex());
-				mappedKey.remove(currentet_keymap.getLable());
 			}
 			keyMapView.gamePadButoonLable[currentet_keymap.getGamPadIndex()/keyMapView.diplayRow][currentet_keymap.getGamPadIndex()%keyMapView.diplayRow] = entry.getKey();
 			keyMapView.postInvalidate();

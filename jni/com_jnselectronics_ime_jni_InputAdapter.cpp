@@ -79,6 +79,7 @@ struct RawKeyEvent {
 	int scanCode;
 	int value;
 	int KeyCode;
+	int deviceId;
 };
 
 struct JoyStickEvent {
@@ -88,23 +89,30 @@ struct JoyStickEvent {
 	int rz;
 	int hat_x;
 	int hat_y;
+	int deviceId;
 };
 
 struct RawKeyEvent keyEvent;
 struct JoyStickEvent joyStickEvent;
-static void doOnKeyDown(int scanCode, int value) {
+static void doOnKeyDown(int scanCode, int value, int deviceId)
+{
 	keyEvent.scanCode = scanCode;
 	keyEvent.value = value;
+	keyEvent.deviceId = deviceId;
 }
 
-static void doOnKeyUp(int scanCode, int value) {
+static void doOnKeyUp(int scanCode, int value, int deviceId)
+{
 	keyEvent.scanCode = scanCode;
 	keyEvent.value = value;
+	keyEvent.deviceId = deviceId;
 	//LOGE("[%s][%d] ==>  scancode = 0X%02X value = 0x%02x", __FUNCTION__, __LINE__, scanCode, value);
 }
 
-static void doOnJoystickDataChange(int scanCode, int value) {
+static void doOnJoystickDataChange(int scanCode, int value, int deviceId)
+{
 
+	joyStickEvent.deviceId = deviceId;
 	switch(scanCode)
 	{
 	case ABS_X:
@@ -141,15 +149,17 @@ public:
 
 		int scanCode = rawEvent->scanCode;
 		int value = rawEvent->value;
+		int deviceId = rawEvent->deviceId;
+
 		while(waitForgetKey)
 		{
 			LOGE("[%s][%d] ==> waitForgetKey", __FUNCTION__, __LINE__);
 		}
 		pthread_mutex_lock(&keyMutex);
 		if (value == 1) {
-			doOnKeyDown(scanCode, value);
+			doOnKeyDown(scanCode, value, deviceId);
 		} else if(value == 0){
-			doOnKeyUp(scanCode, value);
+			doOnKeyUp(scanCode, value, deviceId);
 		}
 		//delay(1000);
 		pthread_cond_signal(&keyCond);
@@ -161,13 +171,15 @@ public:
 	int joystickProcess(const RawEvent *rawEvent) { 
 		int scanCode = rawEvent->scanCode;
 		int value = rawEvent->value;
+		int deviceId = rawEvent->deviceId;
+
 		while(waitForgetJoy)
 		{
 			LOGE("[%s][%d] ==> waitForgetJoy", __FUNCTION__, __LINE__);
 		}
 		pthread_mutex_lock(&joyMutex);
 		if(rawEvent->type != 0)
-			doOnJoystickDataChange(scanCode, value);
+			doOnJoystickDataChange(scanCode, value, deviceId);
 		pthread_cond_signal(&joyCond);
 		pthread_mutex_unlock(&joyMutex);
 		LOGE("[%s][%d] ==> notify getjoy ", __FUNCTION__, __LINE__);
@@ -236,8 +248,10 @@ JNIEXPORT void JNICALL Java_com_jnselectronics_ime_jni_InputAdapter_getKey (JNIE
 	pthread_cond_wait(&keyCond, &keyMutex);
 	jfieldID scanCode = env->GetFieldID(jclazz, "scanCode", "I");
 	jfieldID value = env->GetFieldID(jclazz, "value", "I");
+	jfieldID deviceId = env->GetFieldID(jclazz, "deviceId", "I");
 	env->SetIntField(rawEvent, scanCode, keyEvent.scanCode);
 	env->SetIntField(rawEvent, value, keyEvent.value);
+	env->SetIntField(rawEvent, deviceId, keyEvent.deviceId);
 	waitForgetKey =  true;
 	pthread_mutex_unlock(&keyMutex);
 
@@ -268,6 +282,7 @@ JNIEXPORT jboolean JNICALL Java_com_jnselectronics_ime_jni_InputAdapter_getJoySt
 		jfieldID rz = env->GetFieldID(jclazz, "rz", "I");
 		jfieldID hat_x = env->GetFieldID(jclazz, "hat_x", "I");
 		jfieldID hat_y = env->GetFieldID(jclazz, "hat_y", "I");
+		jfieldID deviceId = env->GetFieldID(jclazz, "deviceId", "I");
 
 		env->SetIntField(joyEvent, x, joyStickEvent.x);
 		env->SetIntField(joyEvent, y, joyStickEvent.y);
@@ -275,6 +290,7 @@ JNIEXPORT jboolean JNICALL Java_com_jnselectronics_ime_jni_InputAdapter_getJoySt
 		env->SetIntField(joyEvent, rz, joyStickEvent.rz);
 		env->SetIntField(joyEvent, hat_x, joyStickEvent.hat_x);
 		env->SetIntField(joyEvent, hat_y, joyStickEvent.hat_y);
+		env->SetIntField(joyEvent, deviceId, joyStickEvent.deviceId);
 		pthread_mutex_unlock(&joyMutex);
 		waitForgetJoy = true;
 		return true;

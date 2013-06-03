@@ -10,6 +10,7 @@ public class JoyStickEvent {
 		rz = 0x7f;
 		hat_x = 0;
 		hat_y =0;
+		deviceId = 0;
 	}
 	public int getHat_x() {
 		return hat_x;
@@ -26,7 +27,15 @@ public class JoyStickEvent {
 	int x;
 	int y;
 	int hat_x;
+	public int getDeviceId() {
+		return deviceId;
+	}
+	public void setDeviceId(int deviceId) {
+		this.deviceId = deviceId;
+	}
 	int hat_y;
+	int deviceId;
+	
 	public int getX() {
 		return x;
 	}

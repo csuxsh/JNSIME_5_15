@@ -372,9 +372,17 @@ public class JnsIMEScreenView extends View implements Runnable {
 				break;
 		 }
 		 if(profile.posType == JnsIMEProfile.LEFT_JOYSTICK)
+		 { 
 			 bop.resId = JnsIMEScreenView.STICK_L;
-		 if(profile.posType == JnsIMEProfile.RIGHT_JOYSTICK)
+			 bop.type = JnsIMEPosition.TYPE_LEFT_JOYSTICK;
+		 } 
+		 else if(profile.posType == JnsIMEProfile.RIGHT_JOYSTICK)
+		 {	 
 			 bop.resId = JnsIMEScreenView.STICK_R;
+			 bop.type = JnsIMEPosition.TYPE_RIGHT_JOYSTICK;
+		 } 
+		 else
+			 bop.type = JnsIMEPosition.TYPE_OTHERS;
 		 bop.scancode = profile.key;
 		 bop.r = profile.posR;
 		 bop.x = profile.posX;

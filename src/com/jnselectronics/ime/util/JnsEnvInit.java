@@ -126,7 +126,7 @@ public class JnsEnvInit {
 			}
 			catch(Exception e)
 			{
-
+				Log.d(TAG,"errothread start faield");
 			}
 			if(!checkRooted(dos, dis))
 			{	
@@ -188,13 +188,13 @@ public class JnsEnvInit {
 		{	
 			try {
 				//Process process = Runtime.getRuntime().exec("sh /mnt/sdcard/jnsinput/jnsinput.sh");
-				Process process = Runtime.getRuntime().exec("su");
-				dos = new DataOutputStream(process.getOutputStream());
-				dos.write("rm /data/jnsinput/jnsinput.jar \n".getBytes());
-				dos.flush();
+				Process jarprocess = Runtime.getRuntime().exec("su");
+				DataOutputStream jardos = new DataOutputStream(jarprocess.getOutputStream());
+				jardos.write("rm /data/jnsinput/jnsinput.jar \n".getBytes());
+				jardos.flush();
 				String cmd = "export LD_LIBRARY_PATH=/vender/lib; export CLASSPATH=/mnt/sdcard/jnsinput/jnsinput.jar; exec app_process /system/bin com.blueocean.jnsinput.JNSInputServer \n";
-				dos.write(cmd.getBytes());
-				dos.flush();
+				jardos.write(cmd.getBytes());
+				jardos.flush();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

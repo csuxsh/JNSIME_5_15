@@ -1,6 +1,16 @@
 package com.jnselectronics.ime.util;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.PixelFormat;
@@ -61,5 +71,42 @@ public class DrawableUtil {
 		drawable.draw(canvas);      // 把drawable内容画到画布中  
 		return bitmap;  
 	}  
+	@SuppressLint("SdCardPath")
+	public static void saveMyBitmap(Bitmap bitmap, String bitName) throws IOException {
+        File f = new File(bitName);
+        f.createNewFile();
+        FileOutputStream fOut = null;
+        try {
+                fOut = new FileOutputStream(f);
+        } catch (FileNotFoundException e) {
+                e.printStackTrace();
+        }
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
+        try {
+                fOut.flush();
+        } catch (IOException e) {
+                e.printStackTrace();
+        }
+        try {
+                fOut.close();
+        } catch (IOException e) {
+                e.printStackTrace();
+        }
+	}
+	public static Bitmap getBitmap(Context context, String path)
+	{
+		BitmapFactory.Options options=new BitmapFactory.Options(); 
+		options.inJustDecodeBounds = false; 
+		options.inSampleSize = 1;   
+		try {
+			InputStream is = new FileInputStream(new File(path));
+			return BitmapFactory.decodeStream(is,null,options);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 
 }

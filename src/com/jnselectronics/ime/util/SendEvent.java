@@ -169,8 +169,8 @@ public class SendEvent {
 	{
 		if(JnsIMEInputMethodService.currentAppName.equals(pkgName))
 			return ;
-		processRightJoystickData(joyevent.getZ(), joyevent.getRz());
-		processLeftJoystickData(joyevent.getX(), joyevent.getY());
+		processRightJoystickData(joyevent.getZ(), joyevent.getRz(), joyevent.getDeviceId());
+		processLeftJoystickData(joyevent.getX(), joyevent.getY(), joyevent.getDeviceId());
 	}
 	private static String keyString(RawEvent keyevent)
 	{
@@ -178,7 +178,7 @@ public class SendEvent {
 			JnsIMECoreService.eventDownLock++;
 		else if(keyevent.value == KeyEvent.ACTION_UP)
 			JnsIMECoreService.eventDownLock--;
-		return KEY+TOKEN+keyevent.keyCode+TOKEN+keyevent.scanCode+TOKEN+keyevent.value+"\n";
+		return KEY+TOKEN+keyevent.keyCode+TOKEN+keyevent.scanCode+TOKEN+keyevent.value+ TOKEN +keyevent.deviceId+"\n";
 	}
 	private static String posString(int x, int y, int value)
 	{
@@ -188,7 +188,6 @@ public class SendEvent {
 			JnsIMECoreService.eventDownLock--;
 		return TOUCH+TOKEN+x+TOKEN+y+TOKEN+0xFF+TOKEN+value+"\n";
 	}
-
 	private static String posString(float x, float y, int tag, int value)
 	{
 		if(value == KeyEvent.ACTION_DOWN)
@@ -213,7 +212,7 @@ public class SendEvent {
 		return sin;
 	}
 
-	private void processRightJoystickData(int i, int j) { // x = buffer[3] y = buffer[4]
+	private void processRightJoystickData(int i, int j, int deviceId) { // x = buffer[3] y = buffer[4]
 		int ox = 0x7f;
 		int oy = 0x7f;
 		int ux = i;
@@ -222,7 +221,7 @@ public class SendEvent {
 		if (j < 0) uy = 256 + j;
 		boolean touchMapped = false;
 
-		//		 if (bx != 0x7f || by != 0x7f) {
+
 		if (JnsIMECoreService.keyList != null) 
 		{
 			for (JnsIMEProfile bp:JnsIMECoreService.keyList)
@@ -279,7 +278,9 @@ public class SendEvent {
 						Log.e(TAG, "axis X  > 0x7f");
 					} else if (ux == ox && uy == oy && rightMotionKey) {
 						Log.e(TAG, "right  you release map");
-						pw.print(posString(rightJoystickCurrentPosX, rightJoystickCurrentPosY, JoyStickTypeF.RIGHT_JOYSTICK_TAG, MotionEvent.ACTION_UP));
+						pw.print(posString(bp.posX, bp.posY, JoyStickTypeF.RIGHT_JOYSTICK_TAG, MotionEvent.ACTION_MOVE));
+						pw.flush();
+						pw.print(posString(bp.posX, bp.posY, JoyStickTypeF.RIGHT_JOYSTICK_TAG, MotionEvent.ACTION_UP));
 						pw.flush();
 						rightMotionKey = false;
 						RightJoystickPresed = false;
@@ -323,7 +324,7 @@ public class SendEvent {
 					{
 						joy_zp_pressed = true;
 						keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_ZP_SCANCODE),
-								JoyStickTypeF.BUTTON_ZP_SCANCODE, KeyEvent.ACTION_DOWN);
+								JoyStickTypeF.BUTTON_ZP_SCANCODE, KeyEvent.ACTION_DOWN, deviceId);
 						pw.print(keyString(keyevent));
 						pw.flush();
 					}
@@ -334,7 +335,7 @@ public class SendEvent {
 					{
 						joy_zp_pressed = false;
 						keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_ZP_SCANCODE),
-								JoyStickTypeF.BUTTON_ZP_SCANCODE, KeyEvent.ACTION_UP);
+								JoyStickTypeF.BUTTON_ZP_SCANCODE, KeyEvent.ACTION_UP,deviceId);
 						pw.print(keyString(keyevent));
 						pw.flush();
 					}
@@ -349,15 +350,18 @@ public class SendEvent {
 					{
 						joy_zi_pressed = true;
 						keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_ZI_SCANCODE),
-								JoyStickTypeF.BUTTON_ZI_SCANCODE, KeyEvent.ACTION_DOWN);
+								JoyStickTypeF.BUTTON_ZI_SCANCODE, KeyEvent.ACTION_DOWN, deviceId);
 						pw.print(keyString(keyevent));
 						pw.flush();
 					}
+				}	
+				else
+				{	
 					if(joy_zi_pressed)
 					{
 						joy_zi_pressed = false;
 						keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_ZI_SCANCODE),
-								JoyStickTypeF.BUTTON_ZI_SCANCODE, KeyEvent.ACTION_UP);
+								JoyStickTypeF.BUTTON_ZI_SCANCODE, KeyEvent.ACTION_UP, deviceId);
 						pw.print(keyString(keyevent));
 						pw.flush();
 					}
@@ -374,7 +378,7 @@ public class SendEvent {
 
 						joy_rzi_pressed = true;
 						keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_RZI_SCANCODE),
-								JoyStickTypeF.BUTTON_RZI_SCANCODE, KeyEvent.ACTION_DOWN);
+								JoyStickTypeF.BUTTON_RZI_SCANCODE, KeyEvent.ACTION_DOWN, deviceId);
 						pw.print(keyString(keyevent));
 						pw.flush();
 					}
@@ -386,7 +390,7 @@ public class SendEvent {
 
 						joy_rzi_pressed = false;
 						keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_RZI_SCANCODE),
-								JoyStickTypeF.BUTTON_RZI_SCANCODE, KeyEvent.ACTION_UP);
+								JoyStickTypeF.BUTTON_RZI_SCANCODE, KeyEvent.ACTION_UP, deviceId);
 						pw.print(keyString(keyevent));
 						pw.flush();
 					}
@@ -402,7 +406,7 @@ public class SendEvent {
 					{
 						joy_rzp_pressed = true;
 						keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_RZP_SCANCODE),
-								JoyStickTypeF.BUTTON_RZP_SCANCODE, KeyEvent.ACTION_DOWN);
+								JoyStickTypeF.BUTTON_RZP_SCANCODE, KeyEvent.ACTION_DOWN, deviceId);
 						pw.print(keyString(keyevent));
 						pw.flush();
 					}
@@ -413,7 +417,7 @@ public class SendEvent {
 					{
 						joy_rzp_pressed = false;
 						keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_RZP_SCANCODE),
-								JoyStickTypeF.BUTTON_RZP_SCANCODE, KeyEvent.ACTION_UP);
+								JoyStickTypeF.BUTTON_RZP_SCANCODE, KeyEvent.ACTION_UP, deviceId);
 						pw.print(keyString(keyevent));
 						pw.flush();
 					}
@@ -478,7 +482,7 @@ public class SendEvent {
 		 */
 	}
 
-	private void processLeftJoystickData(int i, int j) { // x = buffer[3] y = buffer[4]
+	private void processLeftJoystickData(int i, int j, int deviceId) { // x = buffer[3] y = buffer[4]
 		int ox = 0x7f;
 		int oy = 0x7f;
 		int ux = i;
@@ -548,7 +552,9 @@ public class SendEvent {
 						Log.d(TAG, "axis X  > 0x7f");
 					} else if (ux == ox && uy == oy && leftMotionKey) {
 						Log.e(TAG, "left joystick you release map");
-						pw.print(posString(leftJoystickCurrentPosX, leftJoystickCurrentPosY, JoyStickTypeF.LEFT_JOYSTICK_TAG, MotionEvent.ACTION_UP));
+						pw.print(posString(bp.posX, bp.posY, JoyStickTypeF.LEFT_JOYSTICK_TAG, MotionEvent.ACTION_MOVE));
+						pw.flush();
+						pw.print(posString(bp.posX, bp.posY, JoyStickTypeF.LEFT_JOYSTICK_TAG, MotionEvent.ACTION_UP));
 						pw.flush();
 						leftMotionKey = false;
 						LeftJoystickPresed = false;
@@ -606,7 +612,7 @@ public class SendEvent {
 					{	
 						joy_xp_pressed = true;
 						keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_XP_SCANCODE),
-								JoyStickTypeF.BUTTON_XP_SCANCODE, KeyEvent.ACTION_DOWN);
+								JoyStickTypeF.BUTTON_XP_SCANCODE, KeyEvent.ACTION_DOWN, deviceId);
 						pw.print(keyString(keyevent));
 						pw.flush();
 					}
@@ -617,7 +623,7 @@ public class SendEvent {
 					{
 						joy_xp_pressed=false;
 						keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_XP_SCANCODE),
-								JoyStickTypeF.BUTTON_XP_SCANCODE, KeyEvent.ACTION_UP);
+								JoyStickTypeF.BUTTON_XP_SCANCODE, KeyEvent.ACTION_UP, deviceId);
 						pw.print(keyString(keyevent));
 						pw.flush();
 					}
@@ -633,7 +639,7 @@ public class SendEvent {
 					{	
 						this.joy_xi_pressed = true;
 						keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_XI_SCANCODE),
-								JoyStickTypeF.BUTTON_XI_SCANCODE, KeyEvent.ACTION_DOWN);
+								JoyStickTypeF.BUTTON_XI_SCANCODE, KeyEvent.ACTION_DOWN, deviceId);
 						pw.print(keyString(keyevent));
 						pw.flush();
 					}
@@ -644,7 +650,7 @@ public class SendEvent {
 					{	
 						this.joy_xi_pressed = false;
 						keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_XI_SCANCODE),
-								JoyStickTypeF.BUTTON_XI_SCANCODE, KeyEvent.ACTION_UP);
+								JoyStickTypeF.BUTTON_XI_SCANCODE, KeyEvent.ACTION_UP, deviceId);
 						pw.print(keyString(keyevent));
 						pw.flush();
 					}
@@ -659,7 +665,7 @@ public class SendEvent {
 					{	
 						joy_yi_pressed = true;
 						keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_YI_SCANCODE),
-								JoyStickTypeF.BUTTON_YI_SCANCODE, KeyEvent.ACTION_DOWN);
+								JoyStickTypeF.BUTTON_YI_SCANCODE, KeyEvent.ACTION_DOWN, deviceId);
 						pw.print(keyString(keyevent));
 						pw.flush();
 					}
@@ -670,7 +676,7 @@ public class SendEvent {
 					{	
 						joy_yi_pressed = false;
 						keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_YI_SCANCODE),
-								JoyStickTypeF.BUTTON_YI_SCANCODE, KeyEvent.ACTION_UP);
+								JoyStickTypeF.BUTTON_YI_SCANCODE, KeyEvent.ACTION_UP, deviceId);
 						pw.print(keyString(keyevent));
 						pw.flush();
 					}
@@ -686,7 +692,7 @@ public class SendEvent {
 					{
 						joy_yp_pressed = true;
 						keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_YP_SCANCODE),
-								JoyStickTypeF.BUTTON_YP_SCANCODE, KeyEvent.ACTION_DOWN);
+								JoyStickTypeF.BUTTON_YP_SCANCODE, KeyEvent.ACTION_DOWN, deviceId);
 						pw.print(keyString(keyevent));
 						pw.flush();
 					}
@@ -697,7 +703,7 @@ public class SendEvent {
 					{
 						joy_yp_pressed = false;
 						keyevent = new RawEvent(JnsIMECoreService.keyMap.get(JoyStickTypeF.BUTTON_YP_SCANCODE),
-								JoyStickTypeF.BUTTON_YP_SCANCODE, KeyEvent.ACTION_UP);
+								JoyStickTypeF.BUTTON_YP_SCANCODE, KeyEvent.ACTION_UP, deviceId);
 						pw.print(keyString(keyevent));
 						pw.flush();
 					}

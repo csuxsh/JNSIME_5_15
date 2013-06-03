@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.jnselectronics.im.hardware.JoyStickTypeF;
 import com.jnselectronics.ime.JnsIMECoreService;
+import com.jnselectronics.ime.JnsIMEInputMethodService;
 
 import android.content.Context;
 import android.content.Intent;
@@ -25,6 +26,11 @@ public class InputAdapter {
 	private static boolean hatDownPressed = false;
 	private static boolean hatLeftPressed = false;
 	private static boolean hatRightPressed = false;
+	
+	public static boolean gHatUpPressed = false;
+	public static boolean gHatDownPressed = false;
+	public static boolean gHatLeftPressed = false;
+	public static boolean gHatRightPressed = false;
 	//private static JoyStickEvent oldJoyEvent = new JoyStickEvent();
 
 
@@ -52,7 +58,8 @@ public class InputAdapter {
 			while (true) {
 				getKey(keyEvent);
 				Log.d(TAG, "keyEvent.scanCode="+keyEvent.scanCode+"keyEvent.value"+keyEvent.value );
-				
+				if(JnsIMEInputMethodService.validAppName.equals("com.silvertree.cordy"))
+					keyEvent.deviceId = 0;
 				if (keyEvent.value == 1) 
 				{
 					keyEvent.value = KeyEvent.ACTION_DOWN;
@@ -92,53 +99,59 @@ public class InputAdapter {
 				//		
 				if(getJoyStick(JoyEvent))
 				{
+					if(JnsIMEInputMethodService.validAppName.equals("com.silvertree.cordy"))
+						JoyEvent.deviceId = 0;
 					if((JoyEvent.hat_y == 0) && hatUpPressed)
 					{
-						RawEvent keyevent = new RawEvent(0, JoyStickTypeF.BUTTON_UP_SCANCODE, KeyEvent.ACTION_UP);
+						RawEvent keyevent = new RawEvent(0, JoyStickTypeF.BUTTON_UP_SCANCODE, KeyEvent.ACTION_UP, JoyEvent.deviceId);
 						hatUpPressed = false;
 						onRawKeyUp(keyevent);
 					}
 					if((JoyEvent.hat_y == 0) && hatDownPressed)
 					{
-						RawEvent keyevent = new RawEvent(0, JoyStickTypeF.BUTTON_DOWN_SCANCODE, KeyEvent.ACTION_UP);
+						RawEvent keyevent = new RawEvent(0, JoyStickTypeF.BUTTON_DOWN_SCANCODE, KeyEvent.ACTION_UP, JoyEvent.deviceId);
 						hatDownPressed = false;
 						onRawKeyUp(keyevent);
 					}
 					if((JoyEvent.hat_y == -1) && (!hatUpPressed))
 					{
-						RawEvent keyevent = new RawEvent(0, JoyStickTypeF.BUTTON_UP_SCANCODE, KeyEvent.ACTION_DOWN);
+						RawEvent keyevent = new RawEvent(0, JoyStickTypeF.BUTTON_UP_SCANCODE, KeyEvent.ACTION_DOWN, JoyEvent.deviceId);
 						hatUpPressed = true;
+						gHatUpPressed = true;
 						onRawKeyDown(keyevent);
 					}
 					if((JoyEvent.hat_y == 1) && (!hatDownPressed))
 					{
-						RawEvent keyevent = new RawEvent(0, JoyStickTypeF.BUTTON_DOWN_SCANCODE, KeyEvent.ACTION_DOWN);
+						RawEvent keyevent = new RawEvent(0, JoyStickTypeF.BUTTON_DOWN_SCANCODE, KeyEvent.ACTION_DOWN, JoyEvent.deviceId);
 						hatDownPressed =true;
+						gHatDownPressed =true;
 						onRawKeyDown(keyevent);
 					}
 					
 					if((JoyEvent.hat_x == 0) && hatRightPressed)
 					{
-						RawEvent keyevent = new RawEvent(0, JoyStickTypeF.BUTTON_RIGHT_SCANCODE, KeyEvent.ACTION_UP);
+						RawEvent keyevent = new RawEvent(0, JoyStickTypeF.BUTTON_RIGHT_SCANCODE, KeyEvent.ACTION_UP, JoyEvent.deviceId);
 						hatRightPressed = false;
 						onRawKeyUp(keyevent);
 					}
 					if((JoyEvent.hat_x == 0) && hatLeftPressed)
 					{
-						RawEvent keyevent = new RawEvent(0, JoyStickTypeF.BUTTON_LEFT_SCANCODE, KeyEvent.ACTION_UP);
+						RawEvent keyevent = new RawEvent(0, JoyStickTypeF.BUTTON_LEFT_SCANCODE, KeyEvent.ACTION_UP, JoyEvent.deviceId);
 						hatLeftPressed = false;
 						onRawKeyUp(keyevent);
 					}
 					if((JoyEvent.hat_x == 1) && (!hatRightPressed))
 					{
-						RawEvent keyevent = new RawEvent(0, JoyStickTypeF.BUTTON_RIGHT_SCANCODE, KeyEvent.ACTION_DOWN);
+						RawEvent keyevent = new RawEvent(0, JoyStickTypeF.BUTTON_RIGHT_SCANCODE, KeyEvent.ACTION_DOWN, JoyEvent.deviceId);
 						hatRightPressed = true;
+						gHatRightPressed = true;
 						onRawKeyDown(keyevent);
 					}
 					if((JoyEvent.hat_x == -1) && (!hatLeftPressed))
 					{
-						RawEvent keyevent = new RawEvent(0, JoyStickTypeF.BUTTON_LEFT_SCANCODE, KeyEvent.ACTION_DOWN);
+						RawEvent keyevent = new RawEvent(0, JoyStickTypeF.BUTTON_LEFT_SCANCODE, KeyEvent.ACTION_DOWN, JoyEvent.deviceId);
 						hatLeftPressed =true;
+						gHatLeftPressed =true;
 						onRawKeyDown(keyevent);
 					}
 					Log.d(TAG, "x = "+JoyEvent.x+ ", y = "+JoyEvent.y + "z = "+JoyEvent.z+  "rz = "+JoyEvent.rz+"  hat_x = "+ JoyEvent.hat_x +" hat y ="+  JoyEvent.hat_y );
@@ -188,7 +201,7 @@ public class InputAdapter {
 		//Log.e(TAG, "onRawKeyDown scanCode = " + keyEvent.scanCode + " value = " + keyEvent.value);
 		Message msg = new Message();
 		msg.what = JnsIMECoreService.HAS_KEY_DATA;
-		RawEvent event = new RawEvent(keyEvent.keyCode, keyEvent.scanCode, keyEvent.value);
+		RawEvent event = new RawEvent(keyEvent.keyCode, keyEvent.scanCode, keyEvent.value, keyEvent.deviceId);
 		JnsIMECoreService.keyQueue.add(event);
 		JnsIMECoreService.DataProcessHandler.sendMessage(msg);
 		Log.d(TAG, "current time is "+System.currentTimeMillis());
@@ -198,7 +211,7 @@ public class InputAdapter {
 		Log.e(TAG, "onRawKeyUp scanCode = " + keyEvent.scanCode + " value = " + keyEvent.value);
 		Message msg = new Message();
 		msg.what = JnsIMECoreService.HAS_KEY_DATA;
-		RawEvent event = new RawEvent(keyEvent.keyCode, keyEvent.scanCode, keyEvent.value);
+		RawEvent event = new RawEvent(keyEvent.keyCode, keyEvent.scanCode, keyEvent.value, keyEvent.deviceId);
 		JnsIMECoreService.keyQueue.add(event);
 		JnsIMECoreService.DataProcessHandler.sendMessage(msg);
 	}

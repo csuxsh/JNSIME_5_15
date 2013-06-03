@@ -13,13 +13,19 @@ import com.jnselectronics.ime.uiadapter.JnsIMEScreenView;
 import com.jnselectronics.ime.util.DrawableUtil;
 import com.jnselectronics.ime.util.JnsEnvInit;
 
+import dalvik.system.VMRuntime;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -59,10 +65,14 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 	private ImageView backGrand;
 	private int screenWidth = 0;
 	private int screeanHeight = 0;
+	private final static float TARGET_HEAP_UTILIZATION = 0.75f;
 	@SuppressLint({ "NewApi", "HandlerLeak" })
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		VMRuntime.getRuntime().setMinimumHeapSize(16 * 1024 * 1024); 
+		VMRuntime.getRuntime().setTargetHeapUtilization(TARGET_HEAP_UTILIZATION);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getLayoutInflater();
 		//	getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -117,16 +127,23 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 							matrix.setRotate(90); 
 							break;
 						}  
-						Bitmap tmp_bmp = BitmapFactory.decodeFile("/mnt/sdcard/jnsinput/tmp.bmp");
+						// Ðý×ªÍ¼Æ¬
+						Bitmap tmp_bmp = DrawableUtil.getBitmap(JnsIMETpConfigActivity.this, "/mnt/sdcard/jnsinput/tmp.bmp");
+						draw_bmp = null;
 						tmp_bmp = Bitmap.createBitmap(tmp_bmp, 0, 0, tmp_bmp.getWidth(), tmp_bmp.getHeight(), matrix, true);
-						draw_bmp = DrawableUtil.zoomDrawable(tmp_bmp, tmp_bmp.getWidth(),  tmp_bmp.getHeight());
+						while(draw_bmp ==null)
+						{	
+							draw_bmp = new BitmapDrawable(tmp_bmp);
+						}
 					}
 					if(screeanHeight != draw_bmp.getIntrinsicHeight() && screenWidth != draw_bmp.getIntrinsicWidth())
-						draw_bmp = DrawableUtil.zoomDrawable(draw_bmp, screenWidth, screeanHeight);
+						draw_bmp = DrawableUtil.zoomDrawable(draw_bmp, screenWidth * screenWidth/draw_bmp.getIntrinsicWidth()
+								,screeanHeight * screeanHeight / draw_bmp.getIntrinsicHeight());
 					backGrand.setImageDrawable(draw_bmp);
 				}	
 			}
 		};
+		
 
 		Thread loadthread = new Thread(new Runnable()
 		{
@@ -147,8 +164,14 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 		});
 		loadthread.start();
 	}
-
-
+	@SuppressLint("NewApi")
+	@Override
+	public void onPause()
+	{
+		super.onPause(); 
+		this.finish();
+	}
+	@SuppressLint("NewApi")
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
@@ -268,6 +291,23 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 				bop.type = JnsIMEPosition.TYPE_RIGHT_JOYSTICK;
 				bop.scancode = JoyStickTypeF.STICK_R;
 				screenView.setCircleType(bop.type);
+				int i = 0;
+				for(i = 0; i < keyList.size(); i++)
+				{	
+					JnsIMEProfile profile = keyList.get(i);
+					if(profile.posType == JnsIMEPosition.TYPE_RIGHT_JOYSTICK)
+					{
+						keyList.remove(i);
+					}
+				}
+				for(i = 0; i < screenView.posList.size(); i++)
+				{	
+					JnsIMEPosition postion = screenView.posList.get(i);
+					if(postion.type == JnsIMEPosition.TYPE_RIGHT_JOYSTICK)
+					{
+						screenView.posList.remove(i);
+					}
+				}
 			} else {
 				if (hasLeftJoystick) {
 					Toast.makeText(this, this.getString(R.string.has_left_joystick), Toast.LENGTH_SHORT).show();
@@ -278,6 +318,23 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 				bop.type =JnsIMEPosition.TYPE_LEFT_JOYSTICK;
 				bop.scancode = JoyStickTypeF.STICK_L;
 				screenView.setCircleType(bop.type);
+				int i = 0;
+				for(i = 0; i < keyList.size(); i++)
+				{	
+					JnsIMEProfile profile = keyList.get(i);
+					if(profile.posType == JnsIMEPosition.TYPE_LEFT_JOYSTICK)
+					{
+						keyList.remove(i);
+					}
+				}
+				for(i = 0; i < screenView.posList.size(); i++)
+				{	
+					JnsIMEPosition postion = screenView.posList.get(i);
+					if(postion.type == JnsIMEPosition.TYPE_LEFT_JOYSTICK)
+					{
+						screenView.posList.remove(i);
+					}
+				}
 			}
 			screenView.posList.add(bop); 
 			touchR = 0;

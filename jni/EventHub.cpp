@@ -19,8 +19,13 @@
 /* this macro computes the number of bytes needed to represent a bit array of the specified size */
 #define sizeof_bit_array(bits)  ((bits + 7) / 8)
 
-#define DEVICE_NUM 2
-const char* deviceName[DEVICE_NUM] = {"JNS JNS 2.4G Wireless Device", "SmartGamePad1234"};
+#define DEVICE_NUM 3
+const char* deviceName[DEVICE_NUM] =
+{
+		"JNS JNS 2.4G Wireless Device",
+		"SmartGamePad1234",
+		"Callstel Gaming-Controller"
+};
 
 
 #ifdef BUILD_NDK

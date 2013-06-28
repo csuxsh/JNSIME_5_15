@@ -2,6 +2,10 @@ package com.jnselectronics.ime;
 
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +19,7 @@ import com.jnselectronics.ime.jni.JoyStickEvent;
 import com.jnselectronics.ime.jni.RawEvent;
 import com.jnselectronics.ime.uiadapter.JnsIMEScreenView;
 import com.jnselectronics.ime.util.AppHelper;
+import com.jnselectronics.ime.util.DBHelper;
 import com.jnselectronics.ime.util.JnsEnvInit;
 import com.jnselectronics.ime.util.SendEvent;
 
@@ -26,10 +31,14 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
@@ -65,6 +74,41 @@ public class JnsIMECoreService extends Service {
 	public static  Queue<JoyStickEvent> stickQueue = new ConcurrentLinkedQueue<JoyStickEvent>();
 	public static int currentDeaultIndex = 0;
 	static List<Activity> activitys = new ArrayList<Activity>();
+	private final static String mappingFiles[] =
+		{
+			"com.angrymobgames.muffinknight3rdparty",
+			"com.bringmore.huomieqiangshouer",
+			"com.dotemu.rtype",
+			"com.FDGEntertainment.BeyondYnthXmas",
+			"com.galapagossoft.trialx2_gl2",
+			"com.hg.vikingfree",
+			"com.kumobius.android.game",
+			"com.madfingergames.SamuraiIIAll",
+			"com.madfingergames.shadowgun_amz",
+			"com.meganoid.engine",
+			"com.mobicle.darkbladeOasis",
+			"com.orangepixel.gunslugs",
+			"com.orangepixel.incfree",
+			"com.orangepixel.meganoid2",
+			"com.orangepixel.neoteriafree",
+			"com.robotinvader.knightmare",
+			"com.rockstar.gta3",
+			"com.rockstargames.gtavc",
+			"com.sega.sonic1",
+			"com.sega.sonic4ep2",
+			"com.sega.sonic4epi",
+			"com.sega.soniccd",
+			"com.silvertree.cordy",
+			"com.silvertree.cordy2",
+			"com.silvertree.sleepyjack",
+			"com.vectorunit.blue",
+			"fishnoodle.canabalt",
+			"jp.co.sega.vtc",
+			"net.hexage.evac.hd",
+			"net.hexage.radiant.hd",
+			"net.hexage.robotek.hd"
+			
+		};
 
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -147,13 +191,13 @@ public class JnsIMECoreService extends Service {
 					alertDialogEnable = false;
 					break;
 				case DialogInterface.BUTTON_POSITIVE:
-					 Uri uri = Uri.parse("http://forum.xda-developers.com/showthread.php?t=833953");  
-					 Intent intent = new Intent(Intent.ACTION_VIEW, uri);  
-					 intent.setClassName("com.android.browser", "com.android.browser.BrowserActivity");  
-					 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					 JnsIMECoreService.this.startActivity(intent);  
-					 
-					 break;
+					Uri uri = Uri.parse("http://forum.xda-developers.com/showthread.php?t=833953");  
+					Intent intent = new Intent(Intent.ACTION_VIEW, uri);  
+					intent.setClassName("com.android.browser", "com.android.browser.BrowserActivity");  
+					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					JnsIMECoreService.this.startActivity(intent);  
+
+					break;
 				}
 				alertDialogShow = false;
 
@@ -180,7 +224,7 @@ public class JnsIMECoreService extends Service {
 
 						WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();    
 						WindowManager wm = (WindowManager)JnsIMECoreService.this   
-						.getSystemService(Context.WINDOW_SERVICE);    
+								.getSystemService(Context.WINDOW_SERVICE);    
 						Display display = wm.getDefaultDisplay();    
 						if (display.getHeight() > display.getWidth())    
 						{    
@@ -218,6 +262,87 @@ public class JnsIMECoreService extends Service {
 		notification.setLatestEventInfo(this, this.getString(R.string.app_name), this.getString(R.string.app_name), mPendingIntent);
 		notificationManager.notify(1, notification);
 	}
+	private void initData()
+	{
+		SharedPreferences sp = this.getApplicationContext(). getSharedPreferences("init", Context.MODE_PRIVATE); 
+		SharedPreferences.Editor  edit = sp.edit();
+		int i = sp.getInt("boolean", 0);
+		if(i == 0)
+		{
+			CopyMappings();
+			if(CopyDatabase())
+			{
+				edit.putInt("boolean", 1);
+				edit.commit();
+			}
+			else
+			{
+				Toast.makeText(this, "Init failed", Toast.LENGTH_SHORT).show();
+			}
+		}
+	}
+	@SuppressLint("SdCardPath")
+	private void CopyMappings()
+	{
+		for(int i = 0; i < mappingFiles.length; i++)
+		{
+			JnsEnvInit.movingFile(this.getFilesDir()+"/"+ mappingFiles[i] + ".keymap", mappingFiles[i]+ ".keymap") ;
+			JnsEnvInit.movingFile("/mnt/sdcard/jnsinput/app_icon/"+ mappingFiles[i] + ".icon.png", mappingFiles[i] + ".icon.png");
+		}
+	}
+	@SuppressLint("SdCardPath")
+	private boolean CopyDatabase()
+	{
+		if(!JnsEnvInit.movingFile("/mnt/sdcard/jnsinput/_jns_ime","_jns_ime"))
+		{	
+			Toast.makeText(this, "Copy databases failed", Toast.LENGTH_SHORT).show();
+			return false;
+		}
+		String filename = "/mnt/sdcard/jnsinput/_jns_ime";
+
+		SQLiteDatabase sqLiteDatabase = SQLiteDatabase.openOrCreateDatabase(filename, null);
+		Cursor cursor= null;
+
+		cursor = sqLiteDatabase.query("_jns_ime", null, null,
+				null, null, null, "_id");
+		cursor.moveToFirst();
+
+		while(!cursor.isLast())
+		{
+			SQLiteDatabase db = JnsIMECoreService.aph.dbh.getReadableDatabase();
+			try
+			{
+				db.delete(DBHelper.TABLE, "_name=?", new String[] { cursor.getString(cursor.getColumnIndex("_name")) });
+			}
+			catch(Exception e)
+			{
+
+			}
+			ContentValues cv = new ContentValues();
+			cv.put("_name", cursor.getString(cursor.getColumnIndex("_name")));
+			cv.put("_description", cursor.getString(cursor.getColumnIndex("_description")));
+			cv.put("_exists", true);
+			try {
+				if(db.insert(DBHelper.TABLE, "", cv) < 0)
+				{	
+					Toast.makeText(this, "Init databases failed", Toast.LENGTH_SHORT).show();
+					return false;
+				}
+			} catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+				return false;
+			}
+			cursor.moveToNext();
+		}
+		if(JnsIMEGameListActivity.gameAdapter != null)
+		{
+			JnsIMEGameListActivity.gameAdapter.setCursor(cursor);
+			JnsIMEGameListActivity.gameAdapter.notifyDataSetChanged();
+		}
+		return true;
+	}
+
 	@Override
 	public void onCreate()
 	{
@@ -235,6 +360,7 @@ public class JnsIMECoreService extends Service {
 
 		}).start();
 		createTmpDir();
+		initData();
 		startDataProcess();
 		JnsIMEScreenView.context = this;
 		JnsIMEScreenView.loadTpMapRes();

@@ -64,7 +64,8 @@ public class JnsIMEGameListAdapter extends BaseAdapter implements OnClickListene
 	@Override
 	public Object getItem(int arg0) {
 		// TODO Auto-generated method stub
-		return cursor.moveToPosition(arg0);
+		 cursor.moveToPosition(arg0);
+		 return cursor;
 	}
 
 	@Override
@@ -85,11 +86,13 @@ public class JnsIMEGameListAdapter extends BaseAdapter implements OnClickListene
 		GameInfo game = new GameInfo();
 		game.setPkgname(cursor.getString(cursor.getColumnIndex("_name")));
 		game.setExists(new Boolean(cursor.getString(cursor.getColumnIndex("_exists"))));
+		game.setLable(cursor.getString(cursor.getColumnIndex("_description")));
 		Drawable icon_pic = null;
 		String lable= "";
 		try {
 			icon_pic = pm.getApplicationIcon(game.getPkgname());
 			lable =  (String) pm.getApplicationLabel(pm.getApplicationInfo(game.getPkgname(), PackageManager.GET_UNINSTALLED_PACKAGES));
+			game.setExists(true);
 		} catch (NameNotFoundException e) {
 			// TODO Auto-generated catch block
 			icon_pic = Drawable.createFromPath("mnt/sdcard/jnsinput/app_icon/"+game.getPkgname()+".icon.png");
@@ -147,7 +150,7 @@ public class JnsIMEGameListAdapter extends BaseAdapter implements OnClickListene
 		{
 		case R.id.get:
 			Log.d(TAG, "click get of "+ v.getTag());
-			Uri uri = Uri.parse("market://search?q=pname:"+v.getTag());  
+			Uri uri = Uri.parse("market://details?id="+v.getTag());  
 			Intent it = new Intent(Intent.ACTION_VIEW, uri);   
 			activity.startActivity(it);   
 			break;

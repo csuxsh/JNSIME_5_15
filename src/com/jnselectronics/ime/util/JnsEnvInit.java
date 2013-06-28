@@ -230,11 +230,11 @@ public class JnsEnvInit {
 			is.close();
 			is = null;
 			return true;
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return false;
 		}
-		return true;
 	}
 
 }

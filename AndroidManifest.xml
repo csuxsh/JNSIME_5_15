@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.jnselectronics.ime"
     android:versionCode="3"
-    android:versionName="1.0" >
+    android:versionName="1.1" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -21,7 +21,7 @@
        >
         <activity
             android:name=".JnsIME"
-            android:theme="@android:style/Theme.NoTitleBar"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             android:label="@string/title_activity_main" 
             android:screenOrientation="landscape">
             <intent-filter>
@@ -47,7 +47,7 @@
 			</intent-filter>
 		</activity>
 		 <activity android:name=".JnsIMEControllerActivity"
-				>
+				android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
 			<intent-filter>
 				<action android:name="android.intent.category.LAUNCHER"/>
 			</intent-filter>
@@ -59,14 +59,15 @@
 			</intent-filter>
 		</activity>
 		<activity android:name=".JnsIMEKeyMappingActivity"
+		    	android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
 		    	android:screenOrientation="landscape"
-				android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+		    	>
 			<intent-filter>
 				<action android:name="android.intent.category.LAUNCHER"/>
 			</intent-filter>
 		</activity>
 		<activity android:name=".JnsIMEHelpActivity"
-				>
+				android:screenOrientation="landscape">
 			<intent-filter>
 				<action android:name="android.intent.category.LAUNCHER"/>
 			</intent-filter>

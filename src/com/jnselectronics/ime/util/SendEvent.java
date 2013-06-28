@@ -129,8 +129,8 @@ public class SendEvent {
 	}
 	public  boolean sendKey(RawEvent keyevent)
 	{ 
-		if(JnsIMEInputMethodService.currentAppName.equals(pkgName))
-			return true;
+		//if(JnsIMEInputMethodService.currentAppName.equals(pkgName))
+		//	return true;
 		Log.d(TAG,"scancode="+keyevent.scanCode);
 		JnsIMEProfile keyProfile =  iteratorKeyList(JnsIMECoreService.keyList, keyevent.scanCode);
 		if(null == keyProfile)
@@ -167,8 +167,8 @@ public class SendEvent {
 	}
 	public void sendJoy(JoyStickEvent joyevent)
 	{
-		if(JnsIMEInputMethodService.currentAppName.equals(pkgName))
-			return ;
+		//if(JnsIMEInputMethodService.currentAppName.equals(pkgName))
+		//	return ;
 		processRightJoystickData(joyevent.getZ(), joyevent.getRz(), joyevent.getDeviceId());
 		processLeftJoystickData(joyevent.getX(), joyevent.getY(), joyevent.getDeviceId());
 	}

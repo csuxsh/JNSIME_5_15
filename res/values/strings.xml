@@ -1,9 +1,9 @@
 <resources>
 
-    <string name="app_name">JNSIME</string>
+    <string name="app_name">Viaplay</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
-    <string name="title_activity_main">JNSIME</string>
+    <string name="title_activity_main">Viaplay</string>
     <string name="invalid_joystick_area">Invalid joystick area</string>
     <string name="has_right_joystick">has_right_joystick</string>
     <string name="right_joystick">right_joystick</string>
@@ -12,7 +12,7 @@
     <string name="perference_title">JnsIMESettings</string>
     <string name="about">About</string>
     <string name="version">version</string>
-    <string name="version_num">V1.0 Powered by Jnselectronics</string>
+    <string name="version_num">V1.1 Powered by Jnselectronics</string>
     <string name="quit">Quit</string>
     <string name="help">Help</string>
     <string name="screen_shot">Waiting for ScreenShot</string>

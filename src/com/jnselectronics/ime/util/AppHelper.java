@@ -15,7 +15,7 @@ import android.graphics.Bitmap;
 
 public class AppHelper {
 
-	final DBHelper dbh ;
+	public final DBHelper dbh ;
 	private Context context;
 
 	public AppHelper(Context context)
@@ -37,7 +37,7 @@ public class AppHelper {
 			e1.printStackTrace();
 			return false;
 		}
-		File icon_file = new File("mnt/sdcard/jnsinput/app_icon/"+name+".icon.png");
+		File icon_file = new File("/mnt/sdcard/jnsinput/app_icon/"+name+".icon.png");
 		FileOutputStream fos = null;
 		try {
 			fos = new FileOutputStream(icon_file);

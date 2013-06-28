@@ -151,6 +151,8 @@ public class JnsIMEInputMethodService extends InputMethodService {
 	{
 		if(KeyEvent.KEYCODE_SEARCH == keyCode && (!JnsIMECoreService.touchConfiging) && JnsEnvInit.rooted)
 		{
+			if(currentAppName.equals(this.getPackageName()))
+				return false;
 			JnsIMECoreService.touchConfiging = true;
 			Toast.makeText(this, this.getString(R.string.screen_shot), Toast.LENGTH_SHORT).show();
 			
@@ -172,8 +174,8 @@ public class JnsIMEInputMethodService extends InputMethodService {
 			}).start();
 			return true;
 		}
-		if(currentAppName.equals(this.getPackageName()))
-			return false;
+		//if(currentAppName.equals(this.getPackageName()))
+		//	return false;
 		KeyEvent tmpEvent = mathJoyStick(event);
 		if(tmpEvent != null)
 			event = tmpEvent;
@@ -224,8 +226,8 @@ public class JnsIMEInputMethodService extends InputMethodService {
 	@Override
 	public boolean onKeyUp(int keyCode, KeyEvent event)
 	{
-		if(currentAppName.equals(this.getPackageName()))
-			return false;
+	//	if(currentAppName.equals(this.getPackageName()))
+	//		return false;
 		KeyEvent tmpEvent = mathJoyStick(event);
 		if(keyCode == KeyEvent.KEYCODE_SEARCH)
 			return true;

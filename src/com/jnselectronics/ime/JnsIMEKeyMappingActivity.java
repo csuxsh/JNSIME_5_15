@@ -38,6 +38,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/**
+ * KeymappingµÄAcivity
+ *  
+ * @author Steven
+ *
+ */
 public class JnsIMEKeyMappingActivity extends Activity implements OnClickListener{
 
 	private final static String TOKEN=":";
@@ -52,11 +58,11 @@ public class JnsIMEKeyMappingActivity extends Activity implements OnClickListene
 	JnsIMEKeyMapView keyMapView;
 	JnsIMEKeyMap currentet_keymap = null;
 	@SuppressLint("UseSparseArrays")
-	Map<Integer, JnsIMEKeyMap> oldkeys = new HashMap<Integer, JnsIMEKeyMap>(); ;
+	private Map<Integer, JnsIMEKeyMap> oldkeys = new HashMap<Integer, JnsIMEKeyMap>(); ;
 	@SuppressLint("UseSparseArrays")
-	Map<String , Integer> mappedKey = new HashMap<String, Integer>();
+	private Map<Integer , String> mappedKey = new HashMap<Integer , String>();
 	@SuppressLint("UseSparseArrays")
-	Map<Integer, JnsIMEKeyMap> keys = new HashMap<Integer, JnsIMEKeyMap>();
+	private Map<Integer, JnsIMEKeyMap> keys = new HashMap<Integer, JnsIMEKeyMap>();
 
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -121,7 +127,11 @@ public class JnsIMEKeyMappingActivity extends Activity implements OnClickListene
 		JnsIMECoreService.activitys.add(this);
 
 	} 
-
+	/**
+	 * ¼ÓÔØÐèÒªÅäÖÃµÄÓ¦ÓÃ¶ÔÓ¦µÄÅäÖÃÎÄ¼þ
+	 * 
+	 * @return ¼ÓÔØ³É¹¦·µ»Øtrue,¼ÓÔØÊ§°Ü·µ»Øfalse
+	 */
 	private boolean loadFile()
 	{
 
@@ -145,7 +155,7 @@ public class JnsIMEKeyMappingActivity extends Activity implements OnClickListene
 				Log.d("fread", key.getGamPadIndex()+":"+key.getLable()+":"+key.getKeyCode());
 				oldkeys.put(key.getGamPadIndex(), key);
 				keys.put(key.getGamPadIndex(), key);
-				mappedKey.put(key.getLable(), key.getGamPadIndex());
+				mappedKey.put(key.getGamPadIndex(), key.getLable());
 				tmp = br.readLine();
 			}
 			//keys.putAll(oldkeys);
@@ -194,7 +204,7 @@ public class JnsIMEKeyMappingActivity extends Activity implements OnClickListene
 		}
 
 
-		// ��õ�ǰ������lable��keycode��Ϣ
+		// »ñµÃµ±Ç°°´¼üµÄlableºÍkeycodeÐÅÏ¢
 		Entry<String, Integer> entry=
 			current_keyboard.findKeyCode((int)event.getX(), (int)event.getY(), event.getAction());
 		if(entry != null && entry.getKey().equals("123"))
@@ -216,16 +226,18 @@ public class JnsIMEKeyMappingActivity extends Activity implements OnClickListene
 			currentet_keymap.setLable(entry.getKey());
 			currentet_keymap.setKeyCode(entry.getValue());
 
-			// �жϵ�ǰ����ֵ�Ƿ��Ѿ������ù�
+			// ÅÐ¶Ïµ±Ç°°´¼üÖµÊÇ·ñÒÑ¾­±»ÅäÖÃ¹ý
+			/*
 			if(mappedKey.containsKey((currentet_keymap.getLable())))
 			{		
-				//��ԭ�����õĵط��ÿ�
+				//½«Ô­À´ÅäÖÃµÄµØ·½ÖÃ¿Õ
 				int perButtonIndex = mappedKey.get(currentet_keymap.getLable());
 				keyMapView.gamePadButoonLable[perButtonIndex/keyMapView.diplayRow][perButtonIndex%keyMapView.diplayRow] = "";
 				mappedKey.remove(currentet_keymap.getLable());
 				Log.d("tag", "rm "+perButtonIndex);
 				keys.remove(perButtonIndex);
 			}
+			*/
 			if(mappedKey.containsValue(currentet_keymap.getGamPadIndex()))
 			{
 				Log.d("tag", "rm currentet_keymap.getGamPadIndex()"+currentet_keymap.getGamPadIndex());
@@ -234,7 +246,7 @@ public class JnsIMEKeyMappingActivity extends Activity implements OnClickListene
 			}
 			keyMapView.gamePadButoonLable[currentet_keymap.getGamPadIndex()/keyMapView.diplayRow][currentet_keymap.getGamPadIndex()%keyMapView.diplayRow] = entry.getKey();
 			keyMapView.postInvalidate();
-			mappedKey.put(entry.getKey(), currentet_keymap.getGamPadIndex());
+			mappedKey.put(currentet_keymap.getGamPadIndex(), entry.getKey());
 			keys.put(currentet_keymap.getGamPadIndex(), currentet_keymap);
 			currentet_keymap = null;
 

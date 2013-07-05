@@ -76,7 +76,7 @@ public class JnsIMECoreService extends Service {
 	static List<Activity> activitys = new ArrayList<Activity>();
 	private final static String mappingFiles[] =
 		{
-			"com.angrymobgames.muffinknight3rdparty",
+			"com.angrymobgames.muffinknight",
 			"com.bringmore.huomieqiangshouer",
 			"com.dotemu.rtype",
 			"com.FDGEntertainment.BeyondYnthXmas",
@@ -84,7 +84,7 @@ public class JnsIMECoreService extends Service {
 			"com.hg.vikingfree",
 			"com.kumobius.android.game",
 			"com.madfingergames.SamuraiIIAll",
-			"com.madfingergames.shadowgun_amz",
+			"com.madfingergames.shadowgun",
 			"com.meganoid.engine",
 			"com.mobicle.darkbladeOasis",
 			"com.orangepixel.gunslugs",
@@ -304,7 +304,7 @@ public class JnsIMECoreService extends Service {
 		Cursor cursor= null;
 
 		cursor = sqLiteDatabase.query("_jns_ime", null, null,
-				null, null, null, "_id");
+				null, null, null, "_description");
 		cursor.moveToFirst();
 
 		while(!cursor.isLast())

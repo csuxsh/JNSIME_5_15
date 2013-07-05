@@ -87,7 +87,7 @@ public class AppHelper {
 		Cursor cursor = null;
 		try {
 			cursor = db.query(DBHelper.TABLE, null, selection,
-					null, null, null, "_id");
+					null, null, null, "_description");
 			if(cursor.moveToFirst())
 			{
 				System.out.println("cuisor has content");

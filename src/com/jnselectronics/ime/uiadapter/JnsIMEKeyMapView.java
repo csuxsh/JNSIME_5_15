@@ -23,6 +23,12 @@ import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 
+/**
+ * keymmaping时用到得配置编辑框，这个view包含了上部分的所有编辑框
+ * 
+ * @author Steven
+ *
+ */
 public class JnsIMEKeyMapView extends ImageView {
 
 
@@ -98,9 +104,14 @@ public class JnsIMEKeyMapView extends ImageView {
 		loadRes();
 	}
 	
-	public void setLableDisplay(Map<String, Integer> map)
+	/**
+	 * 设置整个编辑框的显示内容
+	 * 
+	 * @param mappedKey 配对好的按键映射表
+	 */
+	public void setLableDisplay(Map<Integer, String> mappedKey)
 	{
-		Iterator<Entry<String, Integer>> iterator = map.entrySet().iterator();
+		Iterator<Entry<Integer, String>> iterator = mappedKey.entrySet().iterator();
 		for(int i = 0; i <diplayCol; i++)
 			for(int j = 0; j < diplayRow; j++)
 			{
@@ -109,9 +120,9 @@ public class JnsIMEKeyMapView extends ImageView {
 			}
 		while(iterator.hasNext())
 		{
-			Entry<String, Integer> key = iterator.next(); 
-			if(gamePadButoonLable[key.getValue()/diplayRow][key.getValue()%diplayRow] != null)
-			gamePadButoonLable[key.getValue()/diplayRow][key.getValue()%diplayRow] = key.getKey();
+			Entry<Integer, String> key = iterator.next(); 
+			if(gamePadButoonLable[key.getKey()/diplayRow][key.getKey()%diplayRow] != null)
+			gamePadButoonLable[key.getKey()/diplayRow][key.getKey()%diplayRow] = key.getValue();
 		}
 	}
 	private void getButtonSize()
@@ -144,6 +155,14 @@ public class JnsIMEKeyMapView extends ImageView {
 	{
 		setMeasuredDimension(ScreeanWidth, startY + buttonHeight * 8);
 	}
+	/**
+	 * 查找当前触摸到的编辑框
+	 * 
+	 * @param x 触摸点的x坐标
+	 * @param y 触摸点的y坐标
+	 * @param action 触摸动作
+	 * @return 当前编辑的按键配置信息
+	 */
 	public JnsIMEKeyMap findTouchedEdit(int x, int y, int action)
 	{
 		JnsIMEKeyMap keymap = null;

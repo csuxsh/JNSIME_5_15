@@ -226,7 +226,12 @@ public class JnsIMEGameListActivity extends Activity implements OnItemClickListe
 	public void onResume()
 	{
 		super.onResume();
-		showGameList(gameList);
+		if(JnsIMECoreService.aph== null)
+			JnsIMECoreService.aph = new AppHelper(this);
+		AppHelper aph = JnsIMECoreService.aph;
+		Cursor cursor = aph.Qurey(null);
+		gameAdapter.setCursor(cursor);
+		gameAdapter.notifyDataSetChanged();
 	}
 
 	@Override

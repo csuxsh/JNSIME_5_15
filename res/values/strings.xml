@@ -16,6 +16,7 @@
     <string name="quit">Quit</string>
     <string name="help">Help</string>
     <string name="screen_shot">Waiting for ScreenShot</string>
+    <string name="save_notice">Save this config?</string>
     <string name="root_notice">Can not exec su You can click "sure" to download Z4Root.apk or downlod SuperOneClick on PC
 
         </string>

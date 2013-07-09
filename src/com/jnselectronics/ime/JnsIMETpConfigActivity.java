@@ -18,7 +18,9 @@ import dalvik.system.VMRuntime;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -63,12 +65,14 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 	private Button cancel;
 	private Button reset;
 	private Button save;
+	private Button exit;
 	private ImageView backGrand;
 	private int screenWidth = 0;
 	private int screeanHeight = 0;
 	private Bitmap tmp_bmp = null;
 	Drawable draw = null;
 	private final static float TARGET_HEAP_UTILIZATION = 0.75f;
+	private boolean saved = true;
 	@SuppressLint({ "NewApi", "HandlerLeak" })
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -89,9 +93,11 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 		cancel = (Button)findViewById(R.id.cancel);
 		reset = (Button)findViewById(R.id.reset);
 		save = (Button)findViewById(R.id.save);
+		exit =(Button)findViewById(R.id.exit);
 		cancel.setOnClickListener(this);
 		reset.setOnClickListener(this);
 		save.setOnClickListener(this);
+		exit.setOnClickListener(this);
 		keyList = JnsIMECoreService.keyList;
 		JnsIMECoreService.touchConfiging = true;
 		final DisplayMetrics dm = new DisplayMetrics();
@@ -206,6 +212,25 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 			System.gc();
 		}
 	}
+	DialogInterface.OnClickListener  ocl = new DialogInterface.OnClickListener()
+	{
+
+		@Override
+		public void onClick(DialogInterface dialog, int which) {
+			// TODO Auto-generated method stub
+			switch(which)
+			{
+				case DialogInterface.BUTTON_POSITIVE:
+					saveFile(JnsIMEInputMethodService.validAppName);
+					JnsIMECoreService.aph.Insert(JnsIMEInputMethodService.validAppName, "true");
+					saved = true;
+				default:
+					JnsIMETpConfigActivity.this.finish();	
+					break;
+			}
+		}
+		
+	};
 	@SuppressLint("NewApi")
 	@Override
 	public void onClick(View arg0) {
@@ -223,12 +248,20 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 		case R.id.reset:
 			screenView.posList.clear();
 			keyList.clear();
+			saved = false;
 			screenView.drawNow(true, false);
 			break;
 		case R.id.save:
 			saveFile(JnsIMEInputMethodService.validAppName);
 			JnsIMECoreService.aph.Insert(JnsIMEInputMethodService.validAppName, "true");
-			JnsIMETpConfigActivity.this.finish();
+			saved = true;
+			//JnsIMETpConfigActivity.this.finish();
+		case R.id.exit:
+			if(!saved)
+				(new AlertDialog.Builder(this).setMessage(getString(R.string.save_notice) ).setPositiveButton("save",
+						ocl).setNegativeButton("cancle", ocl).create()).show();
+			else
+				JnsIMETpConfigActivity.this.finish();
 			break;
 		}
 	}
@@ -776,6 +809,7 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 			if(i > -1)
 				keyList.remove(i);
 			keyList.add(mProfile);
+			saved = false;
 			i = iteratorPosList(screenView.posList,  event.getScanCode());
 			if(i > -1 && (i != (screenView.posList.size()-1)))
 				screenView.posList.remove(i);

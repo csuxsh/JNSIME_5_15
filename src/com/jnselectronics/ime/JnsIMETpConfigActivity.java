@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
@@ -65,6 +66,8 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 	private ImageView backGrand;
 	private int screenWidth = 0;
 	private int screeanHeight = 0;
+	private Bitmap tmp_bmp = null;
+	Drawable draw = null;
 	private final static float TARGET_HEAP_UTILIZATION = 0.75f;
 	@SuppressLint({ "NewApi", "HandlerLeak" })
 	@Override
@@ -91,11 +94,11 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 		save.setOnClickListener(this);
 		keyList = JnsIMECoreService.keyList;
 		JnsIMECoreService.touchConfiging = true;
-		DisplayMetrics dm = new DisplayMetrics();
+		final DisplayMetrics dm = new DisplayMetrics();
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
 		screenWidth = dm.widthPixels;
 		screeanHeight = dm.heightPixels;
-
+		
 		final Handler handle = new Handler()
 		{
 			@SuppressLint({ "HandlerLeak", "HandlerLeak", "HandlerLeak", "HandlerLeak", "SdCardPath" })
@@ -103,13 +106,15 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 			{
 				if(JnsEnvInit.rooted)
 				{	
-					Drawable draw_bmp = null;
+					
+					Bitmap draw_bmp= null;
 					while(draw_bmp ==null)
 					{	
-						draw_bmp  = Drawable.createFromPath("/mnt/sdcard/jnsinput/tmp.bmp");
+						draw_bmp  = BitmapFactory.decodeFile("/mnt/sdcard/jnsinput/tmp.bmp");		
+						//draw_bmp = Drawable.createFromPath("/mnt/sdcard/jnsinput/tmp.bmp");
 					}
 					// 如果是是手机则需要旋转切图
-					if((screeanHeight - screenWidth) * (draw_bmp.getIntrinsicHeight() - draw_bmp.getIntrinsicWidth()) < 0)
+					if((screeanHeight - screenWidth) * (draw_bmp.getHeight()- draw_bmp.getWidth()) < 0)
 					{
 						Matrix matrix = new Matrix();
 						int rotation = JnsIMETpConfigActivity.this.getWindowManager().getDefaultDisplay().getRotation();
@@ -128,18 +133,29 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 							break;
 						}  
 						// 旋转图片
-						Bitmap tmp_bmp = DrawableUtil.getBitmap(JnsIMETpConfigActivity.this, "/mnt/sdcard/jnsinput/tmp.bmp");
+					//	Bitmap tmp_bmp = DrawableUtil.getBitmap(JnsIMETpConfigActivity.this, "/mnt/sdcard/jnsinput/tmp.bmp");
+						tmp_bmp = Bitmap.createBitmap(draw_bmp, 0, 0, draw_bmp.getWidth(), draw_bmp.getHeight(), matrix, true);
+						draw_bmp.recycle();
 						draw_bmp = null;
-						tmp_bmp = Bitmap.createBitmap(tmp_bmp, 0, 0, tmp_bmp.getWidth(), tmp_bmp.getHeight(), matrix, true);
+						/*
 						while(draw_bmp ==null)
 						{	
 							draw_bmp = new BitmapDrawable(tmp_bmp);
 						}
+						*/
 					}
-					if(screeanHeight != draw_bmp.getIntrinsicHeight() && screenWidth != draw_bmp.getIntrinsicWidth())
-						draw_bmp = DrawableUtil.zoomDrawable(draw_bmp, screenWidth * screenWidth/draw_bmp.getIntrinsicWidth()
-								,screeanHeight * screeanHeight / draw_bmp.getIntrinsicHeight());
-					backGrand.setImageDrawable(draw_bmp);
+					else
+						tmp_bmp = draw_bmp;
+					if(dm.density != 1)
+					{	
+						//Bitmap bmp = tmp_bmp;
+						Bitmap bmp = DrawableUtil.zoomBitmap(tmp_bmp, (int)(screenWidth * dm.density), (int)(screeanHeight * dm.density));
+						tmp_bmp.recycle();
+						tmp_bmp = bmp;
+						bmp = null;
+					}
+					draw = new BitmapDrawable(tmp_bmp);
+					backGrand.setImageDrawable(draw);
 				}	
 			}
 		};
@@ -177,9 +193,17 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 		super.onDestroy();
 		Log.e(TAG, "onDestroy");
 		JnsIMECoreService.touchConfiging = false;
+		backGrand.setImageDrawable(null);
+		draw = null;
+		while(tmp_bmp != null && !tmp_bmp.isRecycled())
+		{
+			tmp_bmp.recycle();
+			tmp_bmp = null;
+		}
 		for(Activity activity : JnsIMECoreService.activitys)
 		{
 			activity.finish();
+			System.gc();
 		}
 	}
 	@SuppressLint("NewApi")

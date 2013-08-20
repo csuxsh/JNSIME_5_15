@@ -76,6 +76,7 @@ public class JnsIMECoreService extends Service {
 	static List<Activity> activitys = new ArrayList<Activity>();
 	private final static String mappingFiles[] =
 		{
+			"beril.mootor.gmc",
 			"com.angrymobgames.muffinknight",
 			"com.bringmore.huomieqiangshouer",
 			"com.dotemu.rtype",
@@ -269,11 +270,11 @@ public class JnsIMECoreService extends Service {
 		int i = sp.getInt("boolean", 0);
 		if(i == 0)
 		{
-			CopyMappings();
 			if(CopyDatabase())
 			{
 				edit.putInt("boolean", 1);
 				edit.commit();
+				CopyMappings();
 			}
 			else
 			{
@@ -284,10 +285,19 @@ public class JnsIMECoreService extends Service {
 	@SuppressLint("SdCardPath")
 	private void CopyMappings()
 	{
-		for(int i = 0; i < mappingFiles.length; i++)
+		SQLiteDatabase sqLiteDatabase = SQLiteDatabase.openOrCreateDatabase("/mnt/sdcard/jnsinput/_jns_ime", null);
+		Cursor cursor= null;
+
+		cursor = sqLiteDatabase.query("_jns_ime", null, null,
+				null, null, null, "_description");
+		cursor.moveToFirst();
+		while(!cursor.isLast())
+		//for(int i = 0; i < mappingFiles.length; i++)
 		{
-			JnsEnvInit.movingFile(this.getFilesDir()+"/"+ mappingFiles[i] + ".keymap", mappingFiles[i]+ ".keymap") ;
-			JnsEnvInit.movingFile("/mnt/sdcard/jnsinput/app_icon/"+ mappingFiles[i] + ".icon.png", mappingFiles[i] + ".icon.png");
+			String apkname = cursor.getString(cursor.getColumnIndex("_name"));
+			JnsEnvInit.movingFile(this.getFilesDir()+"/"+ apkname + ".keymap", apkname+ ".keymap") ;
+			JnsEnvInit.movingFile("/mnt/sdcard/jnsinput/app_icon/"+ apkname + ".icon.png", apkname + ".icon.png");
+			cursor.moveToNext();
 		}
 	}
 	@SuppressLint("SdCardPath")

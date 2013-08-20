@@ -37,7 +37,6 @@ public class AppHelper {
 			e1.printStackTrace();
 			return false;
 		}
-		/*
 		File icon_file = new File("/mnt/sdcard/jnsinput/app_icon/"+name+".icon.png");
 		FileOutputStream fos = null;
 		try {
@@ -51,7 +50,6 @@ public class AppHelper {
 			e.printStackTrace();
 			return false;
 		}
-		*/
 		SQLiteDatabase db = dbh.getReadableDatabase();
 		db.delete(DBHelper.TABLE, "_name=?", new String[] { name });
 		ContentValues cv = new ContentValues();

@@ -189,7 +189,7 @@ public class JnsIMEGameListActivity extends Activity implements OnItemClickListe
 				Display d = m.getDefaultDisplay();  //为获取屏幕宽、高     
 				android.view.WindowManager.LayoutParams p = adddialog.getWindow().getAttributes();  //获取对话框当前的参数值     
 				p.height = (int) (d.getHeight() * 0.8);   //高度设置为屏幕的1.0    
-				p.width = (int) (d.getWidth() * 0.6);    //宽度设置为屏幕的0.8    
+				p.width = (int) (d.getWidth() * 0.5);    //宽度设置为屏幕的0.8    
 				//p.alpha = 1.0f;      //设置本身透明度   
 				//p.dimAmount = 0.0f;      //设置黑暗度   
 

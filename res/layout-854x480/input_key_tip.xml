@@ -12,7 +12,8 @@
             android:id="@+id/imgbg"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:scaleType="matrix" />
+            android:scaleType="matrix" 
+            android:cropToPadding="true"/>
         
 	
         <com.jnselectronics.ime.uiadapter.JnsIMEScreenView

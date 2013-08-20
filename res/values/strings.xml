@@ -1,9 +1,9 @@
 <resources>
 
-    <string name="app_name">Viaplay</string>
+    <string name="app_name">Viaplay GameCenter</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
-    <string name="title_activity_main">Viaplay</string>
+    <string name="title_activity_main">Viaplay GameCenter</string>
     <string name="invalid_joystick_area">Invalid joystick area</string>
     <string name="has_right_joystick">has_right_joystick</string>
     <string name="right_joystick">right_joystick</string>
@@ -12,7 +12,7 @@
     <string name="perference_title">JnsIMESettings</string>
     <string name="about">About</string>
     <string name="version">version</string>
-    <string name="version_num">V1.1 Powered by Jnselectronics</string>
+    <string name="version_num">Viaplay GameCenter V1.0 Powered by Jnselectronics</string>
     <string name="quit">Quit</string>
     <string name="help">Help</string>
     <string name="screen_shot">Waiting for ScreenShot</string>
@@ -20,10 +20,10 @@
     <string name="root_notice">Can not exec su You can click "sure" to download Z4Root.apk or downlod SuperOneClick on PC
 
         </string>
-    <string name="changeime">Change IME</string>
+    <string name="changeime">Keyboard  &amp; InputMethod</string>
     <string name="Introduction">	    \n\t Introduction:\n\n
-	    \t 1.Before use The IME,you should use apps(like Z4Root ) to root the device.\n
-	   \t  2.Make sure JNSIME is the current InputMethod.\n
+	    \t 1.Before use The Viaplay GameCenter,you should use apps(like Z4Root ) to root the device.\n
+	   \t  2.Make sure Viaplay GameCenter is the current InputMethod.\n
 	    \t 3.Touch mapping:\n
 	    	\t \t       a. Press search key to start the Mapping UI.\n
 	    	\t \t      b. Touch the area you want to map, and then press a key which you want\n 

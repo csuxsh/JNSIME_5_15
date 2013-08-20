@@ -16,6 +16,7 @@ import android.graphics.Matrix;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 
 
@@ -50,15 +51,23 @@ public class DrawableUtil {
 	}  
 	public static Bitmap zoomBitmap(Bitmap bitmap, int w, int h)  
 	{  
+		try{
 		int width = bitmap.getWidth();  
 		int height= bitmap.getHeight();  
+		Log.d("test", "heigh = "+height);
 		//Bitmap oldbmp = drawableToBitmap(drawable); // drawable转换成bitmap  
 		Matrix matrix = new Matrix();   // 创建操作图片用的Matrix对象  
 		float scaleWidth = ((float)w / width);   // 计算缩放比例  
 		float scaleHeight = ((float)h / height);  
 		matrix.postScale(scaleWidth, scaleHeight);         // 设置缩放比例  
 		Bitmap newbmp = Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);       // 建立新的bitmap，其内容是对原bitmap的缩放后的图  
-		return newbmp;       // 把bitmap转换成drawable并返回  
+		return newbmp;       // 把bitmap转换成drawable并返回  n e
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			return bitmap;
+		}
 	}  
 	public static Bitmap drawableToBitmap(Drawable drawable) // drawable 转换成bitmap  
 	{  

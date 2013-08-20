@@ -126,14 +126,14 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 						int rotation = JnsIMETpConfigActivity.this.getWindowManager().getDefaultDisplay().getRotation();
 						switch (rotation) {  
 						case Surface.ROTATION_0:
-							matrix.setRotate(0);
-							break;
+							//matrix.setRotate(0);
+							//break;
 						case Surface.ROTATION_90:  
 							matrix.setRotate(270);
 							break;
 						case Surface.ROTATION_180:  
-							matrix.setRotate(180);
-							break;
+							//matrix.setRotate(180);
+							//break;
 						case Surface.ROTATION_270:  
 							matrix.setRotate(90); 
 							break;
@@ -155,13 +155,14 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 					if(dm.density != 1)
 					{	
 						//Bitmap bmp = tmp_bmp;
-						Bitmap bmp = DrawableUtil.zoomBitmap(tmp_bmp, (int)(screenWidth * dm.density), (int)(screeanHeight * dm.density));
+						Bitmap bmp = DrawableUtil.zoomBitmap(tmp_bmp, (int)(tmp_bmp.getWidth() * dm.density), (int)(tmp_bmp.getHeight() * dm.density));
 						tmp_bmp.recycle();
 						tmp_bmp = bmp;
 						bmp = null;
 					}
 					draw = new BitmapDrawable(tmp_bmp);
 					backGrand.setImageDrawable(draw);
+					backGrand.setScaleType((ImageView.ScaleType.MATRIX));
 				}	
 			}
 		};
@@ -255,6 +256,7 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 			saveFile(JnsIMEInputMethodService.validAppName);
 			JnsIMECoreService.aph.Insert(JnsIMEInputMethodService.validAppName, "true");
 			saved = true;
+			break;
 			//JnsIMETpConfigActivity.this.finish();
 		case R.id.exit:
 			if(!saved)

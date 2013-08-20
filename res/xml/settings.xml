@@ -20,12 +20,14 @@
     <PreferenceCategory android:title="@string/changeime" >
         <Preference
             android:key="@string/changeime"
-            android:summary="Click to change IME" />
+            android:title="Click to change InputMethod"
+            />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/quit" >
         <Preference
             android:key="@string/quit"
-            android:summary="@string/quit" />
+            android:title="@string/quit"
+             />
     </PreferenceCategory>
 
 </PreferenceScreen>

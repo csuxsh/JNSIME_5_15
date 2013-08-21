@@ -25,6 +25,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -79,21 +80,19 @@ public class JnsIMEKeyMappingActivity extends Activity implements OnClickListene
 		title.setText(""+in.getExtras().get("lable"));
 		ImageView imageView1 = (ImageView) this.findViewById(R.id.imageView1);
 		Drawable controller = this.getResources().getDrawable(R.drawable.key_mapping_bg);
-		controller = DrawableUtil.zoomDrawable(controller, (int)(dm.widthPixels * dm.density), 
-				(int)((controller.getIntrinsicHeight() * dm.widthPixels / controller.getIntrinsicWidth())*dm.density));
+	//	controller = DrawableUtil.zoomDrawable(controller, (int)(dm.widthPixels * dm.density), 
+	//			(int)((controller.getIntrinsicHeight() * dm.widthPixels / controller.getIntrinsicWidth())*dm.density));
 		/*
 		 BitmapFactory.Options options=new BitmapFactory.Options(); 
-		 options.inJustDecodeBounds = false; 
-		 dm.
-		 options.inSampleSize = dm.widthPixels/;   
-		 InputStream is;
-		 for(int i= 0; i < RES_SIZE; i++ )
-		 {
-			 is = context.getResources().openRawResource(resId[i]);
-			 bitmap[i] = BitmapFactory.decodeStream(is,null,options);
-		 }*/
-		//imageView1.setImageBitmap(bm)
-		imageView1.setImageDrawable(controller);
+		 options.inJustDecodeBounds = false;  
+		 InputStream is = this.getResources().openRawResource(R.drawable.key_mapping_bg);
+		 Bitmap	 bitmap = BitmapFactory.decodeStream(is,null,options);
+		 imageView1.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+		imageView1.setImageBitmap(bitmap);
+		*/
+	//	imageView1.setScaleType(ImageView.ScaleType.FIT_START);
+	//	imageView1.setImageDrawable(controller);
+	//	imageView1.setImageBitmap(bm)
 		keyMapView = (JnsIMEKeyMapView) this.findViewById(R.id.key_edit_grid);	
 		keyMapView.setHardWare(JnsIMEKeyMapView.JoyStickTypeFID);
 		loadFile();

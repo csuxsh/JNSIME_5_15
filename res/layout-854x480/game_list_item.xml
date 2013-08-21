@@ -27,19 +27,13 @@
         android:layout_weight="1"
         android:orientation="vertical" >
 
-        <Button
+        <ImageButton
             android:id="@+id/get"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
+	    android:layout_gravity="center"
             android:background="@drawable/game_get"
             android:textSize="18dip" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical" >
     </LinearLayout>
 
     <LinearLayout
@@ -53,6 +47,7 @@
             android:id="@+id/play"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+	    android:layout_gravity="center"
             android:src="@drawable/play"
             android:background="#00ffffff"
             android:textSize="18dip" />
@@ -65,7 +60,7 @@
         android:layout_weight="1"
         android:orientation="vertical" >
 
-        <Button
+        <ImageButton
             android:id="@+id/keymapping"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
@@ -81,10 +76,11 @@
         android:layout_weight="1"
         android:orientation="vertical" >
 
-        <Button
+        <ImageButton
             android:id="@+id/delete"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
+	    android:layout_gravity="center"
             android:background="@drawable/game_delete"
             android:textSize="18dip" />
     </LinearLayout>

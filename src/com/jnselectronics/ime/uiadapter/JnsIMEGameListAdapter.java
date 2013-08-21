@@ -41,10 +41,10 @@ public class JnsIMEGameListAdapter extends BaseAdapter implements OnClickListene
 		this.cursor = cursor;
 	}
 
-	private Button get;
+	private ImageButton get;
 	private ImageButton play;
-	private Button keymapping;
-	private Button delete;
+	private ImageButton keymapping;
+	private ImageButton delete;
 	private PackageManager pm;
 
 	public JnsIMEGameListAdapter(Cursor cursor, Activity activity)
@@ -103,10 +103,10 @@ public class JnsIMEGameListAdapter extends BaseAdapter implements OnClickListene
 
 		icon = (ImageView) convertView.findViewById(R.id.img);
 		title = (TextView) convertView.findViewById(R.id.title);
-		get = (Button) convertView.findViewById(R.id.get);
+		get = (ImageButton) convertView.findViewById(R.id.get);
 		play = (ImageButton) convertView.findViewById(R.id.play);
-		keymapping = (Button) convertView.findViewById(R.id.keymapping);
-		delete = (Button) convertView.findViewById(R.id.delete);
+		keymapping = (ImageButton) convertView.findViewById(R.id.keymapping);
+		delete = (ImageButton) convertView.findViewById(R.id.delete);
 		Log.d(TAG, cursor.getString(cursor.getColumnIndex("_exists")));
 		get.setOnClickListener(this);
 		keymapping.setOnClickListener(this);

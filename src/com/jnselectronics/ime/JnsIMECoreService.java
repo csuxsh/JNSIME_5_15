@@ -192,12 +192,13 @@ public class JnsIMECoreService extends Service {
 					alertDialogEnable = false;
 					break;
 				case DialogInterface.BUTTON_POSITIVE:
+					/*
 					Uri uri = Uri.parse("http://forum.xda-developers.com/showthread.php?t=833953");  
 					Intent intent = new Intent(Intent.ACTION_VIEW, uri);  
 					intent.setClassName("com.android.browser", "com.android.browser.BrowserActivity");  
 					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					JnsIMECoreService.this.startActivity(intent);  
-
+					*/
 					break;
 				}
 				alertDialogShow = false;
@@ -219,8 +220,7 @@ public class JnsIMECoreService extends Service {
 				case JnsIMECoreService.ROOT_FAILED:
 					if(alertDialogEnable)
 					{	
-						Dialog dialog = new AlertDialog.Builder(JnsIMECoreService.this).setMessage(JnsIMECoreService.this.getString(R.string.root_notice) ).setPositiveButton("sure",
-								ocl).setNegativeButton("cancle", ocl).create();
+						Dialog dialog = new AlertDialog.Builder(JnsIMECoreService.this).setMessage(JnsIMECoreService.this.getString(R.string.root_notice)).setNegativeButton("I Get it", ocl).create();
 						dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);  
 
 						WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();    

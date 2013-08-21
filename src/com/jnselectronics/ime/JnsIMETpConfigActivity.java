@@ -154,15 +154,27 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 						tmp_bmp = draw_bmp;
 					if(dm.density != 1)
 					{	
+						if(dm.density > 1.5)
+						{
+							draw = new BitmapDrawable(tmp_bmp);
+							backGrand.setImageDrawable(draw);
+							backGrand.setScaleType((ImageView.ScaleType.CENTER_CROP));
+						}
+						else
+						{	
 						//Bitmap bmp = tmp_bmp;
 						Bitmap bmp = DrawableUtil.zoomBitmap(tmp_bmp, (int)(tmp_bmp.getWidth() * dm.density), (int)(tmp_bmp.getHeight() * dm.density));
 						tmp_bmp.recycle();
 						tmp_bmp = bmp;
 						bmp = null;
+						}
 					}
-					draw = new BitmapDrawable(tmp_bmp);
-					backGrand.setImageDrawable(draw);
-					backGrand.setScaleType((ImageView.ScaleType.MATRIX));
+					if(dm.density < 1.5 || dm.density == 1.5)
+					{	
+						draw = new BitmapDrawable(tmp_bmp);
+						backGrand.setImageDrawable(draw);
+						backGrand.setScaleType((ImageView.ScaleType.MATRIX));
+					}
 				}	
 			}
 		};

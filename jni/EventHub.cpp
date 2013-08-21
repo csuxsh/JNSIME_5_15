@@ -20,12 +20,13 @@
 /* this macro computes the number of bytes needed to represent a bit array of the specified size */
 #define sizeof_bit_array(bits)  ((bits + 7) / 8)
 
-#define ID_NUM 2
+#define ID_NUM 3
 #define DEVICE_NUM 4
 
 const int deviceID[ID_NUM] =
 {
 	0x05ac3212, // Bordcaom BT
+	0x05ac0220,
 	0xa7253324  //Bordcaom 2.4G
 };
 const char* deviceName[DEVICE_NUM] =

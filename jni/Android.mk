@@ -11,7 +11,7 @@ LOCAL_SRC_FILES := \
         EventHub.cpp \
         TouchInject.cpp \
         InputAdapter.cpp \
-        com_jnselectronics_ime_jni_InputAdapter.cpp
+        com_viaplay_ime_jni_InputAdapter.cpp
 
 LOCAL_SHARED_LIBRARIES := \
     libandroid_runtime \
@@ -58,7 +58,7 @@ LOCAL_MODULE_TAGS := eng
 LOCAL_MODULE:=screenshot
 LOCAL_SRC_FILES:= \
   SaveBitmap.c \
-  com_jnselectronics_ime_jni_ScreenShot.c 
+  com_viaplay_ime_jni_ScreenShot.c 
 
 LOCAL_SHARED_LIBRARIES := \
 	libutils \

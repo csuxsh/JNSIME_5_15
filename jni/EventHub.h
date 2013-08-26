@@ -5,7 +5,7 @@
 #include <sys/epoll.h>
 #include <fcntl.h>
 #include "define.h"
-#include "com_jnselectronics_ime_jni_InputAdapter.h"
+#include "com_viaplay_ime_jni_InputAdapter.h"
 
 
 #ifdef BUILD_NDK

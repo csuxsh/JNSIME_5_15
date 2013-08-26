@@ -10,7 +10,7 @@
         android:layout_height="fill_parent"
         android:layout_gravity="center_horizontal"
         android:contentDescription="@string/app_name"
-        android:scaleType="centerCrop"
+        android:scaleType="fitStart"
         android:src="@drawable/key_mapping_bg" />
 
     <LinearLayout
@@ -59,11 +59,11 @@
             </LinearLayout>
         </LinearLayout>
 
-        <com.jnselectronics.ime.uiadapter.JnsIMEKeyMapView
+        <com.viaplay.ime.uiadapter.JnsIMEKeyMapView
             android:id="@+id/key_edit_grid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
-        </com.jnselectronics.ime.uiadapter.JnsIMEKeyMapView>
+        </com.viaplay.ime.uiadapter.JnsIMEKeyMapView>
 
         <FrameLayout
             android:layout_width="fill_parent"
@@ -131,24 +131,24 @@
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent" >
 
-                            <com.jnselectronics.ime.uiadapter.JnsIMEKeyboardView
+                            <com.viaplay.ime.uiadapter.JnsIMEKeyboardView
                                 android:id="@+id/keyboardview_a"
                                 android:layout_width="fill_parent"
                                 android:layout_height="wrap_content" >
-                            </com.jnselectronics.ime.uiadapter.JnsIMEKeyboardView>
+                            </com.viaplay.ime.uiadapter.JnsIMEKeyboardView>
 
-                            <com.jnselectronics.ime.uiadapter.JnsIMEKeyboardView
+                            <com.viaplay.ime.uiadapter.JnsIMEKeyboardView
                                 android:id="@+id/keyboardview_1"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content" >
-                            </com.jnselectronics.ime.uiadapter.JnsIMEKeyboardView>
+                            </com.viaplay.ime.uiadapter.JnsIMEKeyboardView>
                         </FrameLayout>
 
-                        <com.jnselectronics.ime.uiadapter.JnsIMEKeyboardView
+                        <com.viaplay.ime.uiadapter.JnsIMEKeyboardView
                             android:id="@+id/gamepad_view"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" >
-                        </com.jnselectronics.ime.uiadapter.JnsIMEKeyboardView>
+                        </com.viaplay.ime.uiadapter.JnsIMEKeyboardView>
                     </FrameLayout>
                 </LinearLayout>
         </FrameLayout>

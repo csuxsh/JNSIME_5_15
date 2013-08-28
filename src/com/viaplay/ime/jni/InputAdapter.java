@@ -202,6 +202,21 @@ public class InputAdapter {
 						//gHatLeftPressed =true;
 						onRawKeyDown(keyevent);
 					}
+					if(JnsIMECoreService.touchConfiging && JnsIMECoreService.ime != null)
+					{
+						if((JoyEvent.x != 0) || (JoyEvent.y != 0))
+						{	
+							JnsIMECoreService.ime.getCurrentInputConnection().sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_L));
+							JnsIMECoreService.ime.getCurrentInputConnection().sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_L));
+						}
+						if((JoyEvent.z != 0) || (JoyEvent.rz != 0))
+						{	
+							JnsIMECoreService.ime.getCurrentInputConnection().sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_R));
+							JnsIMECoreService.ime.getCurrentInputConnection().sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_R));
+						}
+					}
+					
+						
 					Log.d(TAG, "x = "+JoyEvent.x+ ", y = "+JoyEvent.y + "z = "+JoyEvent.z+  "rz = "+JoyEvent.rz+"  hat_x = "+ JoyEvent.hat_x +" hat y ="+  JoyEvent.hat_y + 
 							"gas = " + JoyEvent.gas + "brake = "+JoyEvent.brake);
 					Message msg = new Message();
@@ -261,12 +276,6 @@ public class InputAdapter {
 						JnsIMECoreService.ime.startTpConfig();
 						mCheckByte = 0x00;
 					}
-					if(JnsIMECoreService.touchConfiging)
-					{
-						JnsIMECoreService.ime.getCurrentInputConnection().sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SEARCH));
-						JnsIMECoreService.ime.getCurrentInputConnection().sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_SEARCH));
-					}
-					
 				}
 			}
 		}

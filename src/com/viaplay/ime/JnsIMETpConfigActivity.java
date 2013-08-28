@@ -332,7 +332,8 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 
 	private boolean drawInfo(KeyEvent event) {
 		bop.scancode = event.getScanCode();
-		if (bop.r > 0 && event.getKeyCode() == KeyEvent.KEYCODE_SEARCH) 
+		if (bop.r > 0 && (event.getScanCode() == 0) && ((event.getKeyCode() == KeyEvent.KEYCODE_R)
+				||(event.getKeyCode()== KeyEvent.KEYCODE_L ))) 
 		{ //touchR == 0 则是触摸点和按键的映射，touchR > 0则是摇杆区域映射
 			bop.color = Color.GREEN;
 			DisplayMetrics dm = this.getResources().getDisplayMetrics();
@@ -787,10 +788,7 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		Log.e(TAG, "onkeyDOwn"); 
-		if(keyCode == KeyEvent.KEYCODE_BUTTON_SELECT)
-			return true;
-		if(keyCode == KeyEvent.KEYCODE_BUTTON_START)
-			return true;
+		
 		if (KeyEvent.KEYCODE_BACK == event.getKeyCode()) {
 			backKeyCount ++;
 			if (backKeyCount == 1 && noTouchData) return super.onKeyDown(keyCode, event);

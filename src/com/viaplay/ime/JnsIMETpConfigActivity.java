@@ -776,8 +776,21 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 		return -1;
 	}
 	@Override
+	public boolean onKeyUp(int keyCode, KeyEvent event)
+	{
+		if(keyCode == KeyEvent.KEYCODE_BUTTON_SELECT)
+			return true;
+		if(keyCode == KeyEvent.KEYCODE_BUTTON_START)
+			return true;
+		return false;
+	}
+	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		Log.e(TAG, "onkeyDOwn"); 
+		if(keyCode == KeyEvent.KEYCODE_BUTTON_SELECT)
+			return true;
+		if(keyCode == KeyEvent.KEYCODE_BUTTON_START)
+			return true;
 		if (KeyEvent.KEYCODE_BACK == event.getKeyCode()) {
 			backKeyCount ++;
 			if (backKeyCount == 1 && noTouchData) return super.onKeyDown(keyCode, event);

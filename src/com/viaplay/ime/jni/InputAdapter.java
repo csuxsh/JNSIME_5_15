@@ -26,11 +26,14 @@ public class InputAdapter {
 	private static boolean hatDownPressed = false;
 	private static boolean hatLeftPressed = false;
 	private static boolean hatRightPressed = false;
-	
+	private static boolean gasPressed = false;
+	private static boolean brakePressed = false;
+
 	public static boolean gHatUpPressed = false;
 	public static boolean gHatDownPressed = false;
 	public static boolean gHatLeftPressed = false;
 	public static boolean gHatRightPressed = false;
+
 	//private static JoyStickEvent oldJoyEvent = new JoyStickEvent();
 
 
@@ -63,6 +66,7 @@ public class InputAdapter {
 				if (keyEvent.value == 1) 
 				{
 					keyEvent.value = KeyEvent.ACTION_DOWN;
+
 					CheckIMESwitch();
 					Log.d(TAG, "get a key down");
 					onRawKeyDown(keyEvent);
@@ -86,6 +90,9 @@ public class InputAdapter {
 		}
 
 	};
+	/*
+	 *   添加 R2 L2 于 GAS BRAKE的支持
+	 */
 	private static Runnable getJoyStickRunnable = new Runnable() {
 
 		@Override
@@ -127,7 +134,7 @@ public class InputAdapter {
 						gHatDownPressed =true;
 						onRawKeyDown(keyevent);
 					}
-					
+
 					if((JoyEvent.hat_x == 0) && hatRightPressed)
 					{
 						RawEvent keyevent = new RawEvent(0, JoyStickTypeF.BUTTON_RIGHT_SCANCODE, KeyEvent.ACTION_UP, JoyEvent.deviceId);
@@ -154,7 +161,49 @@ public class InputAdapter {
 						gHatLeftPressed =true;
 						onRawKeyDown(keyevent);
 					}
-					Log.d(TAG, "x = "+JoyEvent.x+ ", y = "+JoyEvent.y + "z = "+JoyEvent.z+  "rz = "+JoyEvent.rz+"  hat_x = "+ JoyEvent.hat_x +" hat y ="+  JoyEvent.hat_y );
+					if(JoyEvent.gas == 0 && gasPressed)
+					{
+						RawEvent keyevent = new RawEvent(0, JoyStickTypeF.BUTTON_GAS_SCANCODE, KeyEvent.ACTION_UP, JoyEvent.deviceId);
+						gasPressed = false;
+						//gHatLeftPressed =true;
+						if(JnsIMECoreService.touchConfiging)
+							JnsIMECoreService.ime.getCurrentInputConnection().sendKeyEvent(
+									new KeyEvent(System.currentTimeMillis(), System.currentTimeMillis(),
+											KeyEvent.ACTION_UP, KeyEvent.KEYCODE_BUTTON_L2, 0, 0,  JoyEvent.deviceId, JoyStickTypeF.BUTTON_GAS_SCANCODE));
+						onRawKeyDown(keyevent);
+					}
+					if(JoyEvent.gas != 0  && !gasPressed)
+					{
+						RawEvent keyevent = new RawEvent(0, JoyStickTypeF.BUTTON_GAS_SCANCODE, KeyEvent.ACTION_DOWN, JoyEvent.deviceId);
+						gasPressed = true;
+						if(JnsIMECoreService.touchConfiging)
+							JnsIMECoreService.ime.getCurrentInputConnection().sendKeyEvent(new KeyEvent(System.currentTimeMillis(), System.currentTimeMillis(),
+									KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BUTTON_L2, 0, 0,  JoyEvent.deviceId, JoyStickTypeF.BUTTON_GAS_SCANCODE));
+						//gHatLeftPressed =true;
+						onRawKeyDown(keyevent);
+					}
+					if(JoyEvent.brake == 0 && brakePressed)
+					{
+						RawEvent keyevent = new RawEvent(0, JoyStickTypeF.BUTTON_GAS_SCANCODE, KeyEvent.ACTION_UP, JoyEvent.deviceId);
+						brakePressed = false;
+						if(JnsIMECoreService.touchConfiging)
+							JnsIMECoreService.ime.getCurrentInputConnection().sendKeyEvent(new KeyEvent(System.currentTimeMillis(), System.currentTimeMillis(),
+									KeyEvent.ACTION_UP, KeyEvent.KEYCODE_BUTTON_R2, 0, 0,  JoyEvent.deviceId, JoyStickTypeF.BUTTON_BRAKE_SCANCODE));
+						//gHatLeftPressed =true;
+						onRawKeyDown(keyevent);
+					}
+					if(JoyEvent.brake != 0  && !brakePressed)
+					{
+						RawEvent keyevent = new RawEvent(0, JoyStickTypeF.BUTTON_BRAKE_SCANCODE, KeyEvent.ACTION_DOWN, JoyEvent.deviceId);
+						brakePressed = true;
+						if(JnsIMECoreService.touchConfiging)
+							JnsIMECoreService.ime.getCurrentInputConnection().sendKeyEvent(new KeyEvent(System.currentTimeMillis(), System.currentTimeMillis(),
+									KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BUTTON_R2, 0, 0,  JoyEvent.deviceId, JoyStickTypeF.BUTTON_BRAKE_SCANCODE));
+						//gHatLeftPressed =true;
+						onRawKeyDown(keyevent);
+					}
+					Log.d(TAG, "x = "+JoyEvent.x+ ", y = "+JoyEvent.y + "z = "+JoyEvent.z+  "rz = "+JoyEvent.rz+"  hat_x = "+ JoyEvent.hat_x +" hat y ="+  JoyEvent.hat_y + 
+							"gas = " + JoyEvent.gas + "brake = "+JoyEvent.brake);
 					Message msg = new Message();
 					msg.what = JnsIMECoreService.HAS_STICK_DATA;
 					JnsIMECoreService.stickQueue.add(JoyEvent);
@@ -164,6 +213,9 @@ public class InputAdapter {
 
 		}
 	};
+	/*
+	 *  修改select + start 为弹出配置界面,以及确认摇杆。
+	 */
 	private static void CheckIMESwitch()
 	{
 		if(keyEvent.scanCode == START_SCANCODE) 
@@ -190,11 +242,33 @@ public class InputAdapter {
 			//	intent.setAction("COM.BLUEOCEAN_IME_SWITCH_IME");
 			//	intent.putExtra("COM.BLUEOCEAN_IME_IMEID", imeStr);
 			//	mcontext.sendBroadcast(intent);
-			*/
+			 */
+			/*
 			mCheckByte = 0x00;
 			Intent intent = new Intent();
 			intent.setAction("android.settings.SHOW_INPUT_METHOD_PICKER");
 			mcontext.sendBroadcast(intent);
+			 */
+			if(JnsIMEInputMethodService.jnsIMEInUse)
+			{	
+				if(JnsIMECoreService.ime != null)
+				{	
+					if(!JnsIMECoreService.ime.currentAppName.equals(JnsIMECoreService.ime.getPackageName()))
+					{
+						Message msg = new Message();
+						msg.what = JnsIMECoreService.START_TPCFG;
+						JnsIMECoreService.DataProcessHandler.sendMessage(msg);
+						JnsIMECoreService.ime.startTpConfig();
+						mCheckByte = 0x00;
+					}
+					if(JnsIMECoreService.touchConfiging)
+					{
+						JnsIMECoreService.ime.getCurrentInputConnection().sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SEARCH));
+						JnsIMECoreService.ime.getCurrentInputConnection().sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_SEARCH));
+					}
+					
+				}
+			}
 		}
 	}
 	private static void onRawKeyDown(RawEvent keyEvent) {

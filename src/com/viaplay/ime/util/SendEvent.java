@@ -22,7 +22,7 @@ public class SendEvent {
 
 
 	public final static String TAG= "SendEvent";
-	public final static String pkgName ="com.jnselectronics.ime";
+	public final static String pkgName ="com.viaplay.ime";
 	private final static int  STICK_MOVE_IRQ_TIME = 5;
 	private final static String TOUCH = "injectTouch";
 	private final static String KEY = "injectKey";

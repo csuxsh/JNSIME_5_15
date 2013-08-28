@@ -40,6 +40,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.inputmethodservice.InputMethodService;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
@@ -53,6 +54,7 @@ public class JnsIMECoreService extends Service {
 
 	public final static String TAG = "JnsIMECore";
 	public final static int HAS_KEY_DATA = 1;
+	public final static int START_TPCFG =2;
 	public final static int HAS_STICK_DATA = 3;
 	private final static int ROOT_SUCCESE = 1;
 	private final static int ROOT_FAILED = 2;
@@ -67,7 +69,7 @@ public class JnsIMECoreService extends Service {
 	public static Handler DataProcessHandler = null;
 	public static AppHelper  aph;
 	public static int eventDownLock = 0;
-
+	public static JnsIMEInputMethodService ime = null;
 	public static List<JnsIMEProfile> keyList = new  ArrayList<JnsIMEProfile>();
 	@SuppressLint("UseSparseArrays")
 	public static Map<Integer, Integer> keyMap = new HashMap<Integer, Integer>();
@@ -136,6 +138,9 @@ public class JnsIMECoreService extends Service {
 						Log.d(TAG, "the action is "+ keyevent.value);
 						SendEvent.getSendEvent().sendKey(keyevent);
 					}
+					break;
+				case JnsIMECoreService.START_TPCFG:
+					Toast.makeText(JnsIMECoreService.this, JnsIMECoreService.this.getString(R.string.screen_shot), Toast.LENGTH_SHORT).show();
 					break;
 				case JnsIMECoreService.HAS_STICK_DATA:
 					JoyStickEvent stickevent = stickQueue.poll();

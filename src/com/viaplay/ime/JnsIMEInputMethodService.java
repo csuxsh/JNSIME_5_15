@@ -36,7 +36,7 @@ public class JnsIMEInputMethodService extends InputMethodService {
 	public static String validAppName = "";
 	static String lastAppName = "";
 	public static  String currentAppName = "";
-	private boolean jnsIMEInUse = false;
+	public static boolean jnsIMEInUse = false;
 	private static Process process=null;
 	private static DataOutputStream dos = null;
 	@SuppressLint("SdCardPath")
@@ -45,6 +45,7 @@ public class JnsIMEInputMethodService extends InputMethodService {
 	{
 		super.onCreate();
 		jnsIMEInUse = true;
+		JnsIMECoreService.ime = this;
 		new Thread(new Runnable()
 		{
 
@@ -148,32 +149,39 @@ public class JnsIMEInputMethodService extends InputMethodService {
 		}
 		return null;
 	}
+	public boolean startTpConfig()
+	{
+		JnsIMECoreService.touchConfiging = true;
+		
+		new Thread(new Runnable()
+		{
+			@Override
+			public void run() 
+			{
+				// TODO Auto-generated method stub
+		//		isTakePic = com.jnselectronics.ime.jni.ScreenShot.getScreenShot();
+				if(JnsEnvInit.rooted)
+					Screencap();
+				Log.d("JnsIME", "take pic "+isTakePic);
+				Intent in = new Intent(JnsIMEInputMethodService.this.getApplicationContext(), JnsIMETpConfigActivity.class);
+				//in.putExtra("screenshot", isTakePic);
+				in.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				JnsIMEInputMethodService.this.startActivity(in);
+			}
+		}).start();
+		return true;
+	}
 	public boolean onKeyDown(int keyCode, KeyEvent event)
 	{
 		if(KeyEvent.KEYCODE_SEARCH == keyCode && (!JnsIMECoreService.touchConfiging) && JnsEnvInit.rooted)
 		{
 			if(currentAppName.equals(this.getPackageName()))
 				return false;
-			JnsIMECoreService.touchConfiging = true;
-			Toast.makeText(this, this.getString(R.string.screen_shot), Toast.LENGTH_SHORT).show();
-			
-			new Thread(new Runnable()
+			else
 			{
-				@Override
-				public void run() 
-				{
-					// TODO Auto-generated method stub
-			//		isTakePic = com.jnselectronics.ime.jni.ScreenShot.getScreenShot();
-					if(JnsEnvInit.rooted)
-						Screencap();
-					Log.d("JnsIME", "take pic "+isTakePic);
-					Intent in = new Intent(JnsIMEInputMethodService.this.getApplicationContext(), JnsIMETpConfigActivity.class);
-					//in.putExtra("screenshot", isTakePic);
-					in.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
-					JnsIMEInputMethodService.this.startActivity(in);
-				}
-			}).start();
-			return true;
+				Toast.makeText(this, this.getString(R.string.screen_shot), Toast.LENGTH_SHORT).show();
+				return startTpConfig();
+			}
 		}
 		if(JnsIMECoreService.touchConfiging)
 			return false;

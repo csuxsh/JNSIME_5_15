@@ -89,6 +89,8 @@ struct JoyStickEvent {
 	int rz;
 	int hat_x;
 	int hat_y;
+	int gas;
+	int brake;
 	int deviceId;
 };
 
@@ -132,6 +134,12 @@ static void doOnJoystickDataChange(int scanCode, int value, int deviceId)
 		break;
 	case ABS_HAT0Y:
 		joyStickEvent.hat_y = value;
+		break;
+	case ABS_GAS:
+		joyStickEvent.gas = value;
+		break;
+	case ABS_BRAKE:
+		joyStickEvent.brake = value;
 		break;
 	}
 }
@@ -282,6 +290,8 @@ JNIEXPORT jboolean JNICALL Java_com_viaplay_ime_jni_InputAdapter_getJoyStick
 		jfieldID rz = env->GetFieldID(jclazz, "rz", "I");
 		jfieldID hat_x = env->GetFieldID(jclazz, "hat_x", "I");
 		jfieldID hat_y = env->GetFieldID(jclazz, "hat_y", "I");
+		jfieldID gas = env->GetFieldID(jclazz, "gas", "I");
+		jfieldID brake = env->GetFieldID(jclazz, "brake", "I");
 		jfieldID deviceId = env->GetFieldID(jclazz, "deviceId", "I");
 
 		env->SetIntField(joyEvent, x, joyStickEvent.x);
@@ -290,6 +300,8 @@ JNIEXPORT jboolean JNICALL Java_com_viaplay_ime_jni_InputAdapter_getJoyStick
 		env->SetIntField(joyEvent, rz, joyStickEvent.rz);
 		env->SetIntField(joyEvent, hat_x, joyStickEvent.hat_x);
 		env->SetIntField(joyEvent, hat_y, joyStickEvent.hat_y);
+		env->SetIntField(joyEvent, gas, joyStickEvent.gas);
+		env->SetIntField(joyEvent, brake, joyStickEvent.brake);
 		env->SetIntField(joyEvent, deviceId, joyStickEvent.deviceId);
 		pthread_mutex_unlock(&joyMutex);
 		waitForgetJoy = true;

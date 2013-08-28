@@ -27,6 +27,20 @@ public class JoyStickEvent {
 	int x;
 	int y;
 	int hat_x;
+	int gas;
+	int brake;
+	public int getGas() {
+		return gas;
+	}
+	public void setGas(int gas) {
+		this.gas = gas;
+	}
+	public int getBrake() {
+		return brake;
+	}
+	public void setBrake(int brake) {
+		this.brake = brake;
+	}
 	public int getDeviceId() {
 		return deviceId;
 	}

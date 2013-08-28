@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.viaplay.im.hardware.JoyStickTypeF;
 import com.viaplay.ime.R;
 import com.viaplay.ime.bean.JnsIMEKeyMap;
 import com.viaplay.ime.bean.KeyBoard;
@@ -170,7 +171,9 @@ public class JnsIMEKeyMappingActivity extends Activity implements OnClickListene
 			return false;
 		}
 	}
-
+	/*
+	 *  增加GAS 和 BRAKE的支持
+	 */
 	private boolean saveFile()
 	{
 		try {
@@ -180,7 +183,12 @@ public class JnsIMEKeyMappingActivity extends Activity implements OnClickListene
 			{
 				JnsIMEKeyMap  keymap = iterator.next().getValue();
 				fos.write((keymap.getGamPadIndex()+":"+keymap.getLable()+":"+keymap.getScanCode()+":"+keymap.getKeyCode()+"\n").getBytes());
+				if(keymap.getScanCode() == JoyStickTypeF.BUTTON_L2_SCANCODE)
+					fos.write((keymap.getGamPadIndex()+":"+keymap.getLable()+":"+JoyStickTypeF.BUTTON_GAS_SCANCODE+":"+keymap.getKeyCode()+"\n").getBytes());
+				if(keymap.getScanCode() == JoyStickTypeF.BUTTON_R2_SCANCODE)
+					fos.write((keymap.getGamPadIndex()+":"+keymap.getLable()+":"+JoyStickTypeF.BUTTON_BRAKE_SCANCODE+":"+keymap.getKeyCode()+"\n").getBytes());
 			}
+			fos.close();
 			return true;
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block

@@ -28,6 +28,8 @@ public class JoyStickTypeF {
 	public static final int BUTTON_ZI_SCANCODE = 0x7f06;
 	public static final int BUTTON_RZP_SCANCODE = 0x7f07;
 	public static final int BUTTON_RZI_SCANCODE = 0x7f08;
+	public static final int BUTTON_GAS_SCANCODE = 0x7f09;
+	public static final int BUTTON_BRAKE_SCANCODE = 0x7f0a;
 	
 	public static final int RIGHT_JOYSTICK_TAG = 1;
 	public static final int LEFT_JOYSTICK_TAG = 2;

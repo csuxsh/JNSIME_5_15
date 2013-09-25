@@ -58,6 +58,7 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 	private boolean noTouchData = true;
 	private boolean debug = true;
 	private JnsIMEPosition bop;
+	private JnsIMEPosition perbop = new JnsIMEPosition();
 	private float touchX = 0.0f;
 	private float touchY = 0.0f;
 	private float touchR = 0.0f;
@@ -78,7 +79,7 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		VMRuntime.getRuntime().setMinimumHeapSize(16 * 1024 * 1024); 
 		VMRuntime.getRuntime().setTargetHeapUtilization(TARGET_HEAP_UTILIZATION);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -105,7 +106,7 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 		getWindowManager().getDefaultDisplay().getMetrics(dm);
 		screenWidth = dm.widthPixels;
 		screeanHeight = dm.heightPixels;
-		
+
 		final Handler handle = new Handler()
 		{
 			@SuppressLint({ "HandlerLeak", "HandlerLeak", "HandlerLeak", "HandlerLeak", "SdCardPath" })
@@ -113,7 +114,7 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 			{
 				if(JnsEnvInit.rooted)
 				{	
-					
+
 					Bitmap draw_bmp= null;
 					while(draw_bmp ==null)
 					{	
@@ -140,7 +141,7 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 							break;
 						}  
 						// 旋转图片
-					//	Bitmap tmp_bmp = DrawableUtil.getBitmap(JnsIMETpConfigActivity.this, "/mnt/sdcard/jnsinput/tmp.bmp");
+						//	Bitmap tmp_bmp = DrawableUtil.getBitmap(JnsIMETpConfigActivity.this, "/mnt/sdcard/jnsinput/tmp.bmp");
 						tmp_bmp = Bitmap.createBitmap(draw_bmp, 0, 0, draw_bmp.getWidth(), draw_bmp.getHeight(), matrix, true);
 						draw_bmp.recycle();
 						draw_bmp = null;
@@ -149,7 +150,7 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 						{	
 							draw_bmp = new BitmapDrawable(tmp_bmp);
 						}
-						*/
+						 */
 					}
 					else
 						tmp_bmp = draw_bmp;
@@ -163,11 +164,11 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 						}
 						else
 						{	
-						//Bitmap bmp = tmp_bmp;
-						Bitmap bmp = DrawableUtil.zoomBitmap(tmp_bmp, (int)(tmp_bmp.getWidth() * dm.density), (int)(tmp_bmp.getHeight() * dm.density));
-						tmp_bmp.recycle();
-						tmp_bmp = bmp;
-						bmp = null;
+							//Bitmap bmp = tmp_bmp;
+							Bitmap bmp = DrawableUtil.zoomBitmap(tmp_bmp, (int)(tmp_bmp.getWidth() * dm.density), (int)(tmp_bmp.getHeight() * dm.density));
+							tmp_bmp.recycle();
+							tmp_bmp = bmp;
+							bmp = null;
 						}
 					}
 					if(dm.density < 1.5 || dm.density == 1.5)
@@ -179,7 +180,7 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 				}	
 			}
 		};
-		
+
 
 		Thread loadthread = new Thread(new Runnable()
 		{
@@ -234,16 +235,16 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 			// TODO Auto-generated method stub
 			switch(which)
 			{
-				case DialogInterface.BUTTON_POSITIVE:
-					saveFile(JnsIMEInputMethodService.validAppName);
-					JnsIMECoreService.aph.Insert(JnsIMEInputMethodService.validAppName, "true");
-					saved = true;
-				default:
-					JnsIMETpConfigActivity.this.finish();	
-					break;
+			case DialogInterface.BUTTON_POSITIVE:
+				saveFile(JnsIMEInputMethodService.validAppName);
+				JnsIMECoreService.aph.Insert(JnsIMEInputMethodService.validAppName, "true");
+				saved = true;
+			default:
+				JnsIMETpConfigActivity.this.finish();	
+				break;
 			}
 		}
-		
+
 	};
 	@SuppressLint("NewApi")
 	@Override
@@ -332,33 +333,35 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 
 	private boolean drawInfo(KeyEvent event) {
 		bop.scancode = event.getScanCode();
-		if (bop.r > 0 && (event.getScanCode() == 0) && ((event.getKeyCode() == KeyEvent.KEYCODE_R)
-				||(event.getKeyCode()== KeyEvent.KEYCODE_L ))) 
+		if (bop.r > 0 && (event.getScanCode() == 0)) 
 		{ //touchR == 0 则是触摸点和按键的映射，touchR > 0则是摇杆区域映射
 			bop.color = Color.GREEN;
 			DisplayMetrics dm = this.getResources().getDisplayMetrics();
-			if ((bop.x > (dm.widthPixels / 2)) && ((bop.x - bop.r) <=  (dm.widthPixels / 2))) 
-			{ //如果圆的中心点X坐标bop.x落在屏的右半边，则这个圆是右摇杆区域，反之则是左摇杆区域
-				Toast.makeText(this, this.getString(R.string.invalid_joystick_area), Toast.LENGTH_SHORT).show();
-				return false;
-			}
-			else if ((bop.x < (dm.widthPixels /2)) && ((bop.x + bop.r) >= (dm.widthPixels /2)))
-			{
-				Toast.makeText(this, this.getString(R.string.invalid_joystick_area), Toast.LENGTH_SHORT).show();
-				return false;
-			}
-			else if (bop.r <= 30)
+			//if ((bop.x > (dm.widthPixels / 2)) && ((bop.x - bop.r) <=  (dm.widthPixels / 2))) 
+			//{ //如果圆的中心点X坐标bop.x落在屏的右半边，则这个圆是右摇杆区域，反之则是左摇杆区域
+			//	Toast.makeText(this, this.getString(R.string.invalid_joystick_area), Toast.LENGTH_SHORT).show();
+			//	return false;
+			//}
+			//else if ((bop.x < (dm.widthPixels /2)) && ((bop.x + bop.r) >= (dm.widthPixels /2)))
+			//{
+			//	Toast.makeText(this, this.getString(R.string.invalid_joystick_area), Toast.LENGTH_SHORT).show();
+			//	return false;
+			//}
+			//else 
+			if (bop.r <= 30)
 			{
 				Log.e(TAG, "bop.r = " + bop.r + " invalid joystick_area");
 				Toast.makeText(this, this.getString(R.string.invalid_joystick_area), Toast.LENGTH_SHORT).show();
 				return false;
 			}
-			if ((bop.x - bop.r) > (dm.widthPixels/2)) 
+			if(event.getKeyCode() == KeyEvent.KEYCODE_R )
+				//((bop.x - bop.r) > (dm.widthPixels/2)) 
 			{ //右摇杆区坿				
-				if (hasRightJoystick) {
-					Toast.makeText(this, this.getString(R.string.has_right_joystick), Toast.LENGTH_SHORT).show();
+				if (hasRightJoystick &&( perbop.r == bop.r)){
+				//	Toast.makeText(this, this.getString(R.string.has_right_joystick), Toast.LENGTH_SHORT).show();
 					return false;
 				}
+				perbop.r = bop.r;
 				bop.resId = JnsIMEScreenView.STICK_R;
 				hasRightJoystick = true;
 				bop.type = JnsIMEPosition.TYPE_RIGHT_JOYSTICK;
@@ -382,10 +385,13 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 					}
 				}
 			} else {
-				if (hasLeftJoystick) {
-					Toast.makeText(this, this.getString(R.string.has_left_joystick), Toast.LENGTH_SHORT).show();
+				if (event.getKeyCode()== KeyEvent.KEYCODE_L)
+				{
+					if(hasLeftJoystick && (perbop.r == bop.r))
+					//Toast.makeText(this, this.getString(R.string.has_left_joystick), Toast.LENGTH_SHORT).show();
 					return false;
 				}
+				perbop.r = bop.r;
 				bop.resId = JnsIMEScreenView.STICK_L;
 				hasLeftJoystick = true;
 				bop.type =JnsIMEPosition.TYPE_LEFT_JOYSTICK;
@@ -777,18 +783,9 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 		return -1;
 	}
 	@Override
-	public boolean onKeyUp(int keyCode, KeyEvent event)
-	{
-		if(keyCode == KeyEvent.KEYCODE_BUTTON_SELECT)
-			return true;
-		if(keyCode == KeyEvent.KEYCODE_BUTTON_START)
-			return true;
-		return false;
-	}
-	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		Log.e(TAG, "onkeyDOwn"); 
-		
+
 		if (KeyEvent.KEYCODE_BACK == event.getKeyCode()) {
 			backKeyCount ++;
 			if (backKeyCount == 1 && noTouchData) return super.onKeyDown(keyCode, event);

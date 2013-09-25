@@ -33,6 +33,9 @@ public class InputAdapter {
 	public static boolean gHatDownPressed = false;
 	public static boolean gHatLeftPressed = false;
 	public static boolean gHatRightPressed = false;
+	
+	private static boolean leftStickPressed = false;
+	private static boolean rightStickPressed = false;
 
 	//private static JoyStickEvent oldJoyEvent = new JoyStickEvent();
 
@@ -204,21 +207,31 @@ public class InputAdapter {
 					}
 					if(JnsIMECoreService.touchConfiging && JnsIMECoreService.ime != null)
 					{
-						if((JoyEvent.x != 0) || (JoyEvent.y != 0))
+						if(((JoyEvent.x != 127) || (JoyEvent.y != 127)) && !leftStickPressed)	
 						{	
 							JnsIMECoreService.ime.getCurrentInputConnection().sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_L));
-							JnsIMECoreService.ime.getCurrentInputConnection().sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_L));
+							leftStickPressed = true;
 						}
-						if((JoyEvent.z != 0) || (JoyEvent.rz != 0))
+						if(JoyEvent.x == 127 && JoyEvent.y == 127 && leftStickPressed)
+						{	
+							JnsIMECoreService.ime.getCurrentInputConnection().sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_L));
+							leftStickPressed = false;
+						}
+						if(((JoyEvent.z != 127) || (JoyEvent.rz != 127)) && !rightStickPressed)
 						{	
 							JnsIMECoreService.ime.getCurrentInputConnection().sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_R));
+							rightStickPressed = true;
+						}
+						if(((JoyEvent.z != 127) || (JoyEvent.rz != 127)) && rightStickPressed)
+						{	
 							JnsIMECoreService.ime.getCurrentInputConnection().sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_R));
+							rightStickPressed = false;
 						}
 					}
 					
 						
-					Log.d(TAG, "x = "+JoyEvent.x+ ", y = "+JoyEvent.y + "z = "+JoyEvent.z+  "rz = "+JoyEvent.rz+"  hat_x = "+ JoyEvent.hat_x +" hat y ="+  JoyEvent.hat_y + 
-							"gas = " + JoyEvent.gas + "brake = "+JoyEvent.brake);
+					//Log.d(TAG, "x = "+JoyEvent.x+ ", y = "+JoyEvent.y + "z = "+JoyEvent.z+  "rz = "+JoyEvent.rz+"  hat_x = "+ JoyEvent.hat_x +" hat y ="+  JoyEvent.hat_y + 
+					//		"gas = " + JoyEvent.gas + "brake = "+JoyEvent.brake);
 					Message msg = new Message();
 					msg.what = JnsIMECoreService.HAS_STICK_DATA;
 					JnsIMECoreService.stickQueue.add(JoyEvent);

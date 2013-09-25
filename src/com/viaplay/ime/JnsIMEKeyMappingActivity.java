@@ -37,6 +37,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -82,8 +83,14 @@ public class JnsIMEKeyMappingActivity extends Activity implements OnClickListene
 		title.setText(""+in.getExtras().get("lable"));
 		ImageView imageView1 = (ImageView) this.findViewById(R.id.imageView1);
 		Drawable controller = this.getResources().getDrawable(R.drawable.key_mapping_bg);
-	//	controller = DrawableUtil.zoomDrawable(controller, (int)(dm.widthPixels * dm.density), 
-	//			(int)((controller.getIntrinsicHeight() * dm.widthPixels / controller.getIntrinsicWidth())*dm.density));
+		
+		if(dm.density  < 3.0)
+		{	
+			controller = DrawableUtil.zoomDrawable(controller, (int)(dm.widthPixels * dm.density), 
+				(int)((controller.getIntrinsicHeight() * dm.widthPixels / controller.getIntrinsicWidth())*dm.density));
+			imageView1.setScaleType(ImageView.ScaleType.MATRIX);
+			imageView1.setImageDrawable(controller);
+		}
 		/*
 		 BitmapFactory.Options options=new BitmapFactory.Options(); 
 		 options.inJustDecodeBounds = false;  

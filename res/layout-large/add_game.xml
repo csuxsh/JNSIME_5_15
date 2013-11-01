@@ -37,7 +37,7 @@
             android:id="@+id/linearLayout4"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">"
+            android:orientation="vertical">
 
             <Button
                 android:id="@+id/add_cancal"

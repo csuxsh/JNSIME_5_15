@@ -20,7 +20,7 @@
     <PreferenceCategory android:title="@string/changeime" >
         <Preference
             android:key="@string/changeime"
-            android:title="Click to change InputMethod"
+            android:title="@string/click_to_change"
             />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/quit" >

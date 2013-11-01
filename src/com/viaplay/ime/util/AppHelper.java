@@ -12,7 +12,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 
-
+/**
+ * 数据库增删改查的操控类
+ * 
+ * 
+ * @author Steven.xu
+ *
+ */
 public class AppHelper {
 
 	public final DBHelper dbh ;
@@ -23,7 +29,13 @@ public class AppHelper {
 		dbh  = DBHelper.getDBHelper(context);
 		this.context = context;
 	}
-
+    /**
+     * 向数据库插入一个应用的信息，并且将应用的图标半场到sdcard上。如果该应用已经存在于数据则先删除记录再插入
+     * 
+     * @param 应用的包名
+     * @param 应用是否已经安装
+     * @return 操作成功返回true,失败返回false
+     */
 	synchronized public boolean Insert(String name, String exists)
 	{
 		PackageManager pm = context.getPackageManager();
@@ -57,7 +69,6 @@ public class AppHelper {
 		cv.put("_description", lable);
 		cv.put("_exists", exists);
 		try {
-		//	delete(name);
 			if(db.insert(DBHelper.TABLE, "", cv)> -1)
 				return true;
 
@@ -67,6 +78,12 @@ public class AppHelper {
 		}
 		return false;
 	}
+    /**
+     * 在数据库中删除一个应用。
+     * 
+     * @param 应用的包名
+     * @return 操作成功返回true,失败返回false
+     */
 	synchronized public boolean delete(String name)
 	{
 		SQLiteDatabase db = dbh.getReadableDatabase();
@@ -77,6 +94,12 @@ public class AppHelper {
 			return false;
 		return true;
 	}
+    /**
+     * 在数据库中查询指定应用
+     * 
+     * @param 应用的包名
+     * @return 数据库的cursor
+     */
 	synchronized public Cursor Qurey(String arg)
 	{
 		//String arg = startdate+" and "+enddate;

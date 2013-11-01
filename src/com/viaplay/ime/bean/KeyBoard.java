@@ -4,9 +4,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.view.KeyEvent;
-
+/**
+ *keymmaping中的键盘类
+ * 
+ * @author Steven
+ *
+ */
 public class KeyBoard {
 	
+	/**
+	 *  字母键盘的数据信息
+	 */
 	public static  final String keyboard_abc[][]=
 	{
 		{"Q","W","E","R","T","Y","U","I","O","P"},
@@ -14,13 +22,19 @@ public class KeyBoard {
 		{"123","Z","X","C","V","B","N","M","BackSpace",""},
 		{"LShift","LCtrl","LAtl","Space","","","","RAlt","RCtrl","RShift"}
 	};
+	/**
+	 *  数字键盘的数据信息
+	 */
 	public static  final String keyboard_123[][]=
 	{
 		{"1","2","3","4","5","6","7","8","9","0"},
-		{"Esc","Tab","-","=","","","","Back","Inset","Del"},
+		{"Esc","Tab","","","","","","Back","Inset","Del"},
 		{"F1","F2","F3","F4","F5","F6","F7","F8","F9","F10"},
 		{"abc","F11","F12","","","","P-Up","P-Down","Home","End"}
 	};
+	/**
+	 *  GamePad键盘的数据信息
+	 */
 	public static  final String keyboard_gamepad[][]=
 	{
 		{"L1","L2","","","","","","","R1","R2"},
@@ -34,6 +48,7 @@ public class KeyBoard {
 	
 	private Map<String, Integer> keyMap = new HashMap<String, Integer>();
 	private String keyboardLayout[][];
+
 
 	public KeyBoard(int Layout_Indx)
 	{

@@ -4,6 +4,13 @@ import java.io.FileDescriptor;
 
 import android.util.Log;
 
+/**
+ * ¨®?¨®¨²3¨¬D¨°?¨¢event¨ºy?Y?¨´D¨¨¨°a¦Ì???DD?¡¤?33?¨º??¡¥
+ * 
+ * @author Steven
+ *
+ */
+
 public class JnsIMEConsole {
 	private static final String TAG = "BlueOceanJNIAPI";
 	static {

@@ -5,9 +5,19 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 
+/**
+ * ¨ºy?Y?a2¨´¡Á¡Â¦Ì?¡ã??¨²¨¤¨¤
+ * 
+ * @author Steven.xu
+ *
+ */
+
 public class DBHelper extends SQLiteOpenHelper {
 	
 	private static DBHelper dbh= null;
+	/**
+	 *  ¨ºy?Y?a¡À¨ª??
+	 */
 	public final static String TABLE = "_jns_ime";
 
 	private DBHelper(Context context, String name, CursorFactory factory,

@@ -35,24 +35,66 @@ public class JnsIMEKeyMapView extends ImageView {
 	public  static final int JoyStickTypeFID = 1;
 	private int ScreeanWidth;
 	private int ScreeanHeight;
+	/**
+	 * 编辑框的宽度
+	 */
 	private int buttonWidth;
+	/**
+	 * 编辑框的高度
+	 */
 	private int buttonHeight;
 	private Activity activity;
+	/**
+	 * 编辑框处于非编辑状态时的图标资源
+	 */
 	private Bitmap edit_n;
+	/**
+	 * 编辑框处于编辑状态时的图标资源
+	 */
 	private Bitmap edit_i;
+	/**
+	 * 绘制编辑框的起始x
+	 */
 	private int startX=0;
+	/**
+	 * 绘制编辑框的起始y
+	 */
 	private int startY=0;
+	/**
+	 * 需要配置的操控器硬件ID号
+	 */
 	private int hardwareId;
-	@SuppressWarnings("unused")
-	private static final String TAG="JnsKeyMapView";
+	/**
+	 * 被触摸到得行号
+	 */
 	private int touchedRow = -1;
+	/**
+	 * 被触摸到得列号
+	 */
 	private int touchedCol = -1;
-
+	
+	/**
+	 * 各编辑框对应的按键ID
+	 */
 	public   int gamePadButoonIndex[][];
+	/**
+	 * 各编辑框显示的字符信息
+	 */
 	public  String gamePadButoonLable[][];
+	/**
+	 * 显示的行总数
+	 */
 	public   int diplayRow = 0;
+	/**
+	 * 显示的列总数
+	 */
 	public   int diplayCol = 0;
-
+	
+	/**
+	 *  设置当前配置的操控器硬件id
+	 *  
+	 * @param hardwareId 要设置的硬件ID
+	 */
 	public void setHardWare(int hardwareId)
 	{
 		switch(hardwareId)
@@ -67,6 +109,7 @@ public class JnsIMEKeyMapView extends ImageView {
 			break;
 		}
 	}
+	
 	private void copyArray(String[][] lable, int[][] index)
 	{
 		for(int i = 0; i< diplayCol; i++)
@@ -79,6 +122,11 @@ public class JnsIMEKeyMapView extends ImageView {
 	public int getHardwareId() {
 		return hardwareId;
 	}
+	/**
+	 * 根据硬件ID号返回对应的keymap对象
+	 * 
+	 * @return 非法ID返回null,合法id返回对应的对象
+	 */
 	public JnsIMEKeyMap getJnsIMEKeyMap()
 	{
 		switch(getHardwareId())

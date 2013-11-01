@@ -7,7 +7,7 @@
     <ImageView
         android:id="@+id/imageView1"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:layout_gravity="center_horizontal"
         android:contentDescription="@string/app_name"
         android:scaleType="centerCrop"
@@ -23,12 +23,13 @@
             android:layout_height="wrap_content"
             android:background="@drawable/keymaptitle"
             android:orientation="horizontal"
-            android:layout_gravity="center_vertical">"
+            android:layout_gravity="center_vertical">
 
             <TextView
                 android:id="@+id/keymap_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textIsSelectable="true"
                 android:layout_gravity="center" />
 
             <ImageView

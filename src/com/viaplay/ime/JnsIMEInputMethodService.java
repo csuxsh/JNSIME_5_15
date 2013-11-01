@@ -2,7 +2,9 @@ package com.viaplay.ime;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -20,6 +22,7 @@ import com.viaplay.ime.util.SendEvent;
 
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.inputmethodservice.InputMethodService;
 import android.os.Build;
@@ -31,7 +34,7 @@ import android.widget.Toast;
 public class JnsIMEInputMethodService extends InputMethodService {
 
 	private final static String TAG = "JnsIMEMethod";
-	public final static String KEY_MAP_FILE_TAG = ".keymap";
+	private final static String KEY_MAP_FILE_TAG = ".keymap";
 	private boolean isTakePic = false;
 	public static String validAppName = "";
 	static String lastAppName = "";
@@ -88,6 +91,12 @@ public class JnsIMEInputMethodService extends InputMethodService {
 		JnsIMECoreService.keyList.clear();
 		JnsIMECoreService.keyMap.clear();
 	}
+	/**
+	 * ²éÑ¯µ±Ç°µÄÊÂ¼þÊÇ·ñÀ´Ô´ÓÚÒ¡¸Ë»òÕßÍ·¿ø
+	 * 
+	 * @param event µ±Ç°µÄkeyevent
+	 * @return À´Ô´ÓÚÒ¡¸Ë»òÍ·¿øÔò»á½«scancode¸Ä³É¶ÔÓ¦µÄscancode
+	 */
 	KeyEvent mathJoyStick(KeyEvent event)
 	{
 		if(event.getKeyCode() == KeyEvent.KEYCODE_DPAD_UP && event.getScanCode() == 0)
@@ -204,6 +213,9 @@ public class JnsIMEInputMethodService extends InputMethodService {
 		}
 		return false;
 	}
+	/**
+	 *  ½ØÍ¼·½·¨¡£2.3ÒÔÉÏÍ¨¹ýÖ´ÐÐscreencapÃüÁî½ØÍ¼£¬2.2ÒÔÏÂÖ±½Ó¶Áfb½ØÍ¼
+	 */
 	void Screencap()
 	{
 		int sdkNum =  Build.VERSION.SDK_INT;
@@ -237,6 +249,7 @@ public class JnsIMEInputMethodService extends InputMethodService {
 	{
 		if(JnsIMECoreService.touchConfiging)
 			return false;
+		@SuppressWarnings("unused")
 		KeyEvent tmpEvent = mathJoyStick(event);
 		if(keyCode == KeyEvent.KEYCODE_SEARCH)
 			return true;
@@ -400,6 +413,7 @@ public class JnsIMEInputMethodService extends InputMethodService {
 		}
 		return true;
 	}
+	@SuppressWarnings("unused")
 	private static JnsIMEProfile iteratorKeyList(List<JnsIMEProfile> keylist, int scancode)
 	{
 		if(keylist==null)

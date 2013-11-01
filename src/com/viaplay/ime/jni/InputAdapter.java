@@ -12,23 +12,42 @@ import android.os.Message;
 import android.util.Log;
 import android.view.KeyEvent;
 
+
+/**
+ * 用于应用从event读取数据时候封装分发的类，在蓝牙模式下没有使用
+ * 
+ * @author Steven
+ *
+ */
 public class InputAdapter {
 	private static final int SELECT_SCANCODE = 314;
 	private static final int START_SCANCODE = 315;
+	/**
+	 *  用于检查select和start键的按下情况
+	 */
 	private static byte mCheckByte = 0x00;
+	/**
+	 * 标记当前是否处于JNSIME模式
+	 */
 	private static boolean  mIMEMode = false;
 	public static Context mcontext;
 	private static final String TAG = "InputAdapter";
 	private static RawEvent keyEvent = new RawEvent();
 	private static RawEvent oldKeyEvent = new RawEvent();
 	private static JoyStickEvent JoyEvent = new JoyStickEvent();
+	/**
+	 *  头盔键是否被按下 仅够本类使用来左判断
+	 */
 	private static boolean hatUpPressed = false;
 	private static boolean hatDownPressed = false;
 	private static boolean hatLeftPressed = false;
 	private static boolean hatRightPressed = false;
 	private static boolean gasPressed = false;
 	private static boolean brakePressed = false;
-
+	
+	/**
+	 *  头盔键是否被按下，用于输入法服务来区分 当前发出的scancode为0的方向键是由摇杆还是头盔发出。
+	 */
 	public static boolean gHatUpPressed = false;
 	public static boolean gHatDownPressed = false;
 	public static boolean gHatLeftPressed = false;
@@ -40,21 +59,8 @@ public class InputAdapter {
 	//private static JoyStickEvent oldJoyEvent = new JoyStickEvent();
 
 
-	public static void test() {
 
-	}
 
-	public final void onInputAdapterKeyDown(int scanCode, int value) {
-		Log.e(TAG, "onInputAdapterKeyDown");
-	}
-
-	public static final void onInputAdapterKeyUp(int scanCode, int value) {
-		Log.e(TAG, "onInputAapterKeyUp");
-	}
-
-	public static final void onInputAdapterJoystickChange(int scanCode, int value) {
-		Log.e(TAG, "onInputAdapterJoystickChange");
-	}
 
 	private static Runnable getKeyRunnable = new Runnable() {
 
@@ -69,7 +75,6 @@ public class InputAdapter {
 				if (keyEvent.value == 1) 
 				{
 					keyEvent.value = KeyEvent.ACTION_DOWN;
-
 					CheckIMESwitch();
 					Log.d(TAG, "get a key down");
 					onRawKeyDown(keyEvent);
@@ -137,7 +142,7 @@ public class InputAdapter {
 						gHatDownPressed =true;
 						onRawKeyDown(keyevent);
 					}
-
+					
 					if((JoyEvent.hat_x == 0) && hatRightPressed)
 					{
 						RawEvent keyevent = new RawEvent(0, JoyStickTypeF.BUTTON_RIGHT_SCANCODE, KeyEvent.ACTION_UP, JoyEvent.deviceId);

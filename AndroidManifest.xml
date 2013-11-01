@@ -14,88 +14,93 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.INTERNET"/>
 
-
     <application
+        android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name"
-       >
+        android:label="@string/app_name" >
         <activity
             android:name=".JnsIME"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-            android:label="@string/title_activity_main" 
-            android:screenOrientation="landscape">
+            android:label="@string/title_activity_main"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-         <activity
+        <activity
             android:name=".JnsIMETpConfigActivity"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-          	android:screenOrientation="landscape"
-            
-             >
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
             <intent-filter>
-                <action android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".JnsIMEGameListActivity"
-				>
-			<intent-filter>
-				<action android:name="android.intent.category.LAUNCHER"/>
-			</intent-filter>
-		</activity>
-		 <activity android:name=".JnsIMEControllerActivity"
-				android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
-			<intent-filter>
-				<action android:name="android.intent.category.LAUNCHER"/>
-			</intent-filter>
-		</activity>
-		 <activity android:name=".JnsIMESettingActivity"
-			>
-			<intent-filter>
-				<action android:name="android.intent.category.LAUNCHER"/>
-			</intent-filter>
-		</activity>
-		<activity android:name=".JnsIMEKeyMappingActivity"
-		    	android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-		    	android:screenOrientation="landscape"
-		    	>
-			<intent-filter>
-				<action android:name="android.intent.category.LAUNCHER"/>
-			</intent-filter>
-		</activity>
-		<activity android:name=".JnsIMEHelpActivity"
-				android:screenOrientation="landscape">
-			<intent-filter>
-				<action android:name="android.intent.category.LAUNCHER"/>
-			</intent-filter>
-		</activity>
-        <service 
-             android:exported="false"
-            android:name=".JnsIMECoreService"
-            >
-    		<intent-filter> 
-    			<action android:name="com.viaplay.ime.JnsIMECore"/>
-    		</intent-filter>
-    	</service>
-    	<service
-		    android:name=".JnsIMEInputMethodService" 
-		    android:permission="android.permission.BIND_INPUT_METHOD">
-			<intent-filter>
-    			<action android:name="android.view.InputMethod"/>
-    		</intent-filter>		 
-    		<meta-data android:name="android.view.im" android:resource="@xml/method"/>    
-		</service>
-        <receiver 
-            android:name=".JnsIMESystemBootBroadcast">
+        <activity android:name=".JnsIMEGameListActivity" >
             <intent-filter>
-        		<action android:name="android.intent.action.BOOT_COMPLETED" /> 
-        		<category android:name="android.intent.category.HOME" />
-        	</intent-filter>
+                <action android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".JnsIMEControllerActivity"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+            <intent-filter>
+                <action android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".JnsIMESettingActivity" >
+            <intent-filter>
+                <action android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".JnsIMEKeyMappingActivity"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+            <intent-filter>
+                <action android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".JnsIMEHelpActivity"
+            android:screenOrientation="landscape" >
+            <intent-filter>
+                <action android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".JnsIMERootNotice" >
+            <intent-filter>
+                <action android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".JnsIMECoreService"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.viaplay.ime.JnsIMECore" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".JnsIMEInputMethodService"
+            android:permission="android.permission.BIND_INPUT_METHOD" >
+            <intent-filter>
+                <action android:name="android.view.InputMethod" />
+            </intent-filter>
+ 	   <meta-data android:name="android.view.im" android:resource="@xml/method"/>     
+	</service>
+
+           
+
+        <receiver 
+		android:name=".JnsIMESystemBootBroadcast" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+
+                <category android:name="android.intent.category.HOME" />
+            </intent-filter>
         </receiver>
-        
     </application>
 
 </manifest>

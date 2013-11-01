@@ -48,21 +48,52 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+/**
+ *  按search键 后进入的触摸配置activity,当前运行时候有时候还时会出现OOM错误
+ *  
+ * @author Sevent
+ *
+ */
 public class JnsIMETpConfigActivity extends Activity implements OnTouchListener, OnClickListener {
+	
 	private static final String TAG = "BlueoceanTpConfigActivity";
-	public JnsIMEScreenView screenView = null;
+	/**
+	 *  显示当前触摸配置信息的view
+	 */
+	private JnsIMEScreenView screenView = null;
 	private int backKeyCount = 0;
-	private boolean touched = false;
 	private int oldKey;
 	public List<JnsIMEProfile> keyList;
-	private boolean noTouchData = true;
 	private boolean debug = true;
-	private JnsIMEPosition bop;
+	private boolean touched = false;
 	private JnsIMEPosition perbop = new JnsIMEPosition();
+	/**
+	 *  当前界面是否有进行过触摸配置
+	 */
+	private boolean noTouchData = true;
+	/**
+	 * 最新的触摸点对象
+	 */
+	private JnsIMEPosition bop;
+	/**
+	 * 触摸点的x坐标
+	 */
 	private float touchX = 0.0f;
+	/**
+	 * 触摸点的y坐标
+	 */
 	private float touchY = 0.0f;
+	/**
+	 * 触摸点的半径
+	 */
 	private float touchR = 0.0f;
+	/**
+	 * 当前的配置中是否已经有了左摇杆配置
+	 */
 	private boolean hasLeftJoystick = false;
+	/**
+	 * 当前的配置中是否已经有了右摇杆配置
+	 */
 	private boolean hasRightJoystick = false;
 	private Button cancel;
 	private Button reset;
@@ -109,13 +140,13 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 
 		final Handler handle = new Handler()
 		{
+			@SuppressWarnings("deprecation")
 			@SuppressLint({ "HandlerLeak", "HandlerLeak", "HandlerLeak", "HandlerLeak", "SdCardPath" })
 			public void handleMessage(Message msg) 
 			{
 				if(JnsEnvInit.rooted)
 				{	
-
-					Bitmap draw_bmp= null;
+					Bitmap draw_bmp = null;
 					while(draw_bmp ==null)
 					{	
 						draw_bmp  = BitmapFactory.decodeFile("/mnt/sdcard/jnsinput/tmp.bmp");		
@@ -330,7 +361,12 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 		}
 		return false;
 	}
-
+	/**
+	 * 得到当前触摸点配置的图片资源和其他各种绘制需要的信息
+	 * 
+	 * @param event	当前按下的键
+	 * @return 无效配置返回false,有效返回true
+	 */
 	private boolean drawInfo(KeyEvent event) {
 		bop.scancode = event.getScanCode();
 		if (bop.r > 0 && (event.getScanCode() == 0)) 
@@ -785,7 +821,6 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		Log.e(TAG, "onkeyDOwn"); 
-
 		if (KeyEvent.KEYCODE_BACK == event.getKeyCode()) {
 			backKeyCount ++;
 			if (backKeyCount == 1 && noTouchData) return super.onKeyDown(keyCode, event);
@@ -857,6 +892,11 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 		//saveFileDialog.show();
 
 	}
+	/**
+	 * 保存当前的配置文件
+	 * 
+	 * @param path 要保存的文件名
+	 */
 	private void saveFile(String path) {
 		try {
 			FileOutputStream fos = this.openFileOutput(path, Context.MODE_PRIVATE);

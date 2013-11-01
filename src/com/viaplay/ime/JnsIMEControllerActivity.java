@@ -19,8 +19,14 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+/**
+ * ÏÔÊ¾µ±Ç°ÒÑ¾­Á¬½ÓµÄ²Ù¿ØÆ÷
+ * 
+ * @author Steven
+ *
+ */
 public class JnsIMEControllerActivity  extends Activity{
-	public static final String TAG = "BlueoceanControllerActivity";
+	private static final String TAG = "BlueoceanControllerActivity";
 	private List<String> controllerlist = new ArrayList<String>();
 	private List<String> data = new ArrayList<String>();
 	ArrayAdapter<String> adapter;

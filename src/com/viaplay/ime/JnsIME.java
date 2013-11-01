@@ -15,7 +15,12 @@ import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
 
-
+/**
+ * 車|車??¯????,米迆辰?∩???DD那㊣o辰??那?setting辰3㏒?????那㊣o辰??那?車??﹞芍D㊣赤
+ * 
+ * @author Steveb
+ *
+ */
 @SuppressWarnings("deprecation")
 public class JnsIME extends TabActivity {
 	

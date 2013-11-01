@@ -6,6 +6,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+/**
+ * ¿ª»úÆô¶¯µÄBroadcastReceiver£¬ÓÃÓÚ¿ª»úÆô¶¯Ó¦ÓÃ¡£
+ * 
+ * @author Steven
+ *
+ */
 public class JnsIMESystemBootBroadcast extends BroadcastReceiver {
 	
 
@@ -16,7 +22,7 @@ public class JnsIMESystemBootBroadcast extends BroadcastReceiver {
 		startJnsIMECoreService(arg0, arg1);
 	}
 	private void startJnsIMECoreService(Context arg0, Intent arg1) {
-		Intent intent = new Intent("com.jnselectronics.ime.JnsIMECore");
+		Intent intent = new Intent("com.viaplay.ime.JnsIMECore");
 		arg0.startService(intent);
 	}
 	

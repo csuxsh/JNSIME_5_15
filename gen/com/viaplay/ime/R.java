@@ -217,23 +217,25 @@ public final class R {
         public static final int activity_keymapping=0x7f030003;
         public static final int activity_main=0x7f030004;
         public static final int add_game=0x7f030005;
-        public static final int default_grid=0x7f030006;
-        public static final int game_list_item=0x7f030007;
-        public static final int input_key_tip=0x7f030008;
-        public static final int key_edit_item=0x7f030009;
+        public static final int bt_device_list=0x7f030006;
+        public static final int default_grid=0x7f030007;
+        public static final int game_list_item=0x7f030008;
+        public static final int input_key_tip=0x7f030009;
         public static final int keyboard_button=0x7f03000a;
         public static final int popaddlist=0x7f03000b;
-        public static final int root_notice=0x7f03000c;
-        public static final int tab_indicator=0x7f03000d;
+        public static final int root_help=0x7f03000c;
+        public static final int root_notice=0x7f03000d;
+        public static final int tab_indicator=0x7f03000e;
     }
     public static final class menu {
         public static final int activity_main=0x7f090000;
     }
     public static final class string {
-        public static final int Introduction=0x7f060013;
+        public static final int Introduction=0x7f060014;
         public static final int about=0x7f06000a;
         public static final int app_name=0x7f060000;
-        public static final int changeime=0x7f060012;
+        public static final int changeime=0x7f060013;
+        public static final int click_to_change=0x7f060011;
         public static final int has_left_joystick=0x7f060007;
         public static final int has_right_joystick=0x7f060005;
         public static final int hello_world=0x7f060001;
@@ -244,7 +246,8 @@ public final class R {
         public static final int perference_title=0x7f060009;
         public static final int quit=0x7f06000d;
         public static final int right_joystick=0x7f060006;
-        public static final int root_notice=0x7f060011;
+        public static final int root_device=0x7f060015;
+        public static final int root_notice=0x7f060012;
         public static final int save_notice=0x7f060010;
         public static final int screen_shot=0x7f06000f;
         public static final int title_activity_main=0x7f060003;
@@ -255,9 +258,8 @@ public final class R {
         public static final int mydialog=0x7f070000;
     }
     public static final class xml {
-        public static final int controller=0x7f040000;
-        public static final int keyboard_a=0x7f040001;
-        public static final int method=0x7f040002;
-        public static final int settings=0x7f040003;
+        public static final int keyboard_a=0x7f040000;
+        public static final int method=0x7f040001;
+        public static final int settings=0x7f040002;
     }
 }

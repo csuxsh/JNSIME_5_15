@@ -24,31 +24,94 @@ import android.view.MotionEvent;
 import android.widget.Button;
 import android.widget.ImageView;
 
+/**
+ * keymmaping界面的虚拟键盘显示和控
+ * 
+ * @author Steven
+ *
+ */
 public class JnsIMEKeyboardView extends ImageView {
+	
 
 	private final static String TAG = "JnsIMEKeyboardView";
+	/**
+	 * 正常按钮的宽度
+	 */
 	private int buttonWidth = 0;
+	/**
+	 * 正常按钮的长度度
+	 */
 	private int buttonHeight = 0;
 	private int ScreeanWidth = 0;
 	private int ScreeanHeight = 0;
+	/**
+	 * 正常按键的未按下时的图片资源
+	 */
 	private  static Bitmap button_n;
+	/**
+	 * 正常按键的按下时的图片资源
+	 */
 	private  static Bitmap button_p;
+	/**
+	 * 长按键的未按下时的图片资源，如enter键。
+	 */
 	private  static Bitmap buttonLong_n;
+	/**
+	 * 长按键的按下时的图片资源，如enter键。
+	 */
 	private  static Bitmap buttonLong_p;
+	/**
+	 * 切换到数字键盘的按钮图标。
+	 */
 	private  static Bitmap button123;
+	/**
+	 * 切换到字母键盘的按钮图标。
+	 */
 	private  static Bitmap buttonABC;
+	/**
+	 * 空格键未被按下时的图标。
+	 */
 	private  static Bitmap buttonSpace_n;
+	/**
+	 * 空格键被按下时的图标。
+	 */
 	private  static Bitmap buttonSpace_p;
+	/**
+	 * 键盘绘制的起始点，x坐标
+	 */
 	private int startX = 0;
+	/**
+	 * 键盘绘制的起始点，y坐标
+	 */
 	private int startY= 0;
 	private  Activity activity;
+	/**
+	 * 当前显示的键盘对象
+	 */
 	private  KeyBoard keyBoard;
+	/**
+	 *  键盘的纵行数
+	 */
 	private static final int KEYBOARD_ROW = 10;
+	/**
+	 *  键盘的纵列数
+	 */
 	private static final int KEYBOARD_COL = 4;
+	/**
+	 *  当前键是否按下
+	 */
 	private boolean keypressed = false;
+	/**
+	 * 当前被按下的键处于的行
+	 */
 	private int pressed_row = 0;
+	/**
+	 * 当前被按下的键处于的列
+	 */
 	private int pressed_col = 0;
-
+	/**
+	 * 当前键盘的布局信息
+	 */
 	private  String keyboardMetric[][] = new String[KEYBOARD_COL][KEYBOARD_ROW];
 
 	public JnsIMEKeyboardView(Context context, AttributeSet attrs, int defStyle) {
@@ -118,7 +181,11 @@ public class JnsIMEKeyboardView extends ImageView {
 		buttonSpace_p = BitmapFactory.decodeStream(is,null,options);
 		buttonSpace_p =DrawableUtil.zoomBitmap(buttonSpace_p, buttonWidth *4 ,buttonHeight);
 	}
-
+	/**
+	 * 设置要显示的键盘
+	 * 
+	 * @param keyboard 要显示的键盘对象
+	 */
 	public void setKeyBoard(KeyBoard keyboard)
 	{
 		keyBoard = keyboard;
@@ -130,6 +197,16 @@ public class JnsIMEKeyboardView extends ImageView {
 		super.onDetachedFromWindow();
 		Log.d(TAG, "onDetachedFromWindow be called");
 	}
+	
+	/**
+	 * 查找当前被按下或抬起的键
+	 * 
+	 * @param x 触摸点的x坐标
+	 * @param y 触摸点的y坐标
+	 * @param action 触摸动作
+	 * 
+	 * @return 当前的按键索引以及名称
+	 */
 	public Entry<String, Integer>  findKeyCode(int x, int y, int action)
 	{
 		int location[] = new int[2];

@@ -16,6 +16,12 @@ import android.content.Context;
 import android.util.Log;
 
 @SuppressLint("SdCardPath")
+/**
+ * µ±Ç°Õâ¸öÀàÖ»ÓÐinitConsoleÔÚ±»JnsEnvInitµ÷ÓÃ£¬ÆäËûµÄ¶¼ÒÑ±»JnsEnvInitÖÐµÄ·½·¨Ìæ´ú
+ *  
+ * @author Steven
+ *
+ */
 public class JnsIMERoot {
 	private static final String TAG = "JnsIMERoot";
 	private static FileOutputStream fos;

@@ -50,9 +50,15 @@ import android.view.Display;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+/**
+ * Ó¦ÓÃºóÌ¨ÔËÐÐµÄÖ÷·þÎñ
+ * 
+ * @author Administrator
+ *
+ */
 public class JnsIMECoreService extends Service {
 
-	public final static String TAG = "JnsIMECore";
+	private  final static String TAG = "JnsIMECore";
 	public final static int HAS_KEY_DATA = 1;
 	public final static int START_TPCFG =2;
 	public final static int HAS_STICK_DATA = 3;
@@ -79,39 +85,39 @@ public class JnsIMECoreService extends Service {
 	static List<Activity> activitys = new ArrayList<Activity>();
 	private final static String mappingFiles[] =
 		{
-			"beril.mootor.gmc",
-			"com.angrymobgames.muffinknight",
-			"com.bringmore.huomieqiangshouer",
-			"com.dotemu.rtype",
-			"com.FDGEntertainment.BeyondYnthXmas",
-			"com.galapagossoft.trialx2_gl2",
-			"com.hg.vikingfree",
-			"com.kumobius.android.game",
-			"com.madfingergames.SamuraiIIAll",
-			"com.madfingergames.shadowgun",
-			"com.meganoid.engine",
-			"com.mobicle.darkbladeOasis",
-			"com.orangepixel.gunslugs",
-			"com.orangepixel.incfree",
-			"com.orangepixel.meganoid2",
-			"com.orangepixel.neoteriafree",
-			"com.robotinvader.knightmare",
-			"com.rockstar.gta3",
-			"com.rockstargames.gtavc",
-			"com.sega.sonic1",
-			"com.sega.sonic4ep2",
-			"com.sega.sonic4epi",
-			"com.sega.soniccd",
-			"com.silvertree.cordy",
-			"com.silvertree.cordy2",
-			"com.silvertree.sleepyjack",
-			"com.vectorunit.blue",
-			"fishnoodle.canabalt",
-			"jp.co.sega.vtc",
-			"net.hexage.evac.hd",
-			"net.hexage.radiant.hd",
-			"net.hexage.robotek.hd"
-			
+		"beril.mootor.gmc",
+		"com.angrymobgames.muffinknight",
+		"com.bringmore.huomieqiangshouer",
+		"com.dotemu.rtype",
+		"com.FDGEntertainment.BeyondYnthXmas",
+		"com.galapagossoft.trialx2_gl2",
+		"com.hg.vikingfree",
+		"com.kumobius.android.game",
+		"com.madfingergames.SamuraiIIAll",
+		"com.madfingergames.shadowgun",
+		"com.meganoid.engine",
+		"com.mobicle.darkbladeOasis",
+		"com.orangepixel.gunslugs",
+		"com.orangepixel.incfree",
+		"com.orangepixel.meganoid2",
+		"com.orangepixel.neoteriafree",
+		"com.robotinvader.knightmare",
+		"com.rockstar.gta3",
+		"com.rockstargames.gtavc",
+		"com.sega.sonic1",
+		"com.sega.sonic4ep2",
+		"com.sega.sonic4epi",
+		"com.sega.soniccd",
+		"com.silvertree.cordy",
+		"com.silvertree.cordy2",
+		"com.silvertree.sleepyjack",
+		"com.vectorunit.blue",
+		"fishnoodle.canabalt",
+		"jp.co.sega.vtc",
+		"net.hexage.evac.hd",
+		"net.hexage.radiant.hd",
+		"net.hexage.robotek.hd"
+
 		};
 
 	@Override
@@ -121,6 +127,9 @@ public class JnsIMECoreService extends Service {
 	}
 
 	@SuppressLint("HandlerLeak")
+	/**
+	 *  Êý¾Ý´¦Àíloop
+	 */
 	private void startDataProcess()
 	{
 		DataProcessHandler = new Handler()
@@ -155,6 +164,10 @@ public class JnsIMECoreService extends Service {
 			}
 		};
 	}
+	/**
+	 * Ó¦ÓÃjni³õÊ¼»¯µÄÈë¿Ú
+	 * @param context
+	 */
 	private void initJni(Context context)
 	{
 		if(initialed)
@@ -183,6 +196,9 @@ public class JnsIMECoreService extends Service {
 		InputAdapter.getKeyThreadStart();
 	}
 	@SuppressLint({ "HandlerLeak", "HandlerLeak", "HandlerLeak" })
+	/**
+	 *	µ¯³öÊÇ·ñroot³É¹¦µÄ¶Ô»°¿òÌáÊ¾
+	 */
 	private void CheckInit()
 	{
 		final OnClickListener ocl = new OnClickListener()
@@ -204,7 +220,7 @@ public class JnsIMECoreService extends Service {
 					intent.setClassName("com.android.browser", "com.android.browser.BrowserActivity");  
 					intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					JnsIMECoreService.this.startActivity(intent);  
-					*/
+					 */
 					break;
 				}
 				alertDialogShow = false;
@@ -224,6 +240,7 @@ public class JnsIMECoreService extends Service {
 					Toast.makeText(JnsIMECoreService.this, "root succese", Toast.LENGTH_LONG).show();
 					break;
 				case JnsIMECoreService.ROOT_FAILED:
+					/*
 					if(alertDialogEnable)
 					{	
 						Dialog dialog = new AlertDialog.Builder(JnsIMECoreService.this).setMessage(JnsIMECoreService.this.getString(R.string.root_notice)).setNegativeButton("I Get it", ocl).create();
@@ -250,6 +267,14 @@ public class JnsIMECoreService extends Service {
 							alertDialogShow = true;
 						}
 					}
+					 */
+					if(!alertDialogShow)
+					{	
+						Intent in = new Intent(JnsIMECoreService.this, JnsIMERootNotice.class);
+						in.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						JnsIMECoreService.this.startActivity(in);
+						alertDialogShow = true;
+					}
 					break;
 				}
 				super.handleMessage(msg);
@@ -257,6 +282,11 @@ public class JnsIMECoreService extends Service {
 		};
 	}
 	@SuppressWarnings("deprecation")
+	/**
+	 * ÓÃÓÚ½«Ó¦ÓÃÍ¼±êÏÔÊ¾ÔÚ×´Ì¬À¸
+	 * 
+	 * @param info
+	 */
 	public  void updateNotification(String info) {
 		NotificationManager notificationManager = (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);
 		Notification notification = new Notification(R.drawable.ic_launcher, this.getString(R.string.app_name) + info, System.currentTimeMillis());
@@ -298,7 +328,7 @@ public class JnsIMECoreService extends Service {
 				null, null, null, "_description");
 		cursor.moveToFirst();
 		while(!cursor.isLast())
-		//for(int i = 0; i < mappingFiles.length; i++)
+			//for(int i = 0; i < mappingFiles.length; i++)
 		{
 			String apkname = cursor.getString(cursor.getColumnIndex("_name"));
 			JnsEnvInit.movingFile(this.getFilesDir()+"/"+ apkname + ".keymap", apkname+ ".keymap") ;

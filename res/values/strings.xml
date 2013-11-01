@@ -17,6 +17,7 @@
     <string name="help">Help</string>
     <string name="screen_shot">Waiting for ScreenShot</string>
     <string name="save_notice">Save this config?</string>
+    <string name="click_to_change">Click to change InputMethod</string>
     <string name="root_notice">Can not exec su, You need to root your device before use this apk
 
         </string>
@@ -25,12 +26,31 @@
 	    \t 1.Before use The Viaplay GameCenter,you should use apps to root the device.\n
 	   \t  2.Make sure Viaplay GameCenter is the current InputMethod.\n
 	    \t 3.Touch mapping:\n
-	    	\t \t       a. Press search key to start the Mapping UI.\n
+	    	\t \t       a. Press  "select" &amp; "start" key to start the Mapping UI.\n
 	    	\t \t      b. Touch the area you want to map, and then press a key which you want\n 
 	    	\t \t       to mapping with the screen area.\n
 	    	\t \t       c. If you want to mapping the Joysticks, you should touch at the center\n
-	    	\t \t       of the Virtual joystick,and then drag to adjust the area size. Press \n
-	    	\t \t       search key to confirm you Mapping.\n
+	    	\t \t       of the Virtual joystick,and then drag to adjust the area size. Move \n
+	    	\t \t       the jostick to confirm you Mapping.\n
 	    	\t \t       d. Click the save button to save you Mapping. \n</string>
+<string name="root_device">
+	 \t 您的设备尚未获取root权限，暂不能使用Viaplay Center的触控/按键映射等高级功能，因此暂只支持有限的游戏。 \n
+	 \n
+	 \t *未获取root权限\n
+	 \t Root后可使用更多高级功能\n	  
+	 \n
+	 \t *获取root工具\n
+	 \t  推荐Root工具1（root大师）：http://www.mgyun.com/Function/vroot \n
+	 \t 推荐Root工具2（360一键root）：http://shuaji.360.cn/root/ \n
+	 \t 推荐Root工具3（腾讯一键root工具）：http://sj.qq.com/oneroot/ \n
+	 \n
+	 \t *什么是root\n
+	 \t 类似Windows电脑上的管理员权限，获取权限后即可使用Viaplay GameCenter提供的触控/按键映射等高级功能 \n
+	  \t 以支持更多的游戏，也可以用管理工具卸载无用的系统应用，禁止软件联网，拦截恶意广告等。\n
+	  \n
+	  \t *root前需注意\n
+	  \t 建议使用不常用的SD卡，以免数据丢失\n
+	  \t 请提前备份通讯录、短信等重要数据。 \n  
+	</string>
 
 </resources>

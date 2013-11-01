@@ -27,50 +27,57 @@ import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 
-public class JnsIMEGameListActivity extends Activity implements OnItemClickListener{ 
+/**
+ * 主界面的游戏列表activity
+ * 
+ * @author Steven
+ *
+ */
+
+public class JnsIMEGameListActivity extends Activity{ 
 
 	private JnsIMEPopAddAdapter popAdapter; 
 	public static JnsIMEGameListAdapter gameAdapter;
 	private ListView gameList;
 	Dialog adddialog;
 	private  ImageView defautCb[] = new ImageView[4];
-	private  Button defaultD[] = new Button[4];
-	private  Button defaultMap[] = new Button[4];
-
+    private  Button defaultD[] = new Button[4];
+    private  Button defaultMap[] = new Button[4];
+	
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+	  public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        
+        setContentView(R.layout.activity_game);
+        gameList = (ListView) this.findViewById(R.id.gamelist);
+        Button add = (Button) this.findViewById(R.id.add_game);
+        defautCb[0] = (ImageView) this.findViewById(R.id.dian_c1);
+        defautCb[1] = (ImageView) this.findViewById(R.id.dian_c2);
+        defautCb[2] = (ImageView) this.findViewById(R.id.dian_c3);
+        defautCb[3] = (ImageView) this.findViewById(R.id.dian_c4);
+        defaultD[0] = (Button) this.findViewById(R.id.dian1);
+        defaultD[1] = (Button) this.findViewById(R.id.dian2);
+        defaultD[2] = (Button) this.findViewById(R.id.dian3);
+        defaultD[3] = (Button) this.findViewById(R.id.dian4);
+        defaultMap[0] = (Button) this.findViewById(R.id.default_keymapping1);
+        defaultMap[1] = (Button) this.findViewById(R.id.default_keymapping2);
+        defaultMap[2] = (Button) this.findViewById(R.id.default_keymapping3);
+        defaultMap[3] = (Button) this.findViewById(R.id.default_keymapping4);
 
-		setContentView(R.layout.activity_game);
-		gameList = (ListView) this.findViewById(R.id.gamelist);
-		Button add = (Button) this.findViewById(R.id.add_game);
-		defautCb[0] = (ImageView) this.findViewById(R.id.dian_c1);
-		defautCb[1] = (ImageView) this.findViewById(R.id.dian_c2);
-		defautCb[2] = (ImageView) this.findViewById(R.id.dian_c3);
-		defautCb[3] = (ImageView) this.findViewById(R.id.dian_c4);
-		defaultD[0] = (Button) this.findViewById(R.id.dian1);
-		defaultD[1] = (Button) this.findViewById(R.id.dian2);
-		defaultD[2] = (Button) this.findViewById(R.id.dian3);
-		defaultD[3] = (Button) this.findViewById(R.id.dian4);
-		defaultMap[0] = (Button) this.findViewById(R.id.default_keymapping1);
-		defaultMap[1] = (Button) this.findViewById(R.id.default_keymapping2);
-		defaultMap[2] = (Button) this.findViewById(R.id.default_keymapping3);
-		defaultMap[3] = (Button) this.findViewById(R.id.default_keymapping4);
-
-		showGameList(gameList);
-		chageDefaultCheckBox(JnsIMECoreService.currentDeaultIndex);
-		add.setOnClickListener(ocl);
-		defaultD[0].setOnClickListener(ocl);
-		defaultD[1].setOnClickListener(ocl);
-		defaultD[2].setOnClickListener(ocl);
-		defaultD[3].setOnClickListener(ocl);
-		defaultMap[0].setOnClickListener(ocl);
-		defaultMap[1].setOnClickListener(ocl);
-		defaultMap[2].setOnClickListener(ocl);
-		defaultMap[3].setOnClickListener(ocl);
-		JnsIMECoreService.activitys.add(this);
-	}
-
+        showGameList(gameList);
+        chageDefaultCheckBox(JnsIMECoreService.currentDeaultIndex);
+        add.setOnClickListener(ocl);
+        defaultD[0].setOnClickListener(ocl);
+        defaultD[1].setOnClickListener(ocl);
+        defaultD[2].setOnClickListener(ocl);
+        defaultD[3].setOnClickListener(ocl);
+        defaultMap[0].setOnClickListener(ocl);
+        defaultMap[1].setOnClickListener(ocl);
+        defaultMap[2].setOnClickListener(ocl);
+        defaultMap[3].setOnClickListener(ocl);
+        JnsIMECoreService.activitys.add(this);
+    }
+	
 	private void chageDefaultCheckBox(int index)
 	{
 		defautCb[0].setVisibility(View.GONE);
@@ -85,7 +92,7 @@ public class JnsIMEGameListActivity extends Activity implements OnItemClickListe
 			JnsIMECoreService.aph = new AppHelper(this);
 		AppHelper aph = JnsIMECoreService.aph;
 		Cursor cursor = aph.Qurey(null);
-		gameAdapter = new JnsIMEGameListAdapter(cursor, this);
+	    gameAdapter = new JnsIMEGameListAdapter(cursor, this);
 		lv.setAdapter(gameAdapter);
 		lv.setOnItemClickListener(new OnItemClickListener()
 		{
@@ -235,11 +242,4 @@ public class JnsIMEGameListActivity extends Activity implements OnItemClickListe
 		gameAdapter.setCursor(cursor);
 		gameAdapter.notifyDataSetChanged();
 	}
-
-	@Override
-	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-		// TODO Auto-generated method stub
-
-	}
-
 }

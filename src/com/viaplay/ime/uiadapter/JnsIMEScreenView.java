@@ -22,46 +22,54 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 
+/**
+ * 触摸配置时显示的配置点的View
+ * 
+ * @author Steven.xu
+ *
+ */
 public class JnsIMEScreenView extends View implements Runnable {
+
 	private static final String TAG = "JnsIMEScreenView";
-	@SuppressWarnings("unused")
-	private String msg = "";
+
+	/**
+	 *  配置区域的中心点x坐标
+	 */
 	private float tx;
+	/**
+	 *  配置区域的中心点y坐标
+	 */
 	private float ty;
+	/**
+	 *  配置区域的半径
+	 */
 	private float radius = 30;
-	@SuppressWarnings("unused")
-	private int currentBitmapId;
+	/**
+	 *  要配置的区域类型，TYPE_LEFT_JOYSTICK ，TYPE_RIGHT_JOYSTICK，或者TYPE_OTHERS
+	 */
 	private float type =JnsIMEPosition.TYPE_OTHERS;
 	private boolean isCircle = false;
+	/**
+	 *  标记是否需要刷新界面
+	 */
 	private boolean drawable = false;
+	/**
+	 *  当前绘制的时候为尚未配置的点
+	 */
 	private boolean drawPos = false;
+	@SuppressWarnings("unused")
+	private int currentBitmapId;
 	private Paint areaPaint;
 	private Paint infoPaint;
 	@SuppressWarnings("unused")
 	private Rect rect;
 	public static Context context;
-	public List<JnsIMEPosition> posList;
+
 	public final static int RES_SIZE = 17;
 	static Bitmap[] bitmap = new Bitmap[RES_SIZE];
-
-	public static final int BUTTOM_BG = 0;
-	public static final int BUTTON_A = 1;
-	public static final int BUTTON_B = 2;
-	public static final int BUTTON_X = 3;
-	public static final int BUTTON_Y = 4;
-	public static final int BUTTON_UP = 5;
-	public static final int BUTTON_DOWN = 6;
-	public static final int BUTTON_RIGHT = 7;
-	public static final int BUTTON_LEFT = 8;
-	public static final int BUTTON_SELECT = 9;
-	public static final int BUTTON_START = 10;
-	public static final int BUTTON_L1 = 11;
-	public static final int BUTTON_L2 = 12;
-	public static final int BUTTON_R1 = 13;
-	public static final int BUTTON_R2 = 14;
-	public static final int STICK_L = 15;
-	public static final int STICK_R = 16;
-	
+	/**
+	 *  操控器对应按键的图片资源ID
+	 */
 	private static int[] resId = 
 	{
 		R.drawable.pos,
@@ -83,6 +91,81 @@ public class JnsIMEScreenView extends View implements Runnable {
 		R.drawable.r_stick
 	};
 	
+	/**
+	 *  需要显示的配置区域的绘制信息列表
+	 */
+	public List<JnsIMEPosition> posList;
+
+    /**
+     *  图片资源未配置时的ID号，对应的资源见 {@link resId}
+     */
+	public static final int BUTTOM_BG = 0;
+	 /**
+     *  图片资源A键的ID号，对应的资源见 {@link resId}
+     */
+	public static final int BUTTON_A = 1;
+	 /**
+     *  图片资源B键的ID号，对应的资源见 {@link resId}
+     */
+	public static final int BUTTON_B = 2;
+	 /**
+     *  图片资源X键的ID号，对应的资源见 {@link resId}
+     */
+	public static final int BUTTON_X = 3;
+	 /**
+     *  图片资源Y键的ID号，对应的资源见 {@link resId}
+     */
+	public static final int BUTTON_Y = 4;
+	 /**
+     *  图片资源UP键的号，对应的资源见 {@link resId}
+     */
+	public static final int BUTTON_UP = 5;
+	 /**
+     *  图片资源DOWN键的ID号，对应的资源见 {@link resId}
+     */
+	public static final int BUTTON_DOWN = 6;
+	 /**
+     *  图片资源RIGHT键的ID号，对应的资源见 {@link resId}
+     */
+	public static final int BUTTON_RIGHT = 7;
+	 /**
+     *  图片资源LEFT键的ID号，对应的资源见 {@link resId}
+     */
+	public static final int BUTTON_LEFT = 8;
+	 /**
+     *  图片资源SELECT键的ID号，对应的资源见 {@link resId}
+     */
+	public static final int BUTTON_SELECT = 9;
+	 /**
+     *  图片资源START键的ID号，对应的资源见 {@link resId}
+     */
+	public static final int BUTTON_START = 10;
+	 /**
+     *  图片资源L1键的ID号，对应的资源见 {@link resId}
+     */
+	public static final int BUTTON_L1 = 11;
+	 /**
+     *  图片资源L2键的ID号，对应的资源见 {@link resId}
+     */
+	public static final int BUTTON_L2 = 12;
+	 /**
+     *  图片资源R1键的ID号，对应的资源见 {@link resId}
+     */
+	public static final int BUTTON_R1 = 13;
+	 /**
+     *  图片资源R2键的ID号，对应的资源见 {@link resId
+     */
+	public static final int BUTTON_R2 = 14;
+	 /**
+     *  图片资源左摇杆键的ID号，对应的资源见 {@link resId}
+     */
+	public static final int STICK_L = 15;
+	 /**
+     *  图片资源右摇杆键的ID号，对应的资源见 {@link resId}
+     */
+	public static final int STICK_R = 16;
+
+
 	public static void loadTpMapRes()
 	{
 		 BitmapFactory.Options options=new BitmapFactory.Options(); 
@@ -95,6 +178,11 @@ public class JnsIMEScreenView extends View implements Runnable {
 			 bitmap[i] = BitmapFactory.decodeStream(is,null,options);
 		 }
 	}
+	/**
+	 * 将触摸配置文件的区域信息转换为对应的按键图片资源文件
+	 * 
+	 * @param 区域配置信息
+	 */
 	private void loadOldKey(JnsIMEProfile  profile)
 	{
 		 JnsIMEPosition bop = new JnsIMEPosition();
@@ -391,12 +479,8 @@ public class JnsIMEScreenView extends View implements Runnable {
 	}
 	public JnsIMEScreenView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		areaPaint = new Paint();
-		areaPaint.setColor(Color.RED);
-		infoPaint = new Paint();
-		infoPaint.setColor(Color.RED);
 		posList = new ArrayList<JnsIMEPosition>();
-		rect = new Rect();
+		new Rect();
 		for(JnsIMEProfile profile : JnsIMECoreService.keyList)
 		{
 			loadOldKey(profile);
@@ -404,16 +488,20 @@ public class JnsIMEScreenView extends View implements Runnable {
 		// TODO Auto-generated constructor stub
 		new Thread(this).start();
 	}
-	
+
 	@Override
 	public void onDraw(Canvas canvas) {
-	//	drawTouchArea(canvas);
+		//	drawTouchArea(canvas);
 		drawInfo(canvas);
 		drawCurrentArea(canvas);
 		drawable=false;
 	}
-	
-	
+
+	/**
+	 * 绘制当前选择的触摸区域标示
+	 * 
+	 * @param canvas 由onDraw传入
+	 */
 	private void drawCurrentArea(Canvas canvas) {
 		if (!drawable) return;
 		Paint paint = new Paint();
@@ -429,11 +517,11 @@ public class JnsIMEScreenView extends View implements Runnable {
 				tx - radius,ty - radius, null);
 		}
 	}
-	
-	public void setColor(int color) {
-		areaPaint.setColor(color);
-	}
-	
+	/**
+	 * 绘制已经配置过的区域
+	 * 
+	 * @param canvas 由onDraw传入
+	 */
 	private void drawInfo(Canvas canvas) {
 		if (posList == null) return;
 		for (int i = 0; i < posList.size(); i ++) {
@@ -456,13 +544,7 @@ public class JnsIMEScreenView extends View implements Runnable {
 			}	
 		}
 	}
-	
-	public void drawCircle(float x, float y) {
-		tx = x;
-		ty = y;
-		radius = 30;
-		isCircle = false;
-	}
+
 	public void drawBitmap(float x, float y, int id) {
 		tx = x;
 		ty = y;
@@ -475,30 +557,27 @@ public class JnsIMEScreenView extends View implements Runnable {
 		radius = r;
 		isCircle = true;
 	}
-	
+
 	public float getTouchX() {
 		return tx;
 	}
-	
+
 	public float getTouchY() {
 		return ty;
 	}
-	
+
 	public float getTouchR() {
 		return isCircle ? radius : 0;
 	}
-	
+
 	public void setCircleType(float type) {
 		this.type = type;
 	}
-	
+
 	public float getCircleType() {
 		return type; 
 	}
 	
-	public void drawInfo(String msg) {
-		this.msg = msg;
-	}
 	
 	public void drawNow(boolean drawable, boolean drawPos) {
 		this.drawable = drawable;

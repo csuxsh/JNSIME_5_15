@@ -12,9 +12,16 @@ import java.io.InputStreamReader;
 import com.viaplay.ime.JnsIMERoot;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 
+/**
+ * 应用的运行环境初始化类
+ * 
+ * @author steven.xu
+ *
+ */
 public class JnsEnvInit {
 	static private Process process = null;
 	static private Process serverProcess = null;
@@ -24,8 +31,13 @@ public class JnsEnvInit {
 	private final static String TAG = "JnsEnvInit";
 	public static boolean rooted = false;
 
-
-
+   
+	/**
+	 * 用于检测 {@link process} process的运行的错误状况。主要用于调试。
+	 * 
+	 * @author steven.xu
+	 *
+	 */
 	private static  class ErrorOutThread extends  Thread
 	{
 		private  static ErrorOutThread  mErrorOutThread = null;
@@ -105,6 +117,11 @@ public class JnsEnvInit {
 				runJnsInput();
 		return false;
 	}
+	/**
+	 *  修改/dev/input下设备文件读写权限，需root，蓝牙版本可以不执行。
+	 * 
+	 * @return 
+	 */
 	public static boolean root()
 	{
 		try {
@@ -161,8 +178,11 @@ public class JnsEnvInit {
 			e.printStackTrace();
 			return false;
 		}
-		return true;
-	}
+	/**
+	 * 检查设备是否已经获得root授权
+	 * 
+	 * @return 获得root返回true,否则返回false
+	 */
 	private static boolean checkRooted(DataOutputStream dos, DataInputStream dis)
 	{
 		try {

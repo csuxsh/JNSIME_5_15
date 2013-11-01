@@ -1,5 +1,12 @@
 package com.viaplay.ime.jni;
 
+/**
+ *  存储操控器发来的摇杆的数据的数据结构
+ * 
+ * @author Steven
+ *
+ */
+
 public class JoyStickEvent {
 	
 	public JoyStickEvent()

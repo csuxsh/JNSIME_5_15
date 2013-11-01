@@ -1,5 +1,10 @@
 package com.viaplay.ime.bean;
 
+/**
+ * 瑙︽懜鏄犲皠鐨勯厤缃枃浠? * 
+ * @author Steven
+ *
+ */
 
 public class JnsIMEProfile {
 	public static final int LEFT_JOYSTICK = 0;

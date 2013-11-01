@@ -27,15 +27,21 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
- * 用于显示添加界面的adapter
+ * ?????????adapter
+ * 
+ * @author Steven.xu
  */
 
 public class JnsIMEPopAddAdapter extends BaseAdapter {
 
 	LayoutInflater inflater;
 	public List<Map<String, Object>> apps;
+	/**
+	 *  ????????????
+	 */
 	public static Map<Integer, Boolean> isSelected; 
 	PackageManager pm;
+	
 	@Override
 	public int getCount() {
 		// TODO Auto-generated method stub
@@ -94,13 +100,19 @@ public class JnsIMEPopAddAdapter extends BaseAdapter {
 			map.put("resolveInfo", ri);
 			apps.add(map);
 
-			//这儿定义isSelected这个map是记录每个listitem的状态，初始状态全部为false。      
+			//????isSelected??map?????listitem???,???????false?      
 			for (int i = 0; i < apps.size(); i++) {    
 				isSelected.put(i, false);    
 			}   
 		}
 	}    
-	
+	/**
+	 * ??????????????
+	 * 
+	 * @param cusor ??????????
+	 * @param pkgname ???????
+	 * @return
+	 */
 	private  boolean  searchApp(Cursor cusor, String pkgname) 
 	{
 		cusor.moveToFirst();

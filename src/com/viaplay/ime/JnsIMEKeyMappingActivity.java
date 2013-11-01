@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,7 +15,6 @@ import com.viaplay.im.hardware.JoyStickTypeF;
 import com.viaplay.ime.R;
 import com.viaplay.ime.bean.JnsIMEKeyMap;
 import com.viaplay.ime.bean.KeyBoard;
-import com.viaplay.ime.uiadapter.JnsIMEGamePadMapAdapter;
 import com.viaplay.ime.uiadapter.JnsIMEKeyMapView;
 import com.viaplay.ime.uiadapter.JnsIMEKeyboardView;
 import com.viaplay.ime.util.DrawableUtil;
@@ -27,8 +25,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -37,13 +33,12 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
- * KeymappingµÄAcivity
+ * Keymapping的Acivity
  *  
  * @author Steven
  *
@@ -58,7 +53,6 @@ public class JnsIMEKeyMappingActivity extends Activity implements OnClickListene
 	JnsIMEKeyboardView keyboard_1;
 	JnsIMEKeyboardView keyboard_gamepad;
 	JnsIMEKeyboardView current_keyboard;
-	JnsIMEGamePadMapAdapter adapter;
 	JnsIMEKeyMapView keyMapView;
 	JnsIMEKeyMap currentet_keymap = null;
 	@SuppressLint("UseSparseArrays")
@@ -104,7 +98,8 @@ public class JnsIMEKeyMappingActivity extends Activity implements OnClickListene
 	//	imageView1.setImageBitmap(bm)
 		keyMapView = (JnsIMEKeyMapView) this.findViewById(R.id.key_edit_grid);	
 		keyMapView.setHardWare(JnsIMEKeyMapView.JoyStickTypeFID);
-		loadFile();
+		if(!loadFile())
+			Log.d("error", "load file failed");
 		keyMapView.setLableDisplay(mappedKey);
 		keyMapView.postInvalidate();
 		KeyBoard keyboard = new KeyBoard(KeyBoard.LAYOUT_ABC_INDEX);
@@ -136,9 +131,9 @@ public class JnsIMEKeyMappingActivity extends Activity implements OnClickListene
 
 	} 
 	/**
-	 * ¼ÓÔØÐèÒªÅäÖÃµÄÓ¦ÓÃ¶ÔÓ¦µÄÅäÖÃÎÄ¼þ
+	 * 加载需要配置的应用对应的配置文件
 	 * 
-	 * @return ¼ÓÔØ³É¹¦·µ»Øtrue,¼ÓÔØÊ§°Ü·µ»Øfalse
+	 * @return 加载成功返回true,加载失败返回false
 	 */
 	private boolean loadFile()
 	{
@@ -178,9 +173,7 @@ public class JnsIMEKeyMappingActivity extends Activity implements OnClickListene
 			return false;
 		}
 	}
-	/*
-	 *  ����GAS �� BRAKE��֧��
-	 */
+
 	private boolean saveFile()
 	{
 		try {
@@ -219,7 +212,7 @@ public class JnsIMEKeyMappingActivity extends Activity implements OnClickListene
 		}
 
 
-		// »ñµÃµ±Ç°°´¼üµÄlableºÍkeycodeÐÅÏ¢
+		// 获得当前按键的lable和keycode信息
 		Entry<String, Integer> entry=
 			current_keyboard.findKeyCode((int)event.getX(), (int)event.getY(), event.getAction());
 		if(entry != null && entry.getKey().equals("123"))
@@ -241,11 +234,11 @@ public class JnsIMEKeyMappingActivity extends Activity implements OnClickListene
 			currentet_keymap.setLable(entry.getKey());
 			currentet_keymap.setKeyCode(entry.getValue());
 
-			// ÅÐ¶Ïµ±Ç°°´¼üÖµÊÇ·ñÒÑ¾­±»ÅäÖÃ¹ý
+			// 判断当前按键值是否已经被配置过
 			/*
 			if(mappedKey.containsKey((currentet_keymap.getLable())))
 			{		
-				//½«Ô­À´ÅäÖÃµÄµØ·½ÖÃ¿Õ
+				//将原来配置的地方置空
 				int perButtonIndex = mappedKey.get(currentet_keymap.getLable());
 				keyMapView.gamePadButoonLable[perButtonIndex/keyMapView.diplayRow][perButtonIndex%keyMapView.diplayRow] = "";
 				mappedKey.remove(currentet_keymap.getLable());
@@ -280,7 +273,8 @@ public class JnsIMEKeyMappingActivity extends Activity implements OnClickListene
 		case R.id.key_map_reset:
 			keys.clear();
 			mappedKey.clear();
-			loadFile();
+			if(!loadFile())
+				Log.d("error", "load file failed");
 			keyMapView.setLableDisplay(mappedKey);
 			keyMapView.postInvalidate();
 			break;

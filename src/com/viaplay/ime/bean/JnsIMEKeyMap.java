@@ -1,5 +1,12 @@
 package com.viaplay.ime.bean;
 
+/**
+ *  映射信息的数据结构,不同的硬件需要自行继承这个类,并实现getScanCode方法
+ *  
+ *  
+ * @author Administrator
+ *
+ */
 public abstract class JnsIMEKeyMap {
 	
 	private int gamPadIndex;

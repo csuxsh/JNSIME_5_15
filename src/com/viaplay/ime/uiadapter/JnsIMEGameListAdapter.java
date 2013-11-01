@@ -23,11 +23,16 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/**
+ * ?¯??????那?車??﹞芍D㊣赤米?那那???¯
+ * 
+ * @author Steven.xu
+ *
+ */
 public class JnsIMEGameListAdapter extends BaseAdapter implements OnClickListener{
 
 	final static String TAG = "JNS_GAME_ADAPTER";
@@ -36,16 +41,16 @@ public class JnsIMEGameListAdapter extends BaseAdapter implements OnClickListene
 	private Cursor cursor;
 	private ImageView icon;
 	private TextView title;
-
+	private ImageButton  get;
+	private ImageButton play;
+	private ImageButton  keymapping;
+	private ImageButton  delete;
+	private PackageManager pm;
+	
 	public void setCursor(Cursor cursor) {
 		this.cursor = cursor;
 	}
 
-	private ImageButton get;
-	private ImageButton play;
-	private ImageButton keymapping;
-	private ImageButton delete;
-	private PackageManager pm;
 
 	public JnsIMEGameListAdapter(Cursor cursor, Activity activity)
 	{
@@ -64,8 +69,7 @@ public class JnsIMEGameListAdapter extends BaseAdapter implements OnClickListene
 	@Override
 	public Object getItem(int arg0) {
 		// TODO Auto-generated method stub
-		 cursor.moveToPosition(arg0);
-		 return cursor;
+		return cursor.moveToPosition(arg0);
 	}
 
 	@Override

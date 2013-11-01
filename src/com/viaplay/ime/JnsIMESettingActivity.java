@@ -13,7 +13,12 @@ import android.view.MotionEvent;
 
 import android.util.Log;
 
-
+/**
+ * Ö÷½çÃæTabActivityµÄSettingÒ³
+ * 
+ * @author Steven
+ *
+ */
 
 public class JnsIMESettingActivity extends PreferenceActivity implements OnPreferenceClickListener{
 	public static final String TAG = "BlueoceanControllerActivity";

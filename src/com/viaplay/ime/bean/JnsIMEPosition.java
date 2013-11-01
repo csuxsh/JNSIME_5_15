@@ -1,5 +1,12 @@
 package com.viaplay.ime.bean;
 
+/**
+ * 触摸配置时对应点绘制信息的数据结构
+ * 
+ * 
+ * @author Seven
+ *
+ */
 public class JnsIMEPosition {
 	public static final int TYPE_LEFT_JOYSTICK = 0;
 	public static final int TYPE_RIGHT_JOYSTICK = 1;

@@ -1,0 +1,55 @@
+<resources>
+
+    <string name="app_name">Viaplay 游戏中心</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">设置</string>
+    <string name="title_activity_main">Viaplay 游戏中心</string>
+    <string name="invalid_joystick_area">无效的摇杆区域</string>
+    <string name="has_right_joystick">已经存在了右摇杆</string>
+    <string name="right_joystick">右摇杆</string>
+    <string name="has_left_joystick">已经存在了左摇杆</string>
+    <string name="left_joystick">左摇杆</string>
+    <string name="perference_title">JnsIMESettings</string>
+    <string name="about">关于</string>
+    <string name="version">版本号</string>
+    <string name="version_num">Viaplay GameCenter V1.02 Powered by Viaplay Corporation</string>
+    <string name="quit">退出</string>
+    <string name="help">帮助</string>
+    <string name="screen_shot">等待截图</string>
+    <string name="save_notice">是否保存配置?</string>
+     <string name="click_to_change">点击切换输入法</string>
+    <string name="root_notice">您的设备尚未获取root权限，暂不能使用Viaplay Center的触控/按键映射等高级功能，因此暂只支持有限的游戏
+
+        </string>
+    <string name="changeime">键盘  &amp; 输入法</string>
+    <string name="Introduction">	    \n\t 操作说明:\n\n
+	    \t 1.在使用本软件前，需要先对设备进行root.\n
+	   \t  2.请将输入法设置为Viaplay GameCenter(注意：设置为本输入法之后，\n
+	   \t 仅用于游戏功能，无法输入文字，要输入文字还需要切换回原来的输入法！).\n
+	    \t 3.触摸按键映射:\n
+	    	\t \t       a.同时按下“select”和“start”，待出现截图界面之后松开.\n
+	    	\t \t      b. 点击屏幕上您需要配置的触摸按键区域, 然后按下操控器上您t\n 
+	    	\t \t       想要映射的按键以便于让屏幕和手柄映射起来.\n
+	    	\t \t       c. 如果您需要配置摇杆，您需要触摸到屏幕上的虚拟摇杆区域\n
+	    	\t \t       然后拖动黑色圆圈来调整大小. 摇动您需要映射的摇杆以配置摇杆.\n
+	    	\t \t       d. 点击“保存”键来保存配置 。\n</string>
+	<string name="root_device">
+	 \t 您的设备尚未获取root权限，暂不能使用Viaplay Center的触控/按键映射等高级功能，因此暂只支持有限的游戏。 \n
+	 \n
+	 \t *未获取root权限\n
+	 \t Root后可使用更多高级功能\n	  
+	 \n
+	 \t *获取root工具\n
+	 \t  推荐Root工具1（root大师）：http://www.mgyun.com/Function/vroot \n
+	 \t 推荐Root工具2（360一键root）：http://shuaji.360.cn/root/ \n
+	 \t 推荐Root工具3（腾讯一键root工具）：http://sj.qq.com/oneroot/ \n
+	 \n
+	 \t *什么是root\n
+	 \t 类似Windows电脑上的管理员权限，获取权限后即可使用Viaplay GameCenter提供的触控/按键映射等高级功能 \n
+	  \t 以支持更多的游戏，也可以用管理工具卸载无用的系统应用，禁止软件联网，拦截恶意广告等。\n
+	  \n
+	  \t *root前需注意\n
+	  \t 建议使用不常用的SD卡，以免数据丢失\n
+	  \t 请提前备份通讯录、短信等重要数据。 \n  
+	</string>
+</resources>

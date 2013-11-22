@@ -83,43 +83,6 @@ public class JnsIMECoreService extends Service {
 	public static  Queue<JoyStickEvent> stickQueue = new ConcurrentLinkedQueue<JoyStickEvent>();
 	public static int currentDeaultIndex = 0;
 	static List<Activity> activitys = new ArrayList<Activity>();
-	private final static String mappingFiles[] =
-		{
-		"beril.mootor.gmc",
-		"com.angrymobgames.muffinknight",
-		"com.bringmore.huomieqiangshouer",
-		"com.dotemu.rtype",
-		"com.FDGEntertainment.BeyondYnthXmas",
-		"com.galapagossoft.trialx2_gl2",
-		"com.hg.vikingfree",
-		"com.kumobius.android.game",
-		"com.madfingergames.SamuraiIIAll",
-		"com.madfingergames.shadowgun",
-		"com.meganoid.engine",
-		"com.mobicle.darkbladeOasis",
-		"com.orangepixel.gunslugs",
-		"com.orangepixel.incfree",
-		"com.orangepixel.meganoid2",
-		"com.orangepixel.neoteriafree",
-		"com.robotinvader.knightmare",
-		"com.rockstar.gta3",
-		"com.rockstargames.gtavc",
-		"com.sega.sonic1",
-		"com.sega.sonic4ep2",
-		"com.sega.sonic4epi",
-		"com.sega.soniccd",
-		"com.silvertree.cordy",
-		"com.silvertree.cordy2",
-		"com.silvertree.sleepyjack",
-		"com.vectorunit.blue",
-		"fishnoodle.canabalt",
-		"jp.co.sega.vtc",
-		"net.hexage.evac.hd",
-		"net.hexage.radiant.hd",
-		"net.hexage.robotek.hd"
-
-		};
-
 	@Override
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
@@ -181,7 +144,7 @@ public class JnsIMECoreService extends Service {
 			msg.what = JnsIMECoreService.ROOT_FAILED;
 			Alerthandle.sendMessage(msg);
 			try {
-				Thread.sleep(3000);
+				Thread.sleep(6000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -237,13 +200,13 @@ public class JnsIMECoreService extends Service {
 				switch(msg.what)
 				{
 				case JnsIMECoreService.ROOT_SUCCESE:
-					Toast.makeText(JnsIMECoreService.this, "root succese", Toast.LENGTH_LONG).show();
+				//	Toast.makeText(JnsIMECoreService.this, "Root Success", Toast.LENGTH_LONG).show();
 					break;
 				case JnsIMECoreService.ROOT_FAILED:
-					/*
+					
 					if(alertDialogEnable)
 					{	
-						Dialog dialog = new AlertDialog.Builder(JnsIMECoreService.this).setMessage(JnsIMECoreService.this.getString(R.string.root_notice)).setNegativeButton("I Get it", ocl).create();
+						Dialog dialog = new AlertDialog.Builder(JnsIMECoreService.this).setMessage(JnsIMECoreService.this.getString(R.string.root_notice)).setNegativeButton(JnsIMECoreService.this.getString(R.string.i_get), ocl).create();
 						dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);  
 
 						WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();    
@@ -267,14 +230,14 @@ public class JnsIMECoreService extends Service {
 							alertDialogShow = true;
 						}
 					}
-					 */
+					 /*
 					if(!alertDialogShow)
 					{	
 						Intent in = new Intent(JnsIMECoreService.this, JnsIMERootNotice.class);
 						in.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 						JnsIMECoreService.this.startActivity(in);
 						alertDialogShow = true;
-					}
+					}*/
 					break;
 				}
 				super.handleMessage(msg);

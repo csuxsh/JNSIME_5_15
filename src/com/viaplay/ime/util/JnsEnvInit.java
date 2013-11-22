@@ -178,6 +178,8 @@ public class JnsEnvInit {
 			e.printStackTrace();
 			return false;
 		}
+		return true;
+	}
 	/**
 	 * 检查设备是否已经获得root授权
 	 * 

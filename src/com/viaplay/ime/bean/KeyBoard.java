@@ -40,7 +40,7 @@ public class KeyBoard {
 		{"L1","L2","","","","","","","R1","R2"},
 		{"","Up","","","","","","GameA","GameB","GameC"},
 		{"Left","Center","Right","Select","","","Start","GameX","GameY","GameZ"},
-		{"","Down","","ThumbL","","","ThumbL","","",""}
+		{"","Down","","ThumbL","","","ThumbR","","",""}
 	};
 	public final static int LAYOUT_ABC_INDEX = 1;
 	public final static int LAYOUT_123_INDEX = 2;	

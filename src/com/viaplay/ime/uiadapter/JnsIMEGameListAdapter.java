@@ -69,7 +69,9 @@ public class JnsIMEGameListAdapter extends BaseAdapter implements OnClickListene
 	@Override
 	public Object getItem(int arg0) {
 		// TODO Auto-generated method stub
-		return cursor.moveToPosition(arg0);
+	cursor.moveToPosition(arg0);
+		return cursor;
+
 	}
 
 	@Override

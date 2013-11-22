@@ -182,6 +182,7 @@ public class JnsIMEInputMethodService extends InputMethodService {
 	}
 	public boolean onKeyDown(int keyCode, KeyEvent event)
 	{
+		/*
 		if(KeyEvent.KEYCODE_SEARCH == keyCode && (!JnsIMECoreService.touchConfiging) && JnsEnvInit.rooted)
 		{
 			if(currentAppName.equals(this.getPackageName()))
@@ -192,6 +193,7 @@ public class JnsIMEInputMethodService extends InputMethodService {
 				return startTpConfig();
 			}
 		}
+		*/
 		if(JnsIMECoreService.touchConfiging)
 			return false;
 		KeyEvent tmpEvent = mathJoyStick(event);

@@ -12,45 +12,32 @@
     <string name="perference_title">JnsIMESettings</string>
     <string name="about">About</string>
     <string name="version">version</string>
-    <string name="version_num">Viaplay GameCenter V1.02 Powered by Viaplay Corporation</string>
+    <string name="version_num">Viaplay GameCenter V 1.04 Powered by Viaplay Corporation</string>
     <string name="quit">Quit</string>
     <string name="help">Help</string>
     <string name="screen_shot">Waiting for ScreenShot</string>
     <string name="save_notice">Save this config?</string>
     <string name="click_to_change">Click to change InputMethod</string>
-    <string name="root_notice">Can not exec su, You need to root your device before use this apk
+    <string name="root_notice">This device can not gain root access and therefore will not operate properly
 
         </string>
+        <string name="i_get">I get it</string>
     <string name="changeime">Keyboard  &amp; Input Method</string>
     <string name="Introduction">	    \n\t Introduction:\n\n
-	    \t 1.Before use The Viaplay GameCenter,you should use apps to root the device.\n
+	    \t 1.Viaplay GameCenter requires a rooted device. Please note that rooting \n
+	    \t your device may void your warranty. Root at your own risk\n
 	   \t  2.Make sure Viaplay GameCenter is the current InputMethod.\n
 	    \t 3.Touch mapping:\n
 	    	\t \t       a. Press  "select" &amp; "start" key to start the Mapping UI.\n
-	    	\t \t      b. Touch the area you want to map, and then press a key which you want\n 
-	    	\t \t       to mapping with the screen area.\n
-	    	\t \t       c. If you want to mapping the Joysticks, you should touch at the center\n
-	    	\t \t       of the Virtual joystick,and then drag to adjust the area size. Move \n
+	    	\t \t      b. Touch the area that you want to map, and then press the key which you want\n 
+	    	\t \t       to mapping with the selected screen area.\n
+	    	\t \t       c. If you want to mapping either Joysticks,  touch at the center of the Virtual\n
+	    	\t \t        joystick,and then drag outward to adjust the area size. Move \n
 	    	\t \t       the jostick to confirm you Mapping.\n
 	    	\t \t       d. Click the save button to save you Mapping. \n</string>
 <string name="root_device">
-	 \t 您的设备尚未获取root权限，暂不能使用Viaplay Center的触控/按键映射等高级功能，因此暂只支持有限的游戏。 \n
-	 \n
-	 \t *未获取root权限\n
-	 \t Root后可使用更多高级功能\n	  
-	 \n
-	 \t *获取root工具\n
-	 \t  推荐Root工具1（root大师）：http://www.mgyun.com/Function/vroot \n
-	 \t 推荐Root工具2（360一键root）：http://shuaji.360.cn/root/ \n
-	 \t 推荐Root工具3（腾讯一键root工具）：http://sj.qq.com/oneroot/ \n
-	 \n
-	 \t *什么是root\n
-	 \t 类似Windows电脑上的管理员权限，获取权限后即可使用Viaplay GameCenter提供的触控/按键映射等高级功能 \n
-	  \t 以支持更多的游戏，也可以用管理工具卸载无用的系统应用，禁止软件联网，拦截恶意广告等。\n
-	  \n
-	  \t *root前需注意\n
-	  \t 建议使用不常用的SD卡，以免数据丢失\n
-	  \t 请提前备份通讯录、短信等重要数据。 \n  
+	 \t Your device has not yet get root permissions, so can not use advanced functions like touch mapping, it would only support limited games. \n
+	
 	</string>
 
 </resources>

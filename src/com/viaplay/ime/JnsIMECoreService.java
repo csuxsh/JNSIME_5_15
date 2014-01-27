@@ -38,10 +38,14 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.inputmethodservice.InputMethodService;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -200,12 +204,18 @@ public class JnsIMECoreService extends Service {
 				switch(msg.what)
 				{
 				case JnsIMECoreService.ROOT_SUCCESE:
-				//	Toast.makeText(JnsIMECoreService.this, "Root Success", Toast.LENGTH_LONG).show();
+					//	Toast.makeText(JnsIMECoreService.this, "Root Success", Toast.LENGTH_LONG).show();
 					break;
 				case JnsIMECoreService.ROOT_FAILED:
-					
+					SharedPreferences sp = JnsIMECoreService.this.getApplicationContext(). getSharedPreferences("popwin", Context.MODE_PRIVATE); 
+					alertDialogEnable = sp.getBoolean("pop", true);
+
 					if(alertDialogEnable)
 					{	
+						SharedPreferences.Editor  edit = sp.edit();
+						edit.putBoolean("pop", false);
+						edit.commit();
+
 						Dialog dialog = new AlertDialog.Builder(JnsIMECoreService.this).setMessage(JnsIMECoreService.this.getString(R.string.root_notice)).setNegativeButton(JnsIMECoreService.this.getString(R.string.i_get), ocl).create();
 						dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);  
 
@@ -230,7 +240,7 @@ public class JnsIMECoreService extends Service {
 							alertDialogShow = true;
 						}
 					}
-					 /*
+					/*
 					if(!alertDialogShow)
 					{	
 						Intent in = new Intent(JnsIMECoreService.this, JnsIMERootNotice.class);
@@ -266,6 +276,20 @@ public class JnsIMECoreService extends Service {
 	{
 		SharedPreferences sp = this.getApplicationContext(). getSharedPreferences("init", Context.MODE_PRIVATE); 
 		SharedPreferences.Editor  edit = sp.edit();
+		SharedPreferences versionsp = this.getApplicationContext(). getSharedPreferences("init", Context.MODE_PRIVATE); 
+		SharedPreferences.Editor  versionedit = sp.edit();
+		PackageManager packageManager = getPackageManager();
+		int cVersionNum = 0;
+		int Version = versionsp.getInt("version", 0);
+		try 
+		{
+			PackageInfo packInfo = packageManager.getPackageInfo(getPackageName(), 0);
+			cVersionNum = packInfo.versionCode;
+		} catch (NameNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		int i = sp.getInt("boolean", 0);
 		if(i == 0)
 		{
@@ -274,12 +298,85 @@ public class JnsIMECoreService extends Service {
 				edit.putInt("boolean", 1);
 				edit.commit();
 				CopyMappings();
+				versionedit.putInt("version", cVersionNum);
+				versionedit.commit();
 			}
 			else
 			{
 				Toast.makeText(this, "Init failed", Toast.LENGTH_SHORT).show();
 			}
 		}
+		else if(Version < cVersionNum)
+		{
+			if(updataDatabase())
+			{	
+				versionedit.putInt("version", cVersionNum);
+				versionedit.commit();
+				Toast.makeText(this, this.getText(R.string.update_list), Toast.LENGTH_SHORT).show();
+			}
+		}
+	}
+	@SuppressLint("SdCardPath")
+	private boolean updataDatabase()
+	{
+		if(!JnsEnvInit.movingFile("/mnt/sdcard/jnsinput/_jns_ime","_jns_ime"))
+		{	
+			Toast.makeText(this, "Copy databases failed", Toast.LENGTH_SHORT).show();
+			return false;
+		}
+		String filename = "/mnt/sdcard/jnsinput/_jns_ime";
+
+		SQLiteDatabase sqLiteDatabase = SQLiteDatabase.openOrCreateDatabase(filename, null);
+		SQLiteDatabase db = JnsIMECoreService.aph.dbh.getReadableDatabase();
+		Cursor cursor= null;
+
+		cursor = sqLiteDatabase.query("_jns_ime", null, null,
+				null, null, null, "_description");
+		cursor.moveToFirst();
+
+		while(!cursor.isLast())
+		{
+			String name = cursor.getString(cursor.getColumnIndex("_name"));
+			String selection[]  = {name};
+			
+			// 获得原数据库游戏列表
+			Cursor tmpC = db.query("_jns_ime", null, "_name=?", selection, null, null, null);
+			
+			// 向数据库中插入更新的游戏内容
+			if(tmpC.getCount() == 0)
+			{	
+				ContentValues cv = new ContentValues();
+				cv.put("_name", cursor.getString(cursor.getColumnIndex("_name")));
+				cv.put("_description", cursor.getString(cursor.getColumnIndex("_description")));
+				cv.put("_exists", true);
+				try 
+				{
+					if(db.insert(DBHelper.TABLE, "", cv) < 0)
+					{	
+						Toast.makeText(this, "Init databases failed", Toast.LENGTH_SHORT).show();
+						return false;
+					}
+					String apkname = cursor.getString(cursor.getColumnIndex("_name"));
+					JnsEnvInit.movingFile(this.getFilesDir()+"/"+ apkname + ".keymap", apkname+ ".keymap") ;
+					JnsEnvInit.movingFile("/mnt/sdcard/jnsinput/app_icon/"+ apkname + ".icon.png", apkname + ".icon.png");
+					tmpC.close();
+				} catch (Exception e) {
+					// TODO: handle exception
+					e.printStackTrace();
+					return false;
+				}
+			}
+			cursor.moveToNext();
+		}
+		cursor.close();
+		cursor = db.query("_jns_ime", null, null,
+				null, null, null, "_description");
+		if(JnsIMEGameListActivity.gameAdapter != null)
+		{
+			JnsIMEGameListActivity.gameAdapter.setCursor(cursor);
+			JnsIMEGameListActivity.gameAdapter.notifyDataSetChanged();
+		}
+		return true;
 	}
 	@SuppressLint("SdCardPath")
 	private void CopyMappings()

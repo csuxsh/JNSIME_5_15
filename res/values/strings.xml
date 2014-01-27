@@ -12,12 +12,13 @@
     <string name="perference_title">JnsIMESettings</string>
     <string name="about">About</string>
     <string name="version">version</string>
-    <string name="version_num">Viaplay GameCenter V 1.07 Powered by Viaplay Corporation</string>
+    <string name="version_num">Viaplay GameCenter V 1.11 Powered by Viaplay Corporation</string>
     <string name="quit">Quit</string>
     <string name="help">Help</string>
     <string name="screen_shot">Waiting for ScreenShot</string>
     <string name="save_notice">Save this config?</string>
     <string name="click_to_change">Click to change InputMethod</string>
+    <string name="update_list">Game List has been updated</string>
     <string name="root_notice">This device can not gain root access and therefore will not operate properly
 
         </string>

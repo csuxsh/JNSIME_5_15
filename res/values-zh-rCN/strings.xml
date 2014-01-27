@@ -12,12 +12,13 @@
     <string name="perference_title">JnsIMESettings</string>
     <string name="about">关于</string>
     <string name="version">版本号</string>
-    <string name="version_num">Viaplay GameCenter V 1.07 Powered by Viaplay Corporation</string>
+    <string name="version_num">Viaplay GameCenter V 1.11 Powered by Viaplay Corporation</string>
     <string name="quit">退出</string>
     <string name="help">帮助</string>
     <string name="screen_shot">等待截图</string>
     <string name="save_notice">是否保存配置?</string>
      <string name="click_to_change">点击切换输入法</string>
+     <string name="update_list">游戏列表已更新</string>
     <string name="root_notice">您的设备尚未获取root权限，暂不能使用Viaplay Center的触控/按键映射等高级功能，因此暂只支持有限的游戏
 
         </string>

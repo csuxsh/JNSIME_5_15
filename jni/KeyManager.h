@@ -23,7 +23,7 @@ public:
 			LOGE("[%s][%d] ==> mCallBackInterface = NULL", __FUNCTION__, __LINE__);
 			return -1;
 		}
-		LOGE("[%s][%d] ==> keyProcess", __FUNCTION__, __LINE__);
+		//LOGE("[%s][%d] ==> keyProcess", __FUNCTION__, __LINE__);
 		mCallBackInterface->keyProcess(rawEvent);
 		return 0;
 	}

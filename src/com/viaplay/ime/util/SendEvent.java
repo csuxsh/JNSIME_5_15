@@ -30,7 +30,7 @@ public class SendEvent {
     public final static String pkgName ="com.viaplay.ime";
 	public final static String TAG= "SendEvent";
 	
-	private final static int  STICK_MOVE_IRQ_TIME = 5;
+	private final static int  STICK_MOVE_IRQ_TIME = 0;
 	/**
 	 * ???jnsinput????????
 	 */
@@ -203,7 +203,7 @@ public class SendEvent {
 	@SuppressWarnings("unused")
 	private static JnsIMEProfile iteratorKeyList(List<JnsIMEProfile> keylist, int scancode)
 	{
-		Log.d(TAG, "list size"+keylist.size());
+		//Log.d(TAG, "list size"+keylist.size());
 		if(keylist==null)
 			return null;
 		for(JnsIMEProfile keyProfile : keylist)
@@ -253,11 +253,11 @@ public class SendEvent {
 	{ 
 		if(JnsIMECoreService.touchConfiging)
 			return true;
-		Log.d(TAG,"scancode="+keyevent.scanCode);
+		//Log.d(TAG,"scancode="+keyevent.scanCode);
 		JnsIMEProfile keyProfile =  iteratorKeyList(JnsIMECoreService.keyList, keyevent.scanCode);
 		if(null == keyProfile)
 		{	
-			Log.d(TAG, "keyprofile  is  null");
+			//Log.d(TAG, "keyprofile  is  null");
 			if(!JnsIMECoreService.keyMap.containsKey(keyevent.scanCode))
 				return false;
 			try
@@ -271,14 +271,14 @@ public class SendEvent {
 				//connectJNSInputServer();
 			}
 		}
-		Log.d(TAG, "keyprofile  is not null");
+		//Log.d(TAG, "keyprofile  is not null");
 
 		try{
 			//	socket.getOutputStream().write(posString((int)keyProfile.posX, (int)keyProfile.posY, keyevent.value).getBytes());
 			pw.print(posString((int)keyProfile.posX, (int)keyProfile.posY, keyevent.value));
 			pw.flush();
-			Log.d(TAG,"send pos x="+keyProfile.posX+", pos y = "+keyProfile.posY+"action = "+keyevent.value);
-			Log.d(TAG, "current time is "+System.currentTimeMillis());
+			//Log.d(TAG,"send pos x="+keyProfile.posX+", pos y = "+keyProfile.posY+"action = "+keyevent.value);
+			//Log.d(TAG, "current time is "+System.currentTimeMillis());
 		}
 		catch(Exception e)
 		{
@@ -423,14 +423,14 @@ public class SendEvent {
 						rawX = bp.posX - (float)x;
 						rawY = bp.posY;
 						rightMotionKey = true;
-						Log.e(TAG, "axis X < 0x7f");
+						//Log.e(TAG, "axis X < 0x7f");
 					} else if (ux > ox && uy == oy) { //X轴变�?
 						rawX = bp.posX + (float) x;
 						rawY = bp.posY;
 						rightMotionKey = true;
-						Log.e(TAG, "axis X  > 0x7f");
+						//Log.e(TAG, "axis X  > 0x7f");
 					} else if (ux == ox && uy == oy && rightMotionKey) {
-						Log.e(TAG, "right  you release map");
+						//Log.e(TAG, "right  you release map");
 						pw.print(posString(bp.posX, bp.posY, JoyStickTypeF.RIGHT_JOYSTICK_TAG, MotionEvent.ACTION_MOVE));
 						pw.flush();
 						pw.print(posString(bp.posX, bp.posY, JoyStickTypeF.RIGHT_JOYSTICK_TAG, MotionEvent.ACTION_UP));
@@ -448,7 +448,7 @@ public class SendEvent {
 
 						if(RightJoystickPresed)
 						{
-							if((rawX != rightJoystickCurrentPosX) && (rawY != rightJoystickCurrentPosY))
+							if((rawX != rightJoystickCurrentPosX) || (rawY != rightJoystickCurrentPosY))
 								if(System.currentTimeMillis() - last_right_press_time > STICK_MOVE_IRQ_TIME)
 								{		
 									pw.print(posString(rawX, rawY, JoyStickTypeF.RIGHT_JOYSTICK_TAG, MotionEvent.ACTION_MOVE));
@@ -462,7 +462,7 @@ public class SendEvent {
 				}
 			}
 		}
-		Log.d(TAG,"z="+ux+", rz="+uy);
+		//Log.d(TAG,"z="+ux+", rz="+uy);
 		if(!touchMapped)
 		{
 			int z = ux;
@@ -662,7 +662,7 @@ public class SendEvent {
 				if (bp.posR > 0 && bp.posType == JnsIMEPosition.TYPE_LEFT_JOYSTICK) 
 				{
 					touchMapped = true;
-					Log.d(TAG, "r="+bp.posR+", postype="+bp.posType);
+					//Log.d(TAG, "r="+bp.posR+", postype="+bp.posType);
 					double sin = calcSinA(ux, uy, JnsIMEPosition.TYPE_LEFT_JOYSTICK);
 					//						 double y = bp.posR * sin;
 					//						 double x = Math.sqrt(Math.pow(bp.posR, 2) - Math.pow(y, 2));
@@ -672,49 +672,49 @@ public class SendEvent {
 					double x = Math.sqrt(Math.pow(touchR1, 2) - Math.pow(y, 2));
 					float rawX = 0.0f;
 					float rawY = 0.0f;
-					Log.d(TAG, "ox ="+ox+",ux="+ux+",oy="+oy+",uy="+uy);
+					//Log.d(TAG, "ox ="+x+",ux="+ux+",oy="+y+",uy="+uy);
 					if (ux < ox && uy < oy) {  //坐标轴上半部的左
 						rawX = bp.posX - (float)x;
 						rawY = bp.posY - (float)y;
 						leftMotionKey = true;
-						Log.d(TAG, "axis positive left part");
+						//Log.d(TAG, "axis positive left part");
 					} else if (ux > ox && uy < oy) {  //坐标轴上半部的右
 						rawX = bp.posX + (float) x;
 						rawY = bp.posY - (float) y;
 						leftMotionKey = true;
-						Log.d(TAG, "axis positive right part");
+						//Log.d(TAG, "axis positive right part");
 					} else if (ux < ox && uy > oy) { //坐标轴下半部的左
 						rawX = bp.posX  - (float) x;
 						rawY = bp.posY + (float) y;
 						leftMotionKey = true;
-						Log.d(TAG, "axis negtive left part");
+						//Log.d(TAG, "axis negtive left part");
 					} else if (ux > ox && uy > oy) { //坐标轴下半部的右
 						rawX = bp.posX + (float) x;
 						rawY = bp.posY + (float) y;
 						leftMotionKey = true;
-						Log.d(TAG, "axis negtiveleft part");
+						//Log.d(TAG, "axis negtiveleft part");
 					} else if (ux == ox && uy < oy) { //Y轴变�?
 						rawX = bp.posX;
 						rawY = bp.posY - (float)y;
 						leftMotionKey = true;
-						Log.d(TAG, "axis Y < 0x7f");
+						//Log.d(TAG, "axis Y < 0x7f");
 					} else if (ux == ox && uy > oy) { //Y轴变�?
 						rawX = bp.posX;
 						rawY = bp.posY + (float) y;
 						leftMotionKey = true;
-						Log.d(TAG, "axis Y > 0x7f");
+						//Log.d(TAG, "axis Y > 0x7f");
 					} else if (ux < ox && uy == oy) { //X轴变�?
 						rawX = bp.posX - (float)x;
 						rawY = bp.posY;
 						leftMotionKey = true;
-						Log.d(TAG, "axis X < 0x7f");
+						//Log.d(TAG, "axis X < 0x7f");
 					} else if (ux > ox && uy == oy) { //X轴变�?
 						rawX = bp.posX + (float) x;
 						rawY = bp.posY;
 						leftMotionKey = true;
-						Log.d(TAG, "axis X  > 0x7f");
+						//Log.d(TAG, "axis X  > 0x7f");
 					} else if (ux == ox && uy == oy && leftMotionKey) {
-						Log.e(TAG, "left joystick you release map");
+						//Log.e(TAG, "left joystick you release map");
 						pw.print(posString(bp.posX, bp.posY, JoyStickTypeF.LEFT_JOYSTICK_TAG, MotionEvent.ACTION_MOVE));
 						pw.flush();
 						pw.print(posString(bp.posX, bp.posY, JoyStickTypeF.LEFT_JOYSTICK_TAG, MotionEvent.ACTION_UP));
@@ -723,11 +723,11 @@ public class SendEvent {
 						LeftJoystickPresed = false;
 					}
 
-					Log.d(TAG, "leftMotionKey="+leftMotionKey);
+					//Log.d(TAG, "leftMotionKey="+leftMotionKey);
 
 					if (leftMotionKey) 
 					{
-						Log.d(TAG, "LeftJoystickPresed="+LeftJoystickPresed);
+						//Log.d(TAG, "LeftJoystickPresed="+LeftJoystickPresed);
 						if(!LeftJoystickPresed)
 						{	
 							//pw.print(posString(bp.posX, bp.posY, JoyStickTypeF.LEFT_JOYSTICK_TAG, MotionEvent.ACTION_DOWN));
@@ -740,10 +740,11 @@ public class SendEvent {
 							}
 							LeftJoystickPresed = true;
 						}
-
+						
 						if(LeftJoystickPresed)
 						{
-							if((rawX != leftJoystickCurrentPosX) && (rawY != leftJoystickCurrentPosY))
+							if((rawX != leftJoystickCurrentPosX) || (rawY != leftJoystickCurrentPosY))
+								
 								if(System.currentTimeMillis() - last_left_press_time > STICK_MOVE_IRQ_TIME)
 								{	
 									pw.print(posString(rawX, rawY, JoyStickTypeF.LEFT_JOYSTICK_TAG, MotionEvent.ACTION_MOVE));
@@ -758,7 +759,7 @@ public class SendEvent {
 				}
 			}
 		}
-		Log.d(TAG,"z="+ux+", y="+uy);
+		//Log.d(TAG,"z="+ux+", y="+uy);
 		if(!touchMapped)
 		{
 			int x = ux;

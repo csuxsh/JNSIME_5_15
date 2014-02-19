@@ -103,15 +103,14 @@ public class JnsIMECoreService extends Service {
 		{
 			public void handleMessage(Message msg)
 			{
-				Log.d("JnsEnvInit", "alertDialogEnable="+alertDialogEnable);
+				//Log.d("JnsEnvInit", "alertDialogEnable="+alertDialogEnable);
 				switch(msg.what)
 				{
 				case JnsIMECoreService.HAS_KEY_DATA:
 					RawEvent keyevent = keyQueue.poll();
 					if(keyevent!=null)
 					{
-						Log.d(TAG, "get a key event");
-						Log.d(TAG, "the action is "+ keyevent.value);
+						//Log.d(TAG, "get a key event");
 						SendEvent.getSendEvent().sendKey(keyevent);
 					}
 					break;
@@ -122,7 +121,7 @@ public class JnsIMECoreService extends Service {
 					JoyStickEvent stickevent = stickQueue.poll();
 					if(stickevent != null)
 					{
-						Log.d(TAG, "send joy stick event");
+						//Log.d(TAG, "send joy stick event");
 						SendEvent.getSendEvent().sendJoy(stickevent);
 					}
 					break;
@@ -200,7 +199,7 @@ public class JnsIMECoreService extends Service {
 			@SuppressWarnings("deprecation")
 			public void handleMessage(Message msg)
 			{
-				Log.d("JnsEnvInit", "alertDialogEnable="+alertDialogEnable);
+				//Log.d("JnsEnvInit", "alertDialogEnable="+alertDialogEnable);
 				switch(msg.what)
 				{
 				case JnsIMECoreService.ROOT_SUCCESE:

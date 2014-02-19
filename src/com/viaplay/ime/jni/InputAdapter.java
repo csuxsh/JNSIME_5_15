@@ -69,14 +69,14 @@ public class InputAdapter {
 			// TODO Auto-generated method stub
 			while (true) {
 				getKey(keyEvent);
-				Log.d(TAG, "keyEvent.scanCode="+keyEvent.scanCode+"keyEvent.value"+keyEvent.value );
+				//Log.d(TAG, "keyEvent.scanCode="+keyEvent.scanCode+"keyEvent.value"+keyEvent.value );
 				if(JnsIMEInputMethodService.validAppName.equals("com.silvertree.cordy"))
 					keyEvent.deviceId = 0;
 				if (keyEvent.value == 1) 
 				{
 					keyEvent.value = KeyEvent.ACTION_DOWN;
 					CheckIMESwitch();
-					Log.d(TAG, "get a key down");
+					//Log.d(TAG, "get a key down");
 					onRawKeyDown(keyEvent);
 				} 
 				else if(keyEvent.value == 2)
@@ -89,7 +89,7 @@ public class InputAdapter {
 						mCheckByte  = (byte) (mCheckByte & 0xfe);
 					if(keyEvent.scanCode == SELECT_SCANCODE) 
 						mCheckByte =  (byte) (mCheckByte & 0xfd);
-					Log.d(TAG, "get a key up");
+					//Log.d(TAG, "get a key up");
 					keyEvent.value = KeyEvent.ACTION_UP;
 					onRawKeyUp(keyEvent);
 				}
@@ -106,7 +106,7 @@ public class InputAdapter {
 		@Override
 		public void run() 
 		{
-			Log.d(TAG, "x = "+JoyEvent.x+ ", y = "+JoyEvent.y + "z = "+JoyEvent.z+  "rz = "+JoyEvent.rz);
+			//Log.d(TAG, "x = "+JoyEvent.x+ ", y = "+JoyEvent.y + "z = "+JoyEvent.z+  "rz = "+JoyEvent.rz);
 
 			// TODO Auto-generated method stub
 			while (true) 
@@ -255,7 +255,7 @@ public class InputAdapter {
 			mCheckByte  = (byte) (mCheckByte | 0x01);
 		if(keyEvent.scanCode == SELECT_SCANCODE) 
 			mCheckByte =  (byte) (mCheckByte | 0x02);
-		Log.d(TAG, "mCheckByte="+mCheckByte+",mIMEMode="+mIMEMode);
+		//Log.d(TAG, "mCheckByte="+mCheckByte+",mIMEMode="+mIMEMode);
 		if(mCheckByte == 0x03)
 		{
 			//	Toast.makeText(mcontext, "qiehuan ime", Toast.LENGTH_LONG).show();
@@ -305,11 +305,11 @@ public class InputAdapter {
 		RawEvent event = new RawEvent(keyEvent.keyCode, keyEvent.scanCode, keyEvent.value, keyEvent.deviceId);
 		JnsIMECoreService.keyQueue.add(event);
 		JnsIMECoreService.DataProcessHandler.sendMessage(msg);
-		Log.d(TAG, "current time is "+System.currentTimeMillis());
+		//Log.d(TAG, "current time is "+System.currentTimeMillis());
 	}
 
 	private static void onRawKeyUp(RawEvent keyEvent) {
-		Log.e(TAG, "onRawKeyUp scanCode = " + keyEvent.scanCode + " value = " + keyEvent.value);
+		//Log.e(TAG, "onRawKeyUp scanCode = " + keyEvent.scanCode + " value = " + keyEvent.value);
 		Message msg = new Message();
 		msg.what = JnsIMECoreService.HAS_KEY_DATA;
 		RawEvent event = new RawEvent(keyEvent.keyCode, keyEvent.scanCode, keyEvent.value, keyEvent.deviceId);

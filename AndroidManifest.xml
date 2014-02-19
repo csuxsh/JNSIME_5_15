@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.viaplay.ime"
-    android:versionCode="21"
-    android:versionName="1.11" >
+    android:versionCode="22"
+    android:versionName="1.12" >
 
     <uses-sdk
         android:minSdkVersion="14"

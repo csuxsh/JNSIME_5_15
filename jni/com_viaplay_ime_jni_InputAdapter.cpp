@@ -190,7 +190,7 @@ public:
 			doOnJoystickDataChange(scanCode, value, deviceId);
 		pthread_cond_signal(&joyCond);
 		pthread_mutex_unlock(&joyMutex);
-		LOGE("[%s][%d] ==> notify getjoy ", __FUNCTION__, __LINE__);
+		//LOGE("[%s][%d] ==> notify getjoy ", __FUNCTION__, __LINE__);
 		//delay(1000);
 		return 1; 
 	};
@@ -247,7 +247,7 @@ JNIEXPORT jboolean JNICALL Java_com_viaplay_ime_jni_InputAdapter_stop(JNIEnv *en
 JNIEXPORT void JNICALL Java_com_viaplay_ime_jni_InputAdapter_getKey (JNIEnv *env, jclass clazz, jobject rawEvent) {
 	jclass jclazz = env->FindClass("com/viaplay/ime/jni/RawEvent");
 	if (jclazz == NULL) {
-		LOGE("[%s][%d] ==> could't find the com/jnselectronic/ime/jni/RawEvent class", __FUNCTION__, __LINE__);
+		//LOGE("[%s][%d] ==> could't find the com/jnselectronic/ime/jni/RawEvent class", __FUNCTION__, __LINE__);
 		return;
 	}
 	// 通知生产者生产
@@ -281,7 +281,7 @@ JNIEXPORT jboolean JNICALL Java_com_viaplay_ime_jni_InputAdapter_getJoyStick
 		mJoystickChanged = 0;
 		jclass jclazz = env->FindClass("com/viaplay/ime/jni/JoyStickEvent");
 		if (jclazz == NULL) {
-			LOGE("[%s][%d] ==> could't find the com/jnselectronic/ime/jni/JoyStickEvent class", __FUNCTION__, __LINE__);
+			//LOGE("[%s][%d] ==> could't find the com/jnselectronic/ime/jni/JoyStickEvent class", __FUNCTION__, __LINE__);
 			return false;
 		}
 		jfieldID x = env->GetFieldID(jclazz, "x", "I");

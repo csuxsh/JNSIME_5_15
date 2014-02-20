@@ -20,8 +20,10 @@
     <string name="click_to_change">Click to change InputMethod</string>
     <string name="update_list">Game List has been updated</string>
     <string name="root_notice">Viaplay GameCenter can not get root access. Touch mapping functionality will not be available until the device is rooted
-
+    
+    
         </string>
+        <string name="reboot_notice">The device needs to reboot, or can not properly use the mapping function of Viaplay GameCenter</string>
         <string name="i_get">I get it</string>
     <string name="changeime">Keyboard  &amp; Input Method</string>
     <string name="Introduction">	    \n\t Introduction:\n\n

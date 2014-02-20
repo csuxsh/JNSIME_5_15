@@ -84,9 +84,9 @@ public class JnsIMEScreenView extends View implements Runnable {
 		R.drawable.select,
 		R.drawable.start,
 		R.drawable.l1,
-		R.drawable.l2,
-		R.drawable.r1,
 		R.drawable.r2,
+		R.drawable.r1,
+		R.drawable.l2,
 		R.drawable.l_stick,
 		R.drawable.r_stick
 	};

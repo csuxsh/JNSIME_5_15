@@ -288,7 +288,7 @@ public class JnsIMECoreService extends Service {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		int i = sp.getInt("boolean", 0);
 		if(i == 0)
 		{
@@ -312,6 +312,31 @@ public class JnsIMECoreService extends Service {
 				versionedit.putInt("version", cVersionNum);
 				versionedit.commit();
 				Toast.makeText(this, this.getText(R.string.update_list), Toast.LENGTH_SHORT).show();
+			}
+			if(Version < 22)
+			{
+				JnsEnvInit.movingFile("/mnt/sdcard/jnsinput/app_icon/com.kaasa.gianasisters.icon.png", "com.kaasa.gianasisters.icon.png");
+				if(Build.VERSION.SDK_INT > 17 && Version != 0)
+				{	
+					Dialog dialog = new AlertDialog.Builder(JnsIMECoreService.this).setMessage(JnsIMECoreService.this.getString(R.string.reboot_notice)).setNegativeButton(JnsIMECoreService.this.getString(R.string.i_get), null).create();
+					dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);  
+
+					WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();    
+					WindowManager wm = (WindowManager)JnsIMECoreService.this   
+							.getSystemService(Context.WINDOW_SERVICE);    
+					Display display = wm.getDefaultDisplay();    
+					if (display.getHeight() > display.getWidth())    
+					{    
+						lp.width = (int) (display.getWidth() * 1.0);    
+					}    
+					else    
+					{    
+						lp.width = (int) (display.getWidth() * 0.5);    
+					}    
+
+					dialog.getWindow().setAttributes(lp); 
+					dialog.show();
+				}
 			}
 		}
 	}
@@ -338,9 +363,19 @@ public class JnsIMECoreService extends Service {
 			String name = cursor.getString(cursor.getColumnIndex("_name"));
 			String selection[]  = {name};
 			
+			if(name.equals("com.madfingergames.deadtrigger"))
+			{
+				Cursor tmpB = db.query("_jns_ime", null, "_name=?", new String[]{"com.incross.deadtrigger.kr.samsungapps"}, null, null, null);
+				if(tmpB.getCount() > 0)
+				{
+					db.delete("_jns_ime", "_name=?", new String[]{"com.incross.deadtrigger.kr.samsungapps"});
+				}
+				tmpB.close();
+			}
+
 			// 获得原数据库游戏列表
 			Cursor tmpC = db.query("_jns_ime", null, "_name=?", selection, null, null, null);
-			
+
 			// 向数据库中插入更新的游戏内容
 			if(tmpC.getCount() == 0)
 			{	

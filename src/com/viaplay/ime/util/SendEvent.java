@@ -30,7 +30,7 @@ public class SendEvent {
     public final static String pkgName ="com.viaplay.ime";
 	public final static String TAG= "SendEvent";
 	
-	private final static int  STICK_MOVE_IRQ_TIME = 0;
+	private final static int  STICK_MOVE_IRQ_TIME = 20;
 	/**
 	 * ???jnsinput????????
 	 */

@@ -165,10 +165,14 @@ public class JnsIMEGameListAdapter extends BaseAdapter implements OnClickListene
 				uri = Uri.parse("http://hi.baidu.com/tofro/item/c1dde9d837b2214efb5768c3");
 			else if(v.getTag().equals("com.kawaks"))
 				uri = Uri.parse("http://www.kawaks.net/");
-			else if(v.getTag().equals("com.tiger.game.arcade2"))
-				uri = Uri.parse("http://apps.tigerplay.info/");
+			else if(v.getTag().equals("com.eamobile.tetris_eu"))
+				uri = Uri.parse("http://www.1mobile.com/com-ea-tetrisfree-na-350822.html");
 			else if(v.getTag().equals("com.bistudio.at"))
 				uri = Uri.parse("http://samsungapps.sina.cn/topApps/topAppsDetail.as?productId=000000684336");
+			else if(v.getTag().equals("com.tiger.game.arcade2"))
+				uri = Uri.parse("http://slideme.org/application/tiger-arcade");
+			else if(v.getTag().equals("com.retrobomb.expendablerearmed"))
+				uri = Uri.parse("http://android.mob.org/download/a3303.html");
 			Intent it = new Intent(Intent.ACTION_VIEW, uri);   
 			activity.startActivity(it);   
 			break;

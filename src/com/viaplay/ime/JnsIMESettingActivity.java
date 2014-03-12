@@ -4,8 +4,14 @@ package com.viaplay.ime;
 import com.viaplay.ime.R;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.os.Message;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
+import android.preference.PreferenceManager;
+import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.view.KeyEvent;
@@ -20,11 +26,12 @@ import android.util.Log;
  *
  */
 
-public class JnsIMESettingActivity extends PreferenceActivity implements OnPreferenceClickListener{
+public class JnsIMESettingActivity extends PreferenceActivity implements OnPreferenceClickListener, OnPreferenceChangeListener{
 	public static final String TAG = "BlueoceanControllerActivity";
 	Preference quit;
 	Preference changeime;
-	Preference help;
+	Preference help; 
+	static CheckBoxPreference cp;
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -34,10 +41,19 @@ public class JnsIMESettingActivity extends PreferenceActivity implements OnPrefe
 		quit = this.findPreference(this.getString(R.string.quit));
 		changeime = this.findPreference(this.getString(R.string.changeime));
 		help = this.findPreference(this.getString(R.string.help));
+		cp = (CheckBoxPreference) this.findPreference(this.getString(R.string.floatViewS));
 		quit.setOnPreferenceClickListener(this);
 		changeime.setOnPreferenceClickListener(this);
 		help.setOnPreferenceClickListener(this);
+		cp.setOnPreferenceChangeListener(this);
 		JnsIMECoreService.activitys.add(this);
+		SharedPreferences pre = PreferenceManager.getDefaultSharedPreferences(this);
+		if(pre.getBoolean("floatViewS", false))
+		{
+			cp.setChecked(true);
+		}
+		else
+			cp.setChecked(false);
 	}
 
 
@@ -77,5 +93,44 @@ public class JnsIMESettingActivity extends PreferenceActivity implements OnPrefe
 	{
 		super.onDestroy();
 		JnsIMECoreService.activitys.remove(this);
+	}
+
+
+	@Override
+	public boolean onPreferenceChange(Preference preference, Object newValue) {
+		// TODO Auto-generated method stub
+		if(preference == cp)
+		{	
+			if(!cp.isChecked())
+			{
+				//cp.setSummary("true");
+				cp.setChecked(true);
+				SharedPreferences pre = PreferenceManager.getDefaultSharedPreferences(this);
+				Editor edit = pre.edit();
+				edit.putBoolean("floatViewS", true);
+				edit.commit();
+				if(JnsIMEInputMethodService.floatingHandler != null)
+				{
+					Message msg = new Message();
+					msg.what = 1;
+					JnsIMEInputMethodService.floatingHandler.sendMessage(msg);
+				}
+			}
+			else
+			{
+				cp.setChecked(false);
+				SharedPreferences pre = PreferenceManager.getDefaultSharedPreferences(this);
+				Editor edit = pre.edit();
+				edit.putBoolean("floatViewS", false);
+				edit.commit();
+				if(JnsIMEInputMethodService.floatingHandler != null)
+				{
+					Message msg = new Message();
+					msg.what = 2;
+					JnsIMEInputMethodService.floatingHandler.sendMessage(msg);
+				}
+			}
+		}
+		return false;
 	}
 }

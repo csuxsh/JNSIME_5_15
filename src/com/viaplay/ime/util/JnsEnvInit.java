@@ -12,7 +12,6 @@ import java.io.InputStreamReader;
 import com.viaplay.ime.JnsIMERoot;
 
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 

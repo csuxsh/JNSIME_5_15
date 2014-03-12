@@ -2,9 +2,7 @@ package com.viaplay.ime;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -12,29 +10,45 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.viaplay.ime.R;
 import com.viaplay.im.hardware.JoyStickTypeF;
 import com.viaplay.ime.bean.JnsIMEProfile;
 import com.viaplay.ime.jni.InputAdapter;
+import com.viaplay.ime.uiadapter.FloatView;
 import com.viaplay.ime.util.JnsEnvInit;
 import com.viaplay.ime.util.SendEvent;
 
 
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.inputmethodservice.InputMethodService;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Message;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Display;
 import android.view.KeyEvent;
-import android.widget.Toast;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.WindowManager;
+import android.view.View.OnTouchListener;
+import android.widget.ImageView.ScaleType;
 
-public class JnsIMEInputMethodService extends InputMethodService {
+public class JnsIMEInputMethodService extends InputMethodService implements android.content.DialogInterface.OnClickListener {
 
 	private final static String TAG = "JnsIMEMethod";
 	private final static String KEY_MAP_FILE_TAG = ".keymap";
+	public final static int SHOW_WINDOW = 1;
+	public final static int CLOSE_WINDOW = 2;
+
 	private boolean isTakePic = false;
 	public static String validAppName = "";
 	static String lastAppName = "";
@@ -42,13 +56,61 @@ public class JnsIMEInputMethodService extends InputMethodService {
 	public static boolean jnsIMEInUse = false;
 	private static Process process=null;
 	private static DataOutputStream dos = null;
-	@SuppressLint("SdCardPath")
+	private FloatView floatingView = null;
+	public static Handler floatingHandler = null;
+
+
+	@SuppressLint({ "SdCardPath", "HandlerLeak" })
 	@Override
 	public void onCreate()
 	{
 		super.onCreate();
 		jnsIMEInUse = true;
 		JnsIMECoreService.ime = this;
+		// 设置浮动窗属性
+		floatingView = new FloatView(this);  
+		floatingView.setImageResource(R.drawable.shot_normal);
+		floatingView.setScaleType(ScaleType.FIT_CENTER);
+		floatingView.setOnTouchListener(new OnTouchListener()
+		{
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				// TODO Auto-generated method stub
+				FloatingFunc.onTouchEvent(event, v);
+				return true;
+			}
+
+		});
+		// 首次使用弹出浮动窗开启询问
+		SharedPreferences pre = PreferenceManager.getDefaultSharedPreferences(this);
+		if(pre.getBoolean("init", true))
+		{
+			showPopWin();
+			Editor ed = pre.edit();
+			ed.putBoolean("init", false);
+			ed.commit();
+		}
+		if(pre.getBoolean("floatViewS", false))	
+			FloatingFunc.show(this.getApplicationContext(), null, floatingView);
+		floatingHandler = new Handler()
+		{
+			@Override
+			public void handleMessage(Message  msg)
+			{
+				switch(msg.what)
+				{
+				case SHOW_WINDOW:
+					FloatingFunc.show(getApplicationContext(), null, floatingView);
+					break;
+				case CLOSE_WINDOW:
+					FloatingFunc.close(getApplicationContext());
+					break;
+				}
+				super.handleMessage(msg);
+			}
+		};
+		// 开启当前应用检测线程
 		new Thread(new Runnable()
 		{
 
@@ -70,7 +132,6 @@ public class JnsIMEInputMethodService extends InputMethodService {
 						JnsIMEInputMethodService.validAppName = tmp;
 					}
 					lastAppName = tmp;
-					//		Log.d("IMTTEST", ""+am.getRunningTasks(1).get(0).topActivity.getPackageName());
 					try {
 						Thread.sleep(500);
 					} catch (InterruptedException e) {
@@ -82,14 +143,40 @@ public class JnsIMEInputMethodService extends InputMethodService {
 
 		}).start();
 	}
+	@SuppressWarnings("deprecation")
+	void showPopWin()
+	{
+		Dialog dialog = new AlertDialog.Builder(this).setMessage(
+				this.getString(R.string.floating_notice)).setNegativeButton(
+						this.getString(R.string.no), this).setPositiveButton(
+								this.getString(R.string.yes), this).create();
+		dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);  
+
+		WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();    
+		WindowManager wm = (WindowManager)getSystemService(Context.WINDOW_SERVICE);    
+		Display display = wm.getDefaultDisplay();    
+		if (display.getHeight() > display.getWidth())    
+		{    
+			lp.width = (int) (display.getWidth() * 1.0);    
+		}    
+		else    
+		{    
+			lp.width = (int) (display.getWidth() * 0.5);    
+		}    
+
+		dialog.getWindow().setAttributes(lp);  
+		dialog.show();
+	}
 	@Override
 	public void onDestroy () 
 	{
 		this.onCreateInputView();
 		super.onDestroy();
 		jnsIMEInUse = false;
+		floatingHandler = null;
 		JnsIMECoreService.keyList.clear();
 		JnsIMECoreService.keyMap.clear();
+		FloatingFunc.close(this);
 	}
 	/**
 	 * 虏茅脩炉碌卤脟掳碌脛脢脗录镁脢脟路帽脌麓脭麓脫脷脪隆赂脣禄貌脮脽脥路驴酶
@@ -148,9 +235,9 @@ public class JnsIMEInputMethodService extends InputMethodService {
 			{
 				if(event.getAction() == KeyEvent.ACTION_UP)
 					InputAdapter.gHatRightPressed = false;
-					return new KeyEvent(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), 
-							event.getAction(), KeyEvent.KEYCODE_DPAD_RIGHT, 0, 0, 0, 
-							JoyStickTypeF.BUTTON_RIGHT_SCANCODE, 0);
+				return new KeyEvent(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), 
+						event.getAction(), KeyEvent.KEYCODE_DPAD_RIGHT, 0, 0, 0, 
+						JoyStickTypeF.BUTTON_RIGHT_SCANCODE, 0);
 			}
 			return new KeyEvent(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), 
 					event.getAction(), KeyEvent.KEYCODE_DPAD_RIGHT, 0, 0, 0, 
@@ -161,14 +248,14 @@ public class JnsIMEInputMethodService extends InputMethodService {
 	public boolean startTpConfig()
 	{
 		JnsIMECoreService.touchConfiging = true;
-		
+
 		new Thread(new Runnable()
 		{
 			@Override
 			public void run() 
 			{
 				// TODO Auto-generated method stub
-		//		isTakePic = com.jnselectronics.ime.jni.ScreenShot.getScreenShot();
+				//		isTakePic = com.jnselectronics.ime.jni.ScreenShot.getScreenShot();
 				if(JnsEnvInit.rooted)
 					Screencap();
 				Log.d("JnsIME", "take pic "+isTakePic);
@@ -193,7 +280,7 @@ public class JnsIMEInputMethodService extends InputMethodService {
 				return startTpConfig();
 			}
 		}
-		*/
+		 */
 		if(JnsIMECoreService.touchConfiging)
 			return false;
 		KeyEvent tmpEvent = mathJoyStick(event);
@@ -227,8 +314,8 @@ public class JnsIMEInputMethodService extends InputMethodService {
 			else 
 			{	//if(process == null && JnsEnvInit.rooted)
 				//{
-					process = Runtime.getRuntime().exec("su");
-					dos =new DataOutputStream(process.getOutputStream());
+				process = Runtime.getRuntime().exec("su");
+				dos =new DataOutputStream(process.getOutputStream());
 				//}
 				dos.writeBytes("screencap -p /mnt/sdcard/jnsinput/tmp.bmp\n");
 				dos.flush();
@@ -251,7 +338,6 @@ public class JnsIMEInputMethodService extends InputMethodService {
 	{
 		if(JnsIMECoreService.touchConfiging)
 			return false;
-		@SuppressWarnings("unused")
 		KeyEvent tmpEvent = mathJoyStick(event);
 		if(keyCode == KeyEvent.KEYCODE_SEARCH)
 			return true;
@@ -275,8 +361,8 @@ public class JnsIMEInputMethodService extends InputMethodService {
 			if(!JnsEnvInit.rooted)
 			{	
 				//event =  new KeyEvent(event.getDownTime(), event.getDownTime(), 
-			///			KeyEvent.ACTION_UP, JnsIMECoreService.keyMap.get(event.getScanCode()),
-			//			0, event.getMetaState(), event.getDeviceId(), 0);
+				///			KeyEvent.ACTION_UP, JnsIMECoreService.keyMap.get(event.getScanCode()),
+				//			0, event.getMetaState(), event.getDeviceId(), 0);
 				event =  new KeyEvent(event.getDownTime(), event.getDownTime(), 
 						KeyEvent.ACTION_UP, JnsIMECoreService.keyMap.get(event.getScanCode()),
 						0, event.getMetaState(), event.getDeviceId(), 0);
@@ -415,7 +501,6 @@ public class JnsIMEInputMethodService extends InputMethodService {
 		}
 		return true;
 	}
-	@SuppressWarnings("unused")
 	private static JnsIMEProfile iteratorKeyList(List<JnsIMEProfile> keylist, int scancode)
 	{
 		if(keylist==null)
@@ -424,6 +509,25 @@ public class JnsIMEInputMethodService extends InputMethodService {
 			if(keyProfile.key == scancode)
 				return keyProfile;
 		return null;
+	}
+	@Override
+	public void onClick(DialogInterface dialog, int which) {
+		// TODO Auto-generated method stub
+		switch(which)
+		{
+			case DialogInterface.BUTTON_POSITIVE:
+				 SharedPreferences pre = PreferenceManager.getDefaultSharedPreferences(this);
+				 Editor ed = pre.edit();
+				 ed.putBoolean("floatViewS", true);
+				 Message msg = new Message();
+				 msg.what = SHOW_WINDOW;
+				 floatingHandler.sendMessage(msg);
+				 if(JnsIMESettingActivity.cp != null)
+					 JnsIMESettingActivity.cp.setChecked(true);
+				 break;
+			case DialogInterface.BUTTON_NEGATIVE:
+				break;
+		}
 	}
 
 }

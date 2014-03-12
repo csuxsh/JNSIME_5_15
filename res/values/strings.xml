@@ -12,17 +12,22 @@
     <string name="perference_title">JnsIMESettings</string>
     <string name="about">About</string>
     <string name="version">version</string>
-    <string name="version_num">Viaplay GameCenter V 1.12 Powered by Viaplay Corporation</string>
+    <string name="version_num">Viaplay GameCenter V 1.13 Powered by Viaplay Corporation</string>
     <string name="quit">Quit</string>
     <string name="help">Help</string>
     <string name="screen_shot">Waiting for ScreenShot</string>
     <string name="save_notice">Save this config?</string>
     <string name="click_to_change">Click to change InputMethod</string>
     <string name="update_list">Game List has been updated</string>
+    <string name="floating_notice">Use floating winows to capture screen?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
     <string name="root_notice">Viaplay GameCenter can not get root access. Touch mapping functionality will not be available until the device is rooted
     
     
         </string>
+        <string name="floatViewS">Floating window option</string>
+        <string name="toogle_to_open">Check to show a floating window</string>
         <string name="reboot_notice">The device needs to reboot, or can not properly use the mapping function of Viaplay GameCenter</string>
         <string name="i_get">I get it</string>
     <string name="changeime">Keyboard  &amp; Input Method</string>
@@ -31,7 +36,7 @@
 	    \t your device may void your warranty. Root at your own risk\n
 	   \t  2.Make sure Viaplay GameCenter is the current InputMethod.\n
 	    \t 3.Touch mapping:\n
-	    	\t \t       a. Press  "select" &amp; "start" key to start the Mapping UI.\n
+	    	\t \t       a. Press  "select" &amp; "start" key or click the floating window to start the Mapping UI.\n
 	    	\t \t      b. Touch the area that you want to map, and then press the key which you want\n 
 	    	\t \t       to mapping with the selected screen area.\n
 	    	\t \t       c. If you want to mapping either Joysticks,  touch at the center of the Virtual\n

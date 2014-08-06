@@ -2,10 +2,7 @@ package com.viaplay.ime;
 
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +17,6 @@ import com.viaplay.ime.jni.JoyStickEvent;
 import com.viaplay.ime.jni.RawEvent;
 import com.viaplay.ime.uiadapter.JnsIMEScreenView;
 import com.viaplay.ime.util.AppHelper;
-import com.viaplay.ime.util.DBHelper;
 import com.viaplay.ime.util.JnsEnvInit;
 import com.viaplay.ime.util.SendEvent;
 
@@ -32,20 +28,11 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.inputmethodservice.InputMethodService;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -55,13 +42,15 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 /**
- * 脫娄脫脙潞贸脤篓脭脣脨脨碌脛脰梅路镁脦帽
+ * GameCenter服务核心类
  * 
  * @author Administrator
  *
  */
+@SuppressLint("SdCardPath")
 public class JnsIMECoreService extends Service {
 
+	@SuppressWarnings("unused")
 	private  final static String TAG = "JnsIMECore";
 	public final static int HAS_KEY_DATA = 1;
 	public final static int START_TPCFG =2;
@@ -92,27 +81,36 @@ public class JnsIMECoreService extends Service {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	static class CoreHandler extends Handler
+	{
+		WeakReference<JnsIMECoreService> mActivity;
+		   
+		CoreHandler(JnsIMECoreService context) {
+                mActivity = new WeakReference<JnsIMECoreService>(context);
+        }
 
-	@SuppressLint("HandlerLeak")
+        @Override
+        public void handleMessage(Message msg) {
+        
+          }
+        
+	};
 	/**
-	 *  脢媒戮脻麓娄脌铆loop
+	 *  开启事件消息接收loop
 	 */
 	private void startDataProcess()
 	{
-		DataProcessHandler = new Handler()
+		DataProcessHandler = new CoreHandler(this)
 		{
 			public void handleMessage(Message msg)
 			{
-				//Log.d("JnsEnvInit", "alertDialogEnable="+alertDialogEnable);
 				switch(msg.what)
 				{
 				case JnsIMECoreService.HAS_KEY_DATA:
 					RawEvent keyevent = keyQueue.poll();
 					if(keyevent!=null)
-					{
-						//Log.d(TAG, "get a key event");
 						SendEvent.getSendEvent().sendKey(keyevent);
-					}
 					break;
 				case JnsIMECoreService.START_TPCFG:
 					Toast.makeText(JnsIMECoreService.this, JnsIMECoreService.this.getString(R.string.screen_shot), Toast.LENGTH_SHORT).show();
@@ -120,10 +118,7 @@ public class JnsIMECoreService extends Service {
 				case JnsIMECoreService.HAS_STICK_DATA:
 					JoyStickEvent stickevent = stickQueue.poll();
 					if(stickevent != null)
-					{
-						//Log.d(TAG, "send joy stick event");
 						SendEvent.getSendEvent().sendJoy(stickevent);
-					}
 					break;
 				}
 				super.handleMessage(msg);
@@ -131,7 +126,7 @@ public class JnsIMECoreService extends Service {
 		};
 	}
 	/**
-	 * 脫娄脫脙jni鲁玫脢录禄炉碌脛脠毛驴脷
+	 * native环境初始化
 	 * @param context
 	 */
 	private void initJni(Context context)
@@ -139,7 +134,6 @@ public class JnsIMECoreService extends Service {
 		if(initialed)
 			return;
 		initialed = true;
-		//	JnsIMERoot.setContext(this);
 		JnsEnvInit.mContext = this;
 		while(!JnsEnvInit.root())
 		{
@@ -161,9 +155,8 @@ public class JnsIMECoreService extends Service {
 		InputAdapter.start();
 		InputAdapter.getKeyThreadStart();
 	}
-	@SuppressLint({ "HandlerLeak", "HandlerLeak", "HandlerLeak" })
 	/**
-	 *	碌炉鲁枚脢脟路帽root鲁脡鹿娄碌脛露脭禄掳驴貌脤谩脢戮
+	 *	检查root权限
 	 */
 	private void CheckInit()
 	{
@@ -173,7 +166,6 @@ public class JnsIMECoreService extends Service {
 			@SuppressLint("HandlerLeak")
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				// TODO Auto-generated method stub
 				switch(which)
 				{
 				case DialogInterface.BUTTON_NEGATIVE:
@@ -194,16 +186,14 @@ public class JnsIMECoreService extends Service {
 			}
 
 		};
-		Alerthandle  = new Handler()
+		Alerthandle  = new CoreHandler(this)
 		{
 			@SuppressWarnings("deprecation")
 			public void handleMessage(Message msg)
 			{
-				//Log.d("JnsEnvInit", "alertDialogEnable="+alertDialogEnable);
 				switch(msg.what)
 				{
 				case JnsIMECoreService.ROOT_SUCCESE:
-					//	Toast.makeText(JnsIMECoreService.this, "Root Success", Toast.LENGTH_LONG).show();
 					break;
 				case JnsIMECoreService.ROOT_FAILED:
 					SharedPreferences sp = JnsIMECoreService.this.getApplicationContext(). getSharedPreferences("popwin", Context.MODE_PRIVATE); 
@@ -253,12 +243,27 @@ public class JnsIMECoreService extends Service {
 			}
 		};
 	}
-	@SuppressWarnings("deprecation")
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
+		initialed = false;
+		InputAdapter.stop();
+		NotificationManager notificationManager = (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);
+		notificationManager.cancel(1);
+		if(JnsIMEInputMethodService.jnsIMEInUse)
+		{	
+			 Intent intent = new Intent("com.viaplay.ime.JnsIMECore");
+			 this.startService(intent);
+		}
+	}
+
 	/**
-	 * 脫脙脫脷陆芦脫娄脫脙脥录卤锚脧脭脢戮脭脷脳麓脤卢脌赂
+	 * 显示通知栏
 	 * 
 	 * @param info
 	 */
+	@SuppressWarnings("deprecation")
 	public  void updateNotification(String info) {
 		NotificationManager notificationManager = (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);
 		Notification notification = new Notification(R.drawable.ic_launcher, this.getString(R.string.app_name) + info, System.currentTimeMillis());
@@ -271,217 +276,7 @@ public class JnsIMECoreService extends Service {
 		notification.setLatestEventInfo(this, this.getString(R.string.app_name), this.getString(R.string.app_name), mPendingIntent);
 		notificationManager.notify(1, notification);
 	}
-	private void initData()
-	{
-		SharedPreferences sp = this.getApplicationContext(). getSharedPreferences("init", Context.MODE_PRIVATE); 
-		SharedPreferences.Editor  edit = sp.edit();
-		SharedPreferences versionsp = this.getApplicationContext(). getSharedPreferences("init", Context.MODE_PRIVATE); 
-		SharedPreferences.Editor  versionedit = sp.edit();
-		PackageManager packageManager = getPackageManager();
-		int cVersionNum = 0;
-		int Version = versionsp.getInt("version", 0);
-		try 
-		{
-			PackageInfo packInfo = packageManager.getPackageInfo(getPackageName(), 0);
-			cVersionNum = packInfo.versionCode;
-		} catch (NameNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
-		int i = sp.getInt("boolean", 0);
-		if(i == 0)
-		{
-			if(CopyDatabase())
-			{
-				edit.putInt("boolean", 1);
-				edit.commit();
-				CopyMappings();
-				versionedit.putInt("version", cVersionNum);
-				versionedit.commit();
-			}
-			else
-			{
-				Toast.makeText(this, "Init failed", Toast.LENGTH_SHORT).show();
-			}
-		}
-		else if(Version < cVersionNum)
-		{
-			if(updataDatabase())
-			{	
-				versionedit.putInt("version", cVersionNum);
-				versionedit.commit();
-				Toast.makeText(this, this.getText(R.string.update_list), Toast.LENGTH_SHORT).show();
-			}
-			if(Version < 22)
-			{
-				JnsEnvInit.movingFile("/mnt/sdcard/jnsinput/app_icon/com.kaasa.gianasisters.icon.png", "com.kaasa.gianasisters.icon.png");
-				if(Build.VERSION.SDK_INT > 17 && Version != 0)
-				{	
-					Dialog dialog = new AlertDialog.Builder(JnsIMECoreService.this).setMessage(JnsIMECoreService.this.getString(R.string.reboot_notice)).setNegativeButton(JnsIMECoreService.this.getString(R.string.i_get), null).create();
-					dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);  
-
-					WindowManager.LayoutParams lp = dialog.getWindow().getAttributes();    
-					WindowManager wm = (WindowManager)JnsIMECoreService.this   
-							.getSystemService(Context.WINDOW_SERVICE);    
-					Display display = wm.getDefaultDisplay();    
-					if (display.getHeight() > display.getWidth())    
-					{    
-						lp.width = (int) (display.getWidth() * 1.0);    
-					}    
-					else    
-					{    
-						lp.width = (int) (display.getWidth() * 0.5);    
-					}    
-
-					dialog.getWindow().setAttributes(lp); 
-					dialog.show();
-				}
-			}
-		}
-	}
-	@SuppressLint("SdCardPath")
-	private boolean updataDatabase()
-	{
-		if(!JnsEnvInit.movingFile("/mnt/sdcard/jnsinput/_jns_ime","_jns_ime"))
-		{	
-			Toast.makeText(this, "Copy databases failed", Toast.LENGTH_SHORT).show();
-			return false;
-		}
-		String filename = "/mnt/sdcard/jnsinput/_jns_ime";
-
-		SQLiteDatabase sqLiteDatabase = SQLiteDatabase.openOrCreateDatabase(filename, null);
-		SQLiteDatabase db = JnsIMECoreService.aph.dbh.getReadableDatabase();
-		Cursor cursor= null;
-
-		cursor = sqLiteDatabase.query("_jns_ime", null, null,
-				null, null, null, "_description");
-		cursor.moveToFirst();
-
-		while(!cursor.isLast())
-		{
-			String name = cursor.getString(cursor.getColumnIndex("_name"));
-			String selection[]  = {name};
-			
-			if(name.equals("com.madfingergames.deadtrigger"))
-			{
-				Cursor tmpB = db.query("_jns_ime", null, "_name=?", new String[]{"com.incross.deadtrigger.kr.samsungapps"}, null, null, null);
-				if(tmpB.getCount() > 0)
-				{
-					db.delete("_jns_ime", "_name=?", new String[]{"com.incross.deadtrigger.kr.samsungapps"});
-				}
-				tmpB.close();
-			}
-
-			// 获得原数据库游戏列表
-			Cursor tmpC = db.query("_jns_ime", null, "_name=?", selection, null, null, null);
-
-			// 向数据库中插入更新的游戏内容
-			if(tmpC.getCount() == 0)
-			{	
-				ContentValues cv = new ContentValues();
-				cv.put("_name", cursor.getString(cursor.getColumnIndex("_name")));
-				cv.put("_description", cursor.getString(cursor.getColumnIndex("_description")));
-				cv.put("_exists", true);
-				try 
-				{
-					if(db.insert(DBHelper.TABLE, "", cv) < 0)
-					{	
-						Toast.makeText(this, "Init databases failed", Toast.LENGTH_SHORT).show();
-						return false;
-					}
-					String apkname = cursor.getString(cursor.getColumnIndex("_name"));
-					JnsEnvInit.movingFile(this.getFilesDir()+"/"+ apkname + ".keymap", apkname+ ".keymap") ;
-					JnsEnvInit.movingFile("/mnt/sdcard/jnsinput/app_icon/"+ apkname + ".icon.png", apkname + ".icon.png");
-					tmpC.close();
-				} catch (Exception e) {
-					// TODO: handle exception
-					e.printStackTrace();
-					return false;
-				}
-			}
-			cursor.moveToNext();
-		}
-		cursor.close();
-		cursor = db.query("_jns_ime", null, null,
-				null, null, null, "_description");
-		if(JnsIMEGameListActivity.gameAdapter != null)
-		{
-			JnsIMEGameListActivity.gameAdapter.setCursor(cursor);
-			JnsIMEGameListActivity.gameAdapter.notifyDataSetChanged();
-		}
-		return true;
-	}
-	@SuppressLint("SdCardPath")
-	private void CopyMappings()
-	{
-		SQLiteDatabase sqLiteDatabase = SQLiteDatabase.openOrCreateDatabase("/mnt/sdcard/jnsinput/_jns_ime", null);
-		Cursor cursor= null;
-
-		cursor = sqLiteDatabase.query("_jns_ime", null, null,
-				null, null, null, "_description");
-		cursor.moveToFirst();
-		while(!cursor.isLast())
-			//for(int i = 0; i < mappingFiles.length; i++)
-		{
-			String apkname = cursor.getString(cursor.getColumnIndex("_name"));
-			JnsEnvInit.movingFile(this.getFilesDir()+"/"+ apkname + ".keymap", apkname+ ".keymap") ;
-			JnsEnvInit.movingFile("/mnt/sdcard/jnsinput/app_icon/"+ apkname + ".icon.png", apkname + ".icon.png");
-			cursor.moveToNext();
-		}
-	}
-	@SuppressLint("SdCardPath")
-	private boolean CopyDatabase()
-	{
-		if(!JnsEnvInit.movingFile("/mnt/sdcard/jnsinput/_jns_ime","_jns_ime"))
-		{	
-			Toast.makeText(this, "Copy databases failed", Toast.LENGTH_SHORT).show();
-			return false;
-		}
-		String filename = "/mnt/sdcard/jnsinput/_jns_ime";
-
-		SQLiteDatabase sqLiteDatabase = SQLiteDatabase.openOrCreateDatabase(filename, null);
-		Cursor cursor= null;
-
-		cursor = sqLiteDatabase.query("_jns_ime", null, null,
-				null, null, null, "_description");
-		cursor.moveToFirst();
-
-		while(!cursor.isLast())
-		{
-			SQLiteDatabase db = JnsIMECoreService.aph.dbh.getReadableDatabase();
-			try
-			{
-				db.delete(DBHelper.TABLE, "_name=?", new String[] { cursor.getString(cursor.getColumnIndex("_name")) });
-			}
-			catch(Exception e)
-			{
-
-			}
-			ContentValues cv = new ContentValues();
-			cv.put("_name", cursor.getString(cursor.getColumnIndex("_name")));
-			cv.put("_description", cursor.getString(cursor.getColumnIndex("_description")));
-			cv.put("_exists", true);
-			try {
-				if(db.insert(DBHelper.TABLE, "", cv) < 0)
-				{	
-					Toast.makeText(this, "Init databases failed", Toast.LENGTH_SHORT).show();
-					return false;
-				}
-			} catch (Exception e) {
-				// TODO: handle exception
-				e.printStackTrace();
-				return false;
-			}
-			cursor.moveToNext();
-		}
-		if(JnsIMEGameListActivity.gameAdapter != null)
-		{
-			JnsIMEGameListActivity.gameAdapter.setCursor(cursor);
-			JnsIMEGameListActivity.gameAdapter.notifyDataSetChanged();
-		}
-		return true;
-	}
 
 	@Override
 	public void onCreate()
@@ -489,18 +284,9 @@ public class JnsIMECoreService extends Service {
 		Log.d("JnsIME", "JnsIMECore start");
 		if(aph == null)
 			aph = new AppHelper(this);
+		JnsEnvInit.mContext = this;
 		CheckInit();
-		new Thread(new Runnable()
-		{
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				JnsIMECoreService.this.initJni(JnsIMECoreService.this);
-			}
-
-		}).start();
 		createTmpDir();
-		initData();
 		startDataProcess();
 		JnsIMEScreenView.context = this;
 		JnsIMEScreenView.loadTpMapRes();
@@ -514,6 +300,15 @@ public class JnsIMECoreService extends Service {
 
 		}).start();
 		updateNotification(this.getString(R.string.app_name));
+		new Thread(new Runnable()
+		{
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				JnsIMECoreService.this.initJni(JnsIMECoreService.this);
+			}
+
+		}).start();
 	}
 	void createTmpDir()
 	{

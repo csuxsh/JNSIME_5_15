@@ -26,7 +26,7 @@
 static int ovalue = 0;
 static int getvalue = 0;
 static bool waitForgetKey = false;
-static bool waitForgetJoy = false;
+bool waitForgetJoy = false;
 static int joy_num = 0;
 
 
@@ -47,10 +47,10 @@ static stJniGlobal_t sg_jni_global;
 static jclass g_com_viaplay_ime_jni_InputAdapter_class;
 
 //消费者信号量
-static pthread_cond_t keyCond;
-static pthread_mutex_t keyMutex;
-static pthread_cond_t joyCond;
-static pthread_mutex_t joyMutex;
+ pthread_cond_t keyCond;
+ pthread_mutex_t keyMutex;
+ pthread_cond_t joyCond;
+ pthread_mutex_t joyMutex;
 pthread_cond_t getDeviceCond;
 pthread_mutex_t getDeviceMutex;
 
@@ -181,15 +181,9 @@ public:
 		int value = rawEvent->value;
 		int deviceId = rawEvent->deviceId;
 
-		while(waitForgetJoy)
-		{
-			LOGE("[%s][%d] ==> waitForgetJoy", __FUNCTION__, __LINE__);
-		}
-		pthread_mutex_lock(&joyMutex);
+
 		if(rawEvent->type != 0)
 			doOnJoystickDataChange(scanCode, value, deviceId);
-		pthread_cond_signal(&joyCond);
-		pthread_mutex_unlock(&joyMutex);
 		//LOGE("[%s][%d] ==> notify getjoy ", __FUNCTION__, __LINE__);
 		//delay(1000);
 		return 1; 
@@ -239,8 +233,10 @@ JNIEXPORT jboolean JNICALL Java_com_viaplay_ime_jni_InputAdapter_stop(JNIEnv *en
 		LOGE("[%s][%d] ==> mInputAdapter is NULL", __FUNCTION__, __LINE__);
 		return JNI_FALSE;
 	}
-
+	pthread_mutex_unlock(&keyMutex);
+	pthread_mutex_unlock(&joyMutex);
 	mInputAdapter->stop();
+
 	return JNI_TRUE;
 }
 
@@ -262,9 +258,6 @@ JNIEXPORT void JNICALL Java_com_viaplay_ime_jni_InputAdapter_getKey (JNIEnv *env
 	env->SetIntField(rawEvent, deviceId, keyEvent.deviceId);
 	waitForgetKey =  true;
 	pthread_mutex_unlock(&keyMutex);
-
-
-
 }
 
 JNIEXPORT jboolean JNICALL Java_com_viaplay_ime_jni_InputAdapter_getJoyStick

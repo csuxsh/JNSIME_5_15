@@ -7,6 +7,7 @@ import android.widget.ImageView;
 
 public class FloatView extends ImageView {
 	
+	@SuppressWarnings("unused")
 	private boolean clear = false;
 
 	public FloatView(Context context) {
@@ -20,7 +21,7 @@ public class FloatView extends ImageView {
 	@Override
 	public void onDraw(Canvas c)
 	{
-		if(clear)
+		//if(clear)
 		{
 			c.drawColor(0,PorterDuff.Mode.CLEAR); 
 			clear = false;

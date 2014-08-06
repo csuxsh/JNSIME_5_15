@@ -211,8 +211,6 @@ public class JnsEnvInit {
 				//Process process = Runtime.getRuntime().exec("sh /mnt/sdcard/jnsinput/jnsinput.sh");
 				Process jarprocess = Runtime.getRuntime().exec("su");
 				DataOutputStream jardos = new DataOutputStream(jarprocess.getOutputStream());
-				jardos.write("rm /data/jnsinput/jnsinput.jar \n".getBytes());
-				jardos.flush();
 				String cmd = "export LD_LIBRARY_PATH=/vender/lib; export CLASSPATH=/mnt/sdcard/jnsinput/jnsinput.jar; exec app_process /system/bin com.blueocean.jnsinput.JNSInputServer \n";
 				jardos.write(cmd.getBytes());
 				jardos.flush();
@@ -226,8 +224,6 @@ public class JnsEnvInit {
 	{
 		dos.flush();
 		dos.writeBytes("chmod 777 /dev/input/* \n");
-		dos.flush();
-		dos.write("chmod 777 /dev/graphics/fb* \n".getBytes());
 		dos.flush();
 	}
 

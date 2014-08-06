@@ -57,12 +57,6 @@ public class JnsIMEScreenView extends View implements Runnable {
 	 *  当前绘制的时候为尚未配置的点
 	 */
 	private boolean drawPos = false;
-	@SuppressWarnings("unused")
-	private int currentBitmapId;
-	private Paint areaPaint;
-	private Paint infoPaint;
-	@SuppressWarnings("unused")
-	private Rect rect;
 	public static Context context;
 
 	public final static int RES_SIZE = 17;
@@ -549,7 +543,6 @@ public class JnsIMEScreenView extends View implements Runnable {
 		tx = x;
 		ty = y;
 		radius = 0;
-		currentBitmapId = id;
 	}
 	public void drawCircle2(float x, float y, float r) {
 		tx = x;

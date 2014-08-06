@@ -11,7 +11,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.viaplay.im.hardware.JoyStickTypeF;
+import com.viaplay.ime.hardware.JoyStickTypeF;
 import com.viaplay.ime.R;
 import com.viaplay.ime.bean.JnsIMEKeyMap;
 import com.viaplay.ime.bean.KeyBoard;

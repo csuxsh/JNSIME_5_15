@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="5dp" >
+
+    <LinearLayout
+        android:layout_height="0dp"
+        android:layout_width="fill_parent"
+        android:layout_weight="29"
+        android:background="@drawable/game_list_bg" >    
+    <ListView
+        android:id="@+id/gamelist"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:divider = "@null"
+ 
+
+        />
+	</LinearLayout>
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:orientation="horizontal" >
+		
+            <Button
+                android:id="@+id/add_game"
+                android:layout_width="43dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center|bottom"
+                android:background="@drawable/game_add_button"
+                android:layout_marginLeft="7dp"
+                android:layout_marginRight="10dp"
+                
+                android:focusable="false" />
+
+            <Button
+                android:id="@+id/activate"
+                android:layout_width="58dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center|bottom"
+                android:background="@drawable/activate"
+                android:focusable="false" />
+    </LinearLayout>
+</LinearLayout>

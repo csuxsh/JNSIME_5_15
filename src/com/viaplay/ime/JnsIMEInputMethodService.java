@@ -1,17 +1,20 @@
 package com.viaplay.ime;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.viaplay.im.hardware.JoyStickTypeF;
 import com.viaplay.ime.bean.JnsIMEProfile;
+import com.viaplay.ime.hardware.JoyStickTypeF;
 import com.viaplay.ime.jni.InputAdapter;
 import com.viaplay.ime.uiadapter.FloatView;
 import com.viaplay.ime.util.JnsEnvInit;
@@ -22,9 +25,11 @@ import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.inputmethodservice.InputMethodService;
@@ -41,6 +46,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.View.OnTouchListener;
 import android.widget.ImageView.ScaleType;
+import android.widget.Toast;
 
 public class JnsIMEInputMethodService extends InputMethodService implements android.content.DialogInterface.OnClickListener {
 
@@ -48,26 +54,69 @@ public class JnsIMEInputMethodService extends InputMethodService implements andr
 	private final static String KEY_MAP_FILE_TAG = ".keymap";
 	public final static int SHOW_WINDOW = 1;
 	public final static int CLOSE_WINDOW = 2;
+	public final static int UPDATE_WINDOW = 3;
+	public final static int ALERT_ROOT = 4;
 
 	private boolean isTakePic = false;
 	public static String validAppName = "";
 	static String lastAppName = "";
 	public static  String currentAppName = "";
 	public static boolean jnsIMEInUse = false;
-	private static Process process=null;
+	static Process process=null;
 	private static DataOutputStream dos = null;
+	private static DataInputStream dis = null;
+    private boolean ret = false;
 	private FloatView floatingView = null;
 	public static Handler floatingHandler = null;
+    private boolean iscapture = false;
 
 
-	@SuppressLint({ "SdCardPath", "HandlerLeak" })
+	static class InputHandler extends Handler
+	{
+		WeakReference<JnsIMEInputMethodService> mActivity;
+
+		InputHandler(JnsIMEInputMethodService context) {
+			mActivity = new WeakReference<JnsIMEInputMethodService>(context);
+		}
+
+		@Override
+		public void handleMessage(Message msg) {
+
+		}
+
+	};
+	private final BroadcastReceiver mBatInfoReceiver = new BroadcastReceiver() {  
+		@Override  
+		public void onReceive(final Context context, final Intent intent) {  
+			final String action = intent.getAction();  
+			if(Intent.ACTION_USER_PRESENT.equals(action)){  
+				int i = 0;
+				for(; i< FloatingFunc.excepApps.length; i++)
+				{
+					if(JnsIMEInputMethodService.currentAppName.equals(FloatingFunc.excepApps[i]))
+						break;
+				}
+				if(i < FloatingFunc.excepApps.length)
+				{	
+					Toast.makeText(JnsIMEInputMethodService.this,JnsIMEInputMethodService.this.getString(R.string.alert_move), Toast.LENGTH_LONG).show();
+					//Toast.makeText(JnsIMEInputMethodService.this, "如果游戏无法恢复画面，请移动一下浮动窗口", Toast.LENGTH_LONG).show();
+				}
+			}
+		}  
+	};  
+	@SuppressLint({ "SdCardPath"})
 	@Override
 	public void onCreate()
 	{
 		super.onCreate();
 		jnsIMEInUse = true;
 		JnsIMECoreService.ime = this;
-		// ���ø���������
+		// 启动核心服务
+		if(JnsIMECoreService.initialed)
+			return;
+		Intent intent = new Intent("com.viaplay.ime.JnsIMECore");
+		this.startService(intent);
+		// 设置浮动窗属性
 		floatingView = new FloatView(this);  
 		floatingView.setImageResource(R.drawable.shot_normal);
 		floatingView.setScaleType(ScaleType.FIT_CENTER);
@@ -82,7 +131,10 @@ public class JnsIMEInputMethodService extends InputMethodService implements andr
 			}
 
 		});
-		// �״�ʹ�õ�������������ѯ��
+		IntentFilter filter = new IntentFilter();  
+		filter.addAction(Intent.ACTION_USER_PRESENT);  
+		registerReceiver(mBatInfoReceiver, filter);  
+		// 首次使用弹出浮动窗开启询问
 		SharedPreferences pre = PreferenceManager.getDefaultSharedPreferences(this);
 		if(pre.getBoolean("init", true))
 		{
@@ -93,24 +145,75 @@ public class JnsIMEInputMethodService extends InputMethodService implements andr
 		}
 		if(pre.getBoolean("floatViewS", false))	
 			FloatingFunc.show(this.getApplicationContext(), null, floatingView);
-		floatingHandler = new Handler()
+		floatingHandler = new InputHandler(this)
 		{
 			@Override
 			public void handleMessage(Message  msg)
 			{
 				switch(msg.what)
 				{
+				case ALERT_ROOT:
+					Toast.makeText(JnsIMEInputMethodService.this, JnsIMEInputMethodService.this.getString(R.string.alert_root), Toast.LENGTH_LONG).show();
+					break;
 				case SHOW_WINDOW:
 					FloatingFunc.show(getApplicationContext(), null, floatingView);
 					break;
 				case CLOSE_WINDOW:
 					FloatingFunc.close(getApplicationContext());
 					break;
+				case UPDATE_WINDOW:
+					int i = 0;
+					for(; i< FloatingFunc.excepApps.length; i++)
+					{
+						if(JnsIMEInputMethodService.currentAppName.equals(FloatingFunc.excepApps[i]))
+							break;
+					}
+					if(i < FloatingFunc.excepApps.length)
+					{	
+						Toast.makeText(JnsIMEInputMethodService.this, JnsIMEInputMethodService.this.getString(R.string.alert_move), Toast.LENGTH_LONG).show();
+						//Toast.makeText(JnsIMEInputMethodService.this, "如果游戏无法恢复画面，请移动一下浮动窗口", Toast.LENGTH_LONG).show();
+					}
+					try{
+						FloatingFunc.updateViewPosition(floatingView);
+					}
+					catch(Exception e)
+					{
+					}
+					break;
 				}
 				super.handleMessage(msg);
 			}
 		};
-		// ������ǰӦ�ü���߳�
+		new Thread(new Runnable()
+		{
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				try {
+					process = Runtime.getRuntime().exec("su");
+					dos = new DataOutputStream(process.getOutputStream());
+					dis = new DataInputStream(process.getInputStream());
+					dos.write("id \n".getBytes());
+					dos.flush();
+					String line = dis.readLine();
+					if (line.contains("uid=0(root)"))
+						ret = true;
+					else
+					{
+						Message msg = new Message();
+						msg.what = ALERT_ROOT;
+						floatingHandler.sendMessage(msg);
+					}
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+					Message msg = new Message();
+					msg.what = ALERT_ROOT;
+					floatingHandler.sendMessage(msg);
+				}
+			}
+		}).start();
+		// 开启当前应用检测线程
 		new Thread(new Runnable()
 		{
 
@@ -125,7 +228,13 @@ public class JnsIMEInputMethodService extends InputMethodService implements andr
 					if(!lastAppName.equals(tmp))
 					{
 						if(jnsIMEInUse)
+						{
+							Message msg = new Message();
+							msg.what = UPDATE_WINDOW;
+							if(JnsIMEInputMethodService.floatingHandler != null)
+								JnsIMEInputMethodService.floatingHandler.sendMessage(msg);
 							reLoadPofileFile(tmp);
+						}
 					}
 					if(!tmp.equals(JnsIMEInputMethodService.this.getPackageName()))
 					{	
@@ -173,16 +282,33 @@ public class JnsIMEInputMethodService extends InputMethodService implements andr
 		this.onCreateInputView();
 		super.onDestroy();
 		jnsIMEInUse = false;
+		ret = false;
 		floatingHandler = null;
+		try {
+			dos.writeBytes("exit\n");
+			dos.flush();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		JnsIMECoreService.keyList.clear();
 		JnsIMECoreService.keyMap.clear();
 		FloatingFunc.close(this);
+		Intent intent = new Intent("com.viaplay.ime.JnsIMECore");
+		this.stopService(intent);
+		try{
+			unregisterReceiver(mBatInfoReceiver);  
+		}
+		catch(Exception e)
+		{
+
+		}
 	}
 	/**
-	 * ²éÑ¯µ±Ç°µÄÊÂ¼þÊÇ·ñÀ´Ô´ÓÚÒ¡¸Ë»òÕßÍ·¿ø
+	 * 虏茅脩炉碌卤脟掳碌脛脢脗录镁脢脟路帽脌麓脭麓脫脷脪隆赂脣禄貌脮脽脥路驴酶
 	 * 
-	 * @param event µ±Ç°µÄkeyevent
-	 * @return À´Ô´ÓÚÒ¡¸Ë»òÍ·¿øÔò»á½«scancode¸Ä³É¶ÔÓ¦µÄscancode
+	 * @param event 碌卤脟掳碌脛keyevent
+	 * @return 脌麓脭麓脫脷脪隆赂脣禄貌脥路驴酶脭貌禄谩陆芦scancode赂脛鲁脡露脭脫娄碌脛scancode
 	 */
 	KeyEvent mathJoyStick(KeyEvent event)
 	{
@@ -248,7 +374,9 @@ public class JnsIMEInputMethodService extends InputMethodService implements andr
 	public boolean startTpConfig()
 	{
 		JnsIMECoreService.touchConfiging = true;
-
+		if(iscapture)
+			return false;
+		iscapture = true;
 		new Thread(new Runnable()
 		{
 			@Override
@@ -261,8 +389,9 @@ public class JnsIMEInputMethodService extends InputMethodService implements andr
 				Log.d("JnsIME", "take pic "+isTakePic);
 				Intent in = new Intent(JnsIMEInputMethodService.this.getApplicationContext(), JnsIMETpConfigActivity.class);
 				//in.putExtra("screenshot", isTakePic);
-				in.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				in.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				JnsIMEInputMethodService.this.startActivity(in);
+				iscapture = false;
 			}
 		}).start();
 		return true;
@@ -303,7 +432,7 @@ public class JnsIMEInputMethodService extends InputMethodService implements andr
 		return false;
 	}
 	/**
-	 *  ½ØÍ¼·½·¨¡£2.3ÒÔÉÏÍ¨¹ýÖ´ÐÐscreencapÃüÁî½ØÍ¼£¬2.2ÒÔÏÂÖ±½Ó¶Áfb½ØÍ¼
+	 *  陆脴脥录路陆路篓隆拢2.3脪脭脡脧脥篓鹿媒脰麓脨脨screencap脙眉脕卯陆脴脥录拢卢2.2脪脭脧脗脰卤陆脫露脕fb陆脴脥录
 	 */
 	void Screencap()
 	{
@@ -314,14 +443,45 @@ public class JnsIMEInputMethodService extends InputMethodService implements andr
 			else 
 			{	//if(process == null && JnsEnvInit.rooted)
 				//{
-				process = Runtime.getRuntime().exec("su");
-				dos =new DataOutputStream(process.getOutputStream());
-				//}
+				File f = new File("/mnt/sdcard/jnsinput/tmp.bmp");
+				if(!ret)
+				{	
+					process = Runtime.getRuntime().exec("su");
+					dos = new DataOutputStream(process.getOutputStream());
+					dis = new DataInputStream(process.getInputStream());
+					dos.write("id \n".getBytes());
+					dos.flush();
+					String line = dis.readLine();
+					if (line.contains("uid=0(root)"))
+						ret = true;
+					else
+						return;
+				}
+				if(f.exists())
+				{
+					dos.writeBytes("rm /mnt/sdcard/jnsinput/tmp.bmp\n");
+					dos.flush();
+					dos.writeBytes("sync\n");
+					dos.flush();
+					dos.writeBytes("sync\n");
+					dos.flush();
+				}
+				while(f.exists())
+				{
+					Log.d(TAG, "file exit");
+					Thread.sleep(100);
+				}
 				dos.writeBytes("screencap -p /mnt/sdcard/jnsinput/tmp.bmp\n");
 				dos.flush();
-				dos.writeBytes("exit\n");
+				dos.writeBytes("sync\n");
 				dos.flush();
-				process.waitFor();
+				dos.writeBytes("sync\n");
+				dos.flush();
+				while(!f.exists())
+				{
+					Log.d(TAG, "shoot failed");
+					Thread.sleep(100);
+				}
 			}
 
 		} catch (IOException e) {	
@@ -519,6 +679,7 @@ public class JnsIMEInputMethodService extends InputMethodService implements andr
 				 SharedPreferences pre = PreferenceManager.getDefaultSharedPreferences(this);
 				 Editor ed = pre.edit();
 				 ed.putBoolean("floatViewS", true);
+				 ed.commit();
 				 Message msg = new Message();
 				 msg.what = SHOW_WINDOW;
 				 floatingHandler.sendMessage(msg);

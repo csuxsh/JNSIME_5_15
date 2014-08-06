@@ -2,14 +2,12 @@ package com.viaplay.ime.jni;
 
 import java.util.List;
 
-import com.viaplay.im.hardware.JoyStickTypeF;
 import com.viaplay.ime.JnsIMECoreService;
 import com.viaplay.ime.JnsIMEInputMethodService;
+import com.viaplay.ime.hardware.JoyStickTypeF;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Message;
-import android.util.Log;
 import android.view.KeyEvent;
 
 
@@ -286,7 +284,7 @@ public class InputAdapter {
 			{	
 				if(JnsIMECoreService.ime != null)
 				{	
-					if(!JnsIMECoreService.ime.currentAppName.equals(JnsIMECoreService.ime.getPackageName()))
+					if(!JnsIMEInputMethodService.currentAppName.equals(JnsIMECoreService.ime.getPackageName()))
 					{
 						Message msg = new Message();
 						msg.what = JnsIMECoreService.START_TPCFG;

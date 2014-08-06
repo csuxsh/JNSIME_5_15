@@ -1,19 +1,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.viaplay.ime"
-    android:versionCode="23"
-    android:versionName="1.13" >
+    android:versionCode="32"
+    android:versionName="1.21" >
 
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="15" />
     
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+   <!--<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>-->
     <uses-permission android:name="android.permission.GET_TASKS"/>
     <uses-permission android:name="android.permission.REORDER_TASKS" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.INTERNET"/>
-
+	<uses-permission android:name="android.permission.VIBRATE" />
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -21,8 +21,7 @@
         <activity
             android:name=".JnsIME"
             android:label="@string/title_activity_main"
-            android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+            android:screenOrientation="landscape" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -44,7 +43,8 @@
         </activity>
         <activity
             android:name=".JnsIMEControllerActivity"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+	     android:screenOrientation="landscape"
+		>
             <intent-filter>
                 <action android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
@@ -84,15 +84,23 @@
         </service>
         <service
             android:name=".JnsIMEInputMethodService"
-            android:permission="android.permission.BIND_INPUT_METHOD" >
+		    android:permission="android.permission.BIND_INPUT_METHOD"
+		    android:label="@string/ime_name">
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
             </intent-filter>
  	   <meta-data android:name="android.view.im" android:resource="@xml/method"/>     
 	</service>
-
+	 <receiver 
+            android:name="com.viaplay.ime.JnsIMEAppBroadcastReciver">
+            <intent-filter>
+        		<action android:name="android.intent.action.PACKAGE_ADDED" />
+        		<action android:name="android.intent.action.PACKAGE_FULLY_REMOVED" />
+        		<data android:scheme="package" />
+        	</intent-filter>
+        </receiver>
            
-
+		<!-- 
         <receiver 
 		android:name=".JnsIMESystemBootBroadcast" >
             <intent-filter>
@@ -101,6 +109,7 @@
                 <category android:name="android.intent.category.HOME" />
             </intent-filter>
         </receiver>
+        -->
     </application>
 
 </manifest>

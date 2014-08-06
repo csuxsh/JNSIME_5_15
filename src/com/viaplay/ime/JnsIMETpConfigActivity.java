@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.List;
 
 import com.viaplay.ime.R;
-import com.viaplay.im.hardware.JoyStickTypeF;
+import com.viaplay.ime.hardware.JoyStickTypeF;
 import com.viaplay.ime.JnsIMECoreService;
 import com.viaplay.ime.bean.JnsIMEPosition;
 import com.viaplay.ime.bean.JnsIMEProfile;
@@ -22,11 +22,8 @@ import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
@@ -103,6 +100,7 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 	private int screenWidth = 0;
 	private int screeanHeight = 0;
 	private Bitmap tmp_bmp = null;
+	private Bitmap tmp = null;
 	Drawable draw = null;
 	private final static float TARGET_HEAP_UTILIZATION = 0.75f;
 	private boolean saved = true;
@@ -197,10 +195,19 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 						{	
 							//Bitmap bmp = tmp_bmp;
 							Bitmap bmp = DrawableUtil.zoomBitmap(tmp_bmp, (int)(tmp_bmp.getWidth() * dm.density), (int)(tmp_bmp.getHeight() * dm.density));
-							tmp_bmp.recycle();
+							tmp = tmp_bmp;
 							tmp_bmp = bmp;
 							bmp = null;
 						}
+					}
+					else
+					{
+						float scale = (float)dm.widthPixels/tmp_bmp.getWidth();
+						//Toast.makeText(JnsIMETpConfigActivity.this, "dm wid="+dm.widthPixels+"height="+(int)(tmp_bmp.getHeight() * scale), Toast.LENGTH_LONG).show();
+						Bitmap bmp = DrawableUtil.zoomBitmap(tmp_bmp, dm.widthPixels, (int)(tmp_bmp.getHeight() * scale));
+						tmp = tmp_bmp;
+						tmp_bmp = bmp;
+						bmp = null;
 					}
 					if(dm.density < 1.5 || dm.density == 1.5)
 					{	
@@ -252,6 +259,11 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 			tmp_bmp.recycle();
 			tmp_bmp = null;
 		}
+		while(tmp != null && !tmp.isRecycled())
+		{
+			tmp.recycle();
+			tmp = null;
+		}
 		for(Activity activity : JnsIMECoreService.activitys)
 		{
 			activity.finish();
@@ -267,8 +279,11 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 			switch(which)
 			{
 			case DialogInterface.BUTTON_POSITIVE:
-				saveFile(JnsIMEInputMethodService.validAppName);
-				JnsIMECoreService.aph.Insert(JnsIMEInputMethodService.validAppName, "true");
+				ActivityManager am = (ActivityManager) JnsIMETpConfigActivity.this.getSystemService(ACTIVITY_SERVICE);
+				String name = am.getRunningTasks(2).get(1).topActivity.getPackageName();
+				Log.d(TAG, "name="+name);
+				saveFile(name);
+				JnsIMECoreService.aph.Insert(name, "true");
 				saved = true;
 			default:
 				JnsIMETpConfigActivity.this.finish();	
@@ -298,8 +313,10 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 			screenView.drawNow(true, false);
 			break;
 		case R.id.save:
-			saveFile(JnsIMEInputMethodService.validAppName);
-			JnsIMECoreService.aph.Insert(JnsIMEInputMethodService.validAppName, "true");
+			ActivityManager am = (ActivityManager) JnsIMETpConfigActivity.this.getSystemService(ACTIVITY_SERVICE);
+			String name = am.getRunningTasks(2).get(1).topActivity.getPackageName();
+			saveFile(name);
+			JnsIMECoreService.aph.Insert(name, "true");
 			saved = true;
 			break;
 			//JnsIMETpConfigActivity.this.finish();
@@ -372,17 +389,6 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 		if (bop.r > 0 && (event.getScanCode() == 0)) 
 		{ //touchR == 0 则是触摸点和按键的映射，touchR > 0则是摇杆区域映射
 			bop.color = Color.GREEN;
-			DisplayMetrics dm = this.getResources().getDisplayMetrics();
-			//if ((bop.x > (dm.widthPixels / 2)) && ((bop.x - bop.r) <=  (dm.widthPixels / 2))) 
-			//{ //如果圆的中心点X坐标bop.x落在屏的右半边，则这个圆是右摇杆区域，反之则是左摇杆区域
-			//	Toast.makeText(this, this.getString(R.string.invalid_joystick_area), Toast.LENGTH_SHORT).show();
-			//	return false;
-			//}
-			//else if ((bop.x < (dm.widthPixels /2)) && ((bop.x + bop.r) >= (dm.widthPixels /2)))
-			//{
-			//	Toast.makeText(this, this.getString(R.string.invalid_joystick_area), Toast.LENGTH_SHORT).show();
-			//	return false;
-			//}
 			//else 
 			if (bop.r <= 30)
 			{
@@ -391,10 +397,8 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 				return false;
 			}
 			if(event.getKeyCode() == KeyEvent.KEYCODE_R )
-				//((bop.x - bop.r) > (dm.widthPixels/2)) 
 			{ //右摇杆区坿				
 				if (hasRightJoystick &&( perbop.r == bop.r)){
-				//	Toast.makeText(this, this.getString(R.string.has_right_joystick), Toast.LENGTH_SHORT).show();
 					return false;
 				}
 				perbop.r = bop.r;
@@ -898,9 +902,16 @@ public class JnsIMETpConfigActivity extends Activity implements OnTouchListener,
 	 * @param path 要保存的文件名
 	 */
 	private void saveFile(String path) {
+		Log.d(TAG,"save file"+path);
 		try {
+			try{
+			this.deleteFile(path);
+			}
+			catch(Exception e1)
+			{
+				e1.printStackTrace();
+			}
 			FileOutputStream fos = this.openFileOutput(path, Context.MODE_PRIVATE);
-
 			if (keyList != null) {
 				Log.d(TAG, "keyList.size="+keyList.size());
 				Log.d(TAG, "JnsIMECore.keyList.size="+JnsIMECoreService.keyList.size());

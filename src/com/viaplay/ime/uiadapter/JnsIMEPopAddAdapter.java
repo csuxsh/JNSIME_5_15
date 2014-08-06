@@ -27,7 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
- * ?????????adapter
+ * 用于显示添加界面的adapter
  * 
  * @author Steven.xu
  */
@@ -37,7 +37,7 @@ public class JnsIMEPopAddAdapter extends BaseAdapter {
 	LayoutInflater inflater;
 	public List<Map<String, Object>> apps;
 	/**
-	 *  ????????????
+	 *  保存应用列表的勾选信息。
 	 */
 	public static Map<Integer, Boolean> isSelected; 
 	PackageManager pm;
@@ -100,17 +100,17 @@ public class JnsIMEPopAddAdapter extends BaseAdapter {
 			map.put("resolveInfo", ri);
 			apps.add(map);
 
-			//????isSelected??map?????listitem???,???????false?      
+			//这儿定义isSelected这个map是记录每个listitem的状态，初始状态全部为false。      
 			for (int i = 0; i < apps.size(); i++) {    
 				isSelected.put(i, false);    
 			}   
 		}
 	}    
 	/**
-	 * ??????????????
+	 * 判断应用是否已存在于数据库纵
 	 * 
-	 * @param cusor ??????????
-	 * @param pkgname ???????
+	 * @param cusor 数据库返回的所有应用
+	 * @param pkgname 指定的应用包名
 	 * @return
 	 */
 	private  boolean  searchApp(Cursor cusor, String pkgname) 

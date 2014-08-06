@@ -21,7 +21,8 @@
 #define sizeof_bit_array(bits)  ((bits + 7) / 8)
 
 #define ID_NUM 3
-#define DEVICE_NUM 4
+#define DEVICE_NUM 5
+
 
 const int deviceID[ID_NUM] =
 {
@@ -34,7 +35,8 @@ const char* deviceName[DEVICE_NUM] =
 		"JNS JNS 2.4G Wireless Device",
 		"SmartGamePad1234",
 		"Callstel Gaming-Controller",
-		"2.4G  Wireless  ProV2.0 2.4G  Wireless  ProV2.0"
+		"2.4G  Wireless  ProV2.0 2.4G  Wireless  ProV2.0",
+		"BT HID"
 };
 
 

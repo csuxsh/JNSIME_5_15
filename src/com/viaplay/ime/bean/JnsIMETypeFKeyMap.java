@@ -1,6 +1,6 @@
 package com.viaplay.ime.bean;
 
-import com.viaplay.im.hardware.JoyStickTypeF;
+import com.viaplay.ime.hardware.JoyStickTypeF;
 /**
  * Type¦Ì?¡ã¡ä?¨¹¨®3¨¦?¨¤¨¤¡ê???¡Àe?¨²¨®¨²scancode¦Ì?¡ã¡ä?¨¹¦Ì??¡Â¨°y
  * 

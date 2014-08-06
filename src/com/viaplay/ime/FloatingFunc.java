@@ -1,23 +1,29 @@
 
 package com.viaplay.ime;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import com.viaplay.ime.uiadapter.FloatView;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Rect;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Message;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnGenericMotionListener;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 /**
  * 可以永远显示在android屏幕最上方的浮动菜单
@@ -52,8 +58,15 @@ public class FloatingFunc {
 	 * 浮动显示对象
 	 */
 	private static View floatingViewObj = null;
-	
+
 	private static Context mContext = null;
+	
+	
+	public final static String[] excepApps =
+		{
+			"com.tencent.game.SSGame",
+			"com.t2ksports.nba2k14android"
+		};
 
 	/**
 	 * 参数设定类
@@ -67,7 +80,8 @@ public class FloatingFunc {
 	static SoundPool sp;
 	static int music;
 	private static boolean isMove = false;
-
+	private static long pressTime = 0; 
+	private static Timer poptimer = new Timer();
 	/**
 	 * 要显示在窗口最前面的方法
 	 * 
@@ -75,9 +89,11 @@ public class FloatingFunc {
 	 *            调用对象Context getApplicationContext()
 	 * @param window
 	 *            调用对象 Window getWindow()
-	 * @param floatingViewObj
+	 * @param floatingViewObj 
 	 *            要显示的浮动对象 View
 	 */
+	@SuppressLint("NewApi")
+	@SuppressWarnings("deprecation")
 	public static void show(Context context, Window window, View floatingViewObj) {
 		// 加载xml文件中样式例子代码
 		// ********************************Start**************************
@@ -103,8 +119,8 @@ public class FloatingFunc {
 
 		wm = (WindowManager) context// getApplicationContext()
 				.getSystemService(Activity.WINDOW_SERVICE);
-		params.type  =WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
-				| WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
+		params.type =WindowManager.LayoutParams.TYPE_PHONE;
+			//	| WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY;
 		params.flags = LayoutParams.FLAG_NOT_TOUCH_MODAL
 				| LayoutParams.FLAG_NOT_FOCUSABLE
 				| LayoutParams.FLAG_HARDWARE_ACCELERATED;
@@ -126,6 +142,16 @@ public class FloatingFunc {
 		sp= new SoundPool(10, AudioManager.STREAM_SYSTEM, 100);
 		music = sp.load(mContext, R.raw.keypress, 1);
 		wm.addView(floatingViewObj, params);
+		view_obj.setOnGenericMotionListener(new OnGenericMotionListener()
+		{
+
+			@Override
+			public boolean onGenericMotion(View v, MotionEvent event) {
+				// TODO Auto-generated method stub
+				return true;
+			}
+			
+		});
 		Log.d("DEBUG", "show view");
 	}
 
@@ -149,6 +175,14 @@ public class FloatingFunc {
 					+ mTouchStartY);// 调试信息
 			((FloatView) floatingViewObj).clearCanvas();
 			((FloatView) floatingViewObj).setImageResource(R.drawable.shot_press);
+			PopIMETask task = new PopIMETask();
+			pressTime = System.currentTimeMillis();
+			poptimer = new Timer();
+			poptimer.schedule(task, 1100);
+			params.flags = LayoutParams.FLAG_NOT_TOUCH_MODAL
+					| LayoutParams.FLAG_NOT_FOCUSABLE
+					| LayoutParams.FLAG_HARDWARE_ACCELERATED;
+			wm.updateViewLayout(FloatingFunc.floatingViewObj, params);
 			break;
 		case MotionEvent.ACTION_MOVE:
 			x = event.getRawX()- mTouchStartX;
@@ -156,6 +190,11 @@ public class FloatingFunc {
 			if(!isMove && (Math.abs(event.getX() - mTouchStartX) < 10) && (Math.abs(event.getY() - mTouchStartY) < 10))
 				return  false;
 			updateViewPosition(view);
+			if(poptimer !=null)
+			{	
+				poptimer.cancel();
+				poptimer = null;
+			}
 			isMove = true;
 			Log.d("FUN", "VIEW MOVE");
 			break;
@@ -164,26 +203,34 @@ public class FloatingFunc {
 			mTouchStartX = 0;
 			mTouchStartY = 0;
 			Log.d("UP", "up");
-			if(!isMove)
+			if(!isMove )
 			{	
-				if(JnsIMEInputMethodService.jnsIMEInUse)
+				if(System.currentTimeMillis() - pressTime < 1000)
 				{	
-					if(JnsIMECoreService.ime != null)
+					if(poptimer !=null)
 					{	
-						if(!JnsIMEInputMethodService.currentAppName.equals(JnsIMECoreService.ime.getPackageName()))
-						{
-							Message msg = new Message();
-							msg.what = JnsIMECoreService.START_TPCFG;
-							JnsIMECoreService.DataProcessHandler.sendMessage(msg);
-							JnsIMECoreService.ime.startTpConfig();
+						poptimer.cancel();
+						poptimer = null;
+					}
+					if(JnsIMEInputMethodService.jnsIMEInUse)
+					{	
+						if(JnsIMECoreService.ime != null)
+						{	
+							if(!JnsIMEInputMethodService.currentAppName.equals(JnsIMECoreService.ime.getPackageName()))
+							{
+								Message msg = new Message();
+								msg.what = JnsIMECoreService.START_TPCFG;
+								JnsIMECoreService.DataProcessHandler.sendMessage(msg);
+								JnsIMECoreService.ime.startTpConfig();
+							}
 						}
 					}
+					sp.play(music, 1, 1, 1, 0, 1);
 				}
-				sp.play(music, 1, 1, 1, 0, 1);
 			}
 			((FloatView) floatingViewObj).clearCanvas();
 			((ImageView) floatingViewObj).setImageResource(R.drawable.shot_normal);
-
+			updateViewPosition(view);
 			isMove = false;
 			break;
 		}
@@ -205,12 +252,42 @@ public class FloatingFunc {
 	/**
 	 * 更新弹出窗口位置
 	 */
-	private static void updateViewPosition(View view) {
+	 static void updateViewPosition(View view) {
 		// 更新浮动窗口位置参数
 		Log.d("TEST", "x = "+x+"y= "+y);
 		params.x = (int) x;//(int) (x - mTouchStartX);
 		params.y = (int) y;//(int) (y - mTouchStartY);
+		int i = 0;
+		for(; i< excepApps.length; i++)
+		{
+			if(JnsIMEInputMethodService.currentAppName.equals(excepApps[i]))
+				break;
+		}
+		if(i < excepApps.length)
+		{
+			params.flags = LayoutParams.FLAG_NOT_TOUCH_MODAL
+					| LayoutParams.FLAG_HARDWARE_ACCELERATED;
+		}
+		else
+		{	
+			params.flags = LayoutParams.FLAG_NOT_TOUCH_MODAL
+			| LayoutParams.FLAG_NOT_FOCUSABLE
+			| LayoutParams.FLAG_HARDWARE_ACCELERATED;
+		}
 		wm.updateViewLayout(FloatingFunc.floatingViewObj, params);
 	}
 
+	static class PopIMETask extends TimerTask{
+
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			Vibrator vibrator = (Vibrator)mContext.getSystemService(Context.VIBRATOR_SERVICE);;  
+			Intent intent = new Intent();
+			intent.setAction("android.settings.SHOW_INPUT_METHOD_PICKER");
+			mContext.sendBroadcast(intent);
+			vibrator.vibrate(100);
+		}
+
+	}
 }

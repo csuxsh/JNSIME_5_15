@@ -4,7 +4,6 @@
     android:layout_height="fill_parent"
     android:layout_marginLeft="20dp"
     android:orientation="horizontal" >
-    
 
     <LinearLayout
         android:layout_width="0dp"
@@ -22,17 +21,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center" >
+
                 <Button
                     android:id="@+id/dian1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/dian1" />
+                    android:background="@drawable/dian1"
+                    android:focusable="false" />
+
                 <ImageView
                     android:id="@+id/dian_c1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:background="@drawable/dian2" />
+                    android:background="@drawable/dian2"
+                    android:focusable="false" />
             </FrameLayout>
 
             <Button
@@ -41,26 +44,27 @@
                 android:layout_height="wrap_content"
                                                android:layout_marginLeft="5dp"
                     android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginRight="5dp"
-                android:background="@drawable/default_button_1" />
+                android:layout_marginBottom="5dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/default_button_1"
+                android:focusable="false" />
 
             <Button
                 android:id="@+id/default_keymapping1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                                   android:layout_marginLeft="5dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginRight="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
                 android:background="@drawable/default_mapping" />
 
             <Button
                 android:id="@+id/default_delete1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:background="@drawable/default_delete" />
+                android:background="@drawable/default_delete"
+                android:visibility="gone" />
         </LinearLayout>
 
         <LinearLayout
@@ -68,48 +72,54 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal" >
 
-             <FrameLayout
+            <FrameLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"
+                android:focusable="false" >
+
                 <Button
                     android:id="@+id/dian2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/dian1" />
+                    android:background="@drawable/dian1"
+                    android:focusable="false" />
+
                 <ImageView
                     android:id="@+id/dian_c2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:background="@drawable/dian2" />
+                    android:background="@drawable/dian2"
+                    android:focusable="false" />
             </FrameLayout>
 
             <Button
                 android:id="@+id/default_button_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                                               android:layout_marginLeft="5dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginRight="5dp"
-                android:background="@drawable/default_button_2" />
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/default_button_2"
+                android:focusable="false" />
 
             <Button
                 android:id="@+id/default_keymapping2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                                   android:layout_marginLeft="5dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginRight="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
                 android:background="@drawable/default_mapping" />
 
             <Button
                 android:id="@+id/default_delete2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                 android:visibility="gone"
-                android:background="@drawable/default_delete" />
+                android:background="@drawable/default_delete"
+                android:visibility="gone" />
         </LinearLayout>
     </LinearLayout>
 
@@ -119,7 +129,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_weight="3"
-        android:background="@drawable/xian" />
+        android:background="@drawable/xian"
+        android:focusable="false" />
 
     <LinearLayout
         android:layout_width="0dp"
@@ -133,48 +144,54 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal" >
 
-             <FrameLayout
+            <FrameLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"
+                android:focusable="false" >
+
                 <Button
                     android:id="@+id/dian3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/dian1" />
+                    android:background="@drawable/dian1"
+                    android:focusable="false" />
+
                 <ImageView
                     android:id="@+id/dian_c3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:background="@drawable/dian2" />
+                    android:background="@drawable/dian2"
+                    android:focusable="false" />
             </FrameLayout>
 
             <Button
                 android:id="@+id/default_button_3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                                               android:layout_marginLeft="5dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginRight="5dp"
-                android:background="@drawable/default_button_3" />
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/default_button_3"
+                android:focusable="false" />
 
             <Button
                 android:id="@+id/default_keymapping3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                                                             android:layout_marginLeft="5dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginRight="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
                 android:background="@drawable/default_mapping" />
 
             <Button
                 android:id="@+id/default_delete3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                 android:visibility="gone"
-                android:background="@drawable/default_delete" />
+                android:background="@drawable/default_delete"
+                android:visibility="gone" />
         </LinearLayout>
 
         <LinearLayout
@@ -182,48 +199,54 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal" >
 
-             <FrameLayout
+            <FrameLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"
+                android:focusable="false" >
+
                 <Button
                     android:id="@+id/dian4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/dian1" />
+                    android:background="@drawable/dian1"
+                    android:focusable="false" />
+
                 <ImageView
                     android:id="@+id/dian_c4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:background="@drawable/dian2" />
+                    android:background="@drawable/dian2"
+                    android:focusable="false" />
             </FrameLayout>
 
             <Button
                 android:id="@+id/default_button_4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                                               android:layout_marginLeft="5dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginRight="5dp"
-                android:background="@drawable/default_button_4" />
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/default_button_4"
+                android:focusable="false" />
 
             <Button
                 android:id="@+id/default_keymapping4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                               android:layout_marginLeft="5dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginRight="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
                 android:background="@drawable/default_mapping" />
 
             <Button
                 android:id="@+id/default_delete4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                 android:visibility="gone"
-                android:background="@drawable/default_delete" />
+                android:background="@drawable/default_delete"
+                android:visibility="gone" />
         </LinearLayout>
     </LinearLayout>
 

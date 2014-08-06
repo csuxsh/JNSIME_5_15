@@ -6,134 +6,126 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.List;
 
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
-import com.viaplay.im.hardware.JoyStickTypeF;
+import com.viaplay.ime.hardware.JoyStickTypeF;
 import com.viaplay.ime.JnsIMECoreService;
-import com.viaplay.ime.JnsIMEInputMethodService;
 import com.viaplay.ime.bean.JnsIMEPosition;
 import com.viaplay.ime.bean.JnsIMEProfile;
 import com.viaplay.ime.jni.JoyStickEvent;
 import com.viaplay.ime.jni.RawEvent;
 /**
- * ?????? ?? jnsinput.jar????
- * <p>???????,????{@link getSendEvent}getSendEvent????,???????????????????
+ * 与输入法连接 以及 jnsinput.jar通信的类
+ * <p>这是一个单列类，只能通过{@link getSendEvent}getSendEvent获得对象，所有操控器需要转换的数据均由此类发出。
  * 
  * @author steven
  *
  */
 public class SendEvent {
 
-    public final static String pkgName ="com.viaplay.ime";
+	public final static String pkgName ="com.viaplay.ime";
 	public final static String TAG= "SendEvent";
-	
-	private final static int  STICK_MOVE_IRQ_TIME = 20;
+
 	/**
-	 * ???jnsinput????????
+	 * 发送到jnsinput触摸消息的标示头
 	 */
 	private final static String TOUCH = "injectTouch";
 	/**
-	 * ???jnsinput????????
+	 * 发送到jnsinput按键消息的标示头
 	 */
 	private final static String KEY = "injectKey";
 	/**
-	 * ???jnsinput????????
+	 * 发送到jnsinput消息的解析分隔符
 	 */
 	private final static String TOKEN=  ":";
 	/**
-	 * ???jnsinput?socket??
+	 * 连接到jnsinput得socket对象
 	 */
 	private static Socket socket;
 	private static PrintWriter pw;
 	private static DataInputStream dis;
 
 	/**
-	 * ???????
+	 * 右摇杆按下标记
 	 */
 	private boolean rightMotionKey = false;
 	/**
-	 * ???????
+	 * 左摇杆按下标记
 	 */
 	private boolean leftMotionKey = false;
 	/**
-	 * ?????????
+	 * 右摇杆移动的横坐标
 	 */
 	private float rightJoystickCurrentPosX = 0.0f;
 	/**
-	 * ?????????
+	 * 右摇杆移动的纵坐标
 	 */
 	private float rightJoystickCurrentPosY = 0.0f;
 	/**
-	 * ?????????
+	 * 左摇杆移动的横坐标
 	 */
 	private float leftJoystickCurrentPosX = 0.0f;
 	/**
-	 * ?????????
+	 * 左摇杆移动的纵坐标
 	 */
 	private float leftJoystickCurrentPosY = 0.0f;
 	/**
-	 * ????????
+	 * 摇杆移动的横坐标
 	 */
 	private float joystickR = 0.0f;
 	/**
-	 * ??????????
+	 * 右摇杆当前配置的半径
 	 */
 	private float rightJoystickCurrentR = 0.0f;
 	/**
-	 * ??????????
+	 * 左摇杆当前配置的半径
 	 */
 	private float leftJoystickCurrentR = 0.0f;
 	/**
-	 * ?????????
+	 * 左摇杆当前是否按下
 	 */
 	private boolean LeftJoystickPresed = false;
 	/**
-	 * ?????????
+	 * 右摇杆当前是否按下
 	 */
 	private boolean RightJoystickPresed = false;
 	/**
-	 * ????????????
-	 */
-	private long last_left_press_time = 0;
-	/**
-	 * ????????????
-	 */
-	private long last_right_press_time = 0;
-	/**
-	 * ???????????????
+	 * 上次处理左摇杆事件的时间
 	 */
 	private boolean joy_xi_pressed = false;
 	/**
-	 * ???????????????
+	 * 判断左摇杆当前是否处在右移状态
 	 */
 	private boolean joy_xp_pressed =false;
 	/**
-	 * ???????????????
+	 * 判断左摇杆当前是否处在下移状态
 	 */
 	private boolean joy_yi_pressed = false;
 	/**
-	 * ???????????????
+	 * 判断左摇杆当前是否处在上移状态
 	 */
 	private boolean joy_yp_pressed =false;
 	/**
-	 * ????????????????
+	 * 判断左右摇杆当前是否处在左移状态
 	 */
 	private boolean joy_zi_pressed = false;
 	/**
-	 * ????????????????
+	 * 判断左右摇杆当前是否处在右移状态
 	 */
 	private boolean joy_zp_pressed =false;
 	/**
-	 * ????????????????
+	 * 判断左右摇杆当前是否处在下移状态
 	 */
 	private boolean joy_rzi_pressed = false;
 	/**
-	 * ????????????????
+	 * 判断左右摇杆当前是否处在上移状态
 	 */
 	private boolean joy_rzp_pressed =false;
+	
+	
+	private static long last_post_time = 0;
 
 
 	private static SendEvent sendEvent = null;
@@ -144,7 +136,7 @@ public class SendEvent {
 	}
 
 	/**
-	 * ????SendEvent??
+	 * 获得一个SendEvent对象
 	 **/
 	public static SendEvent getSendEvent()
 	{
@@ -153,9 +145,9 @@ public class SendEvent {
 		return sendEvent;
 	}
 	/**
-	 * ??socket???jnsinput.jar 
+	 * 启动socket连接到jnsinput.jar 
 	 * 
-	 *  @return ??????true,????false
+	 *  @return 连接成功返回true,否则返回false
 	 */
 	public  boolean connectJNSInputServer() {
 
@@ -173,7 +165,7 @@ public class SendEvent {
 			} 
 			catch(Exception e)
 			{	
-				e.printStackTrace();
+				//	e.printStackTrace();
 				JnsEnvInit.startJnsInputServier();
 				connect = false;
 				try {
@@ -191,16 +183,15 @@ public class SendEvent {
 
 
 	/**
-	 * ??scancode??????keylist? 
+	 * 查找scancode是否已存在于keylist中 
 	 * 
 	 * @author Steven.xu
 	 * 
-	 * @param keylist ?????keylist??
-	 * @param scancode ??????
+	 * @param keylist 需要查找的keylist对象
+	 * @param scancode 指定的扫描码
 	 * 
-	 * @return ??????true,????false
+	 * @return 连接成功返回true,否则返回false
 	 */
-	@SuppressWarnings("unused")
 	private static JnsIMEProfile iteratorKeyList(List<JnsIMEProfile> keylist, int scancode)
 	{
 		//Log.d(TAG, "list size"+keylist.size());
@@ -212,52 +203,58 @@ public class SendEvent {
 		return null;
 	}
 	/**
-	 * ??????????????
+	 * 检查已发出的事件是否已经松开
 	 * 
 	 * @author Steven.xu
 	 * 
-	 * @return ?????true, ????false
+	 * @return 已松开返回true, 否则返回false
 	 */
 	public boolean getEventDownLock() throws Exception
 	{
 		String data[];
-		pw.print("geteventlock\n");
-		pw.flush();
+		try{
+			pw.print("geteventlock\n");
+			pw.flush();
 
-		@SuppressWarnings("deprecation")
-		String response = dis.readLine();
-		Log.d(TAG, response);
-		data = response.split(":");
-		if(data[0].equals("lock"))
-		{
-			return Boolean.getBoolean(data[1]);
+			@SuppressWarnings("deprecation")
+			String response = dis.readLine();
+			Log.d(TAG, response);
+			data = response.split(":");
+			if(data[0].equals("lock"))
+			{
+				return Boolean.getBoolean(data[1]);
+			}
 		}
-
+		catch(Exception e)
+		{
+		}
 		return false;
 
 	}
 	/**
-	 * ??????keyevent??
+	 * 注入操控器的keyevent事件
 	 * 
-	 * ??????????????,???keymaping???,????????jnsinput.jar,??touch??,
-	 * ??????????,???keymmaping,?????????sendKeyEent?keyEvent????????,
-	 * ?????????
+	 * 如果该按键已经配置的触摸按键，则忽略keymaping的配置，直接将按键发送至jnsinput.jar,注入touch事件，
+	 * 如果没有配置触摸按键，配置了keymmaping,则调用输入法连接的sendKeyEent将keyEvent注入到对应的应用，
+	 * 如果均未配置则忽略
 	 * 
 	 * @author Steven.xu
 	 * 
-	 * @param keyevent ????keyevent??
+	 * @param keyevent 要发送的keyevent对象
 	 * 
-	 * @return ??????true,????false
+	 * @return 发送成功返回true,失败返回false
 	 */
 	public  boolean sendKey(RawEvent keyevent)
 	{ 
 		if(JnsIMECoreService.touchConfiging)
 			return true;
 		//Log.d(TAG,"scancode="+keyevent.scanCode);
+		//  遍历是否存在touch映射
 		JnsIMEProfile keyProfile =  iteratorKeyList(JnsIMECoreService.keyList, keyevent.scanCode);
 		if(null == keyProfile)
 		{	
 			//Log.d(TAG, "keyprofile  is  null");
+			// 遍历是否存在key映射
 			if(!JnsIMECoreService.keyMap.containsKey(keyevent.scanCode))
 				return false;
 			try
@@ -271,14 +268,10 @@ public class SendEvent {
 				//connectJNSInputServer();
 			}
 		}
-		//Log.d(TAG, "keyprofile  is not null");
 
 		try{
-			//	socket.getOutputStream().write(posString((int)keyProfile.posX, (int)keyProfile.posY, keyevent.value).getBytes());
 			pw.print(posString((int)keyProfile.posX, (int)keyProfile.posY, keyevent.value));
 			pw.flush();
-			//Log.d(TAG,"send pos x="+keyProfile.posX+", pos y = "+keyProfile.posY+"action = "+keyevent.value);
-			//Log.d(TAG, "current time is "+System.currentTimeMillis());
 		}
 		catch(Exception e)
 		{
@@ -288,13 +281,13 @@ public class SendEvent {
 		return true;
 	}
 	/**
-	 * ??????????
+	 * 注入操控器的摇杆事件
 	 * 
 	 * @author Steven.xu
 	 * 
-	 * @param joyevent ????joyevent??
+	 * @param joyevent 要发送的joyevent对象
 	 * 
-	 * @return ??????true,????false
+	 * @return 发送成功返回true,失败返回false
 	 */
 	public void sendJoy(JoyStickEvent joyevent)
 	{
@@ -321,6 +314,14 @@ public class SendEvent {
 	}
 	private static String posString(float x, float y, int tag, int value)
 	{
+		if(System.currentTimeMillis() - last_post_time < 10)
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		last_post_time = System.currentTimeMillis();
 		if(value == KeyEvent.ACTION_DOWN)
 			JnsIMECoreService.eventDownLock++;
 		else if(value == KeyEvent.ACTION_UP)
@@ -329,14 +330,14 @@ public class SendEvent {
 	}
 
 	/**
-	 * ??????????
+	 * 计算摇杆偏移的正弦值
 	 * 
 	 * @author Steven.xu
 	 * 
-	 * @param bx ???????????,-127 ~ 127
-	 * @param by ??????????? ?-127 ~ 127
-	 * @param joystickType ????? TYPE_LEFT_JOYSTICK ?? TYPE_RIGHT_JOYSTICK
-	 * @return ????????
+	 * @param bx 操控着摇杆的横向便宜量，-127 ~ 127
+	 * @param by 操控器摇杆的纵向偏移量 。-127 ~ 127
+	 * @param joystickType 摇杆的类型 TYPE_LEFT_JOYSTICK 或者 TYPE_RIGHT_JOYSTICK
+	 * @return 摇杆偏移的正弦值
 	 */
 	private double calcSinA(int bx, int by, int joystickType) {
 		int ox = 0x7f;
@@ -355,15 +356,15 @@ public class SendEvent {
 	}
 
 	/**
-	 * ???????????,
+	 * 处理操控器右摇杆的数据，
 	 * 
-	 * <p>??????????????????jnsinput????????
+	 * <p>处理完成后会跟根据配置文件直接发送到jnsinput或者是注入到应用
 	 * 
 	 * @author Steven.xu
 	 * 
-	 * @param i ???????????,-127 ~ 127
-	 * @param j ??????????? ?-127 ~ 127
-	 * @param deviceId ????device??id,?????????????0
+	 * @param i 操控着摇杆的横向便宜量，-127 ~ 127
+	 * @param j 操控器摇杆的纵向偏移量 。-127 ~ 127
+	 * @param deviceId 操控器在device中的id,程序中没有去获取可以直接输0
 	 */
 	private void processRightJoystickData(int i, int j, int deviceId) { // x = buffer[3] y = buffer[4]
 		int ox = 0x7f;
@@ -389,51 +390,49 @@ public class SendEvent {
 					double x = Math.sqrt(Math.pow(touchR1, 2) - Math.pow(y, 2));
 					float rawX = 0.0f;
 					float rawY = 0.0f;
-					if (ux < ox && uy < oy) {  //坐标轴上半部的左
+					if (ux < ox && uy < oy) {  //鍧愭爣杞翠笂鍗婇儴鐨勫乏
 						rawX = bp.posX - (float)x;
 						rawY = bp.posY - (float)y;
 						rightMotionKey = true;
 						//	Log.e(TAG, "axis positive left part");
-					} else if (ux > ox && uy < oy) {  //坐标轴上半部的右
+					} else if (ux > ox && uy < oy) {  //鍧愭爣杞翠笂鍗婇儴鐨勫彸
 						rawX = bp.posX + (float) x;
 						rawY = bp.posY - (float) y;
 						rightMotionKey = true;
 						//	Log.e(TAG, "axis positive right part");
-					} else if (ux < ox && uy > oy) { //坐标轴下半部的左
+					} else if (ux < ox && uy > oy) { //鍧愭爣杞翠笅鍗婇儴鐨勫乏
 						rawX = bp.posX  - (float) x;
 						rawY = bp.posY + (float) y;
 						rightMotionKey = true;
 						//	Log.e(TAG, "axis negtive left part");
-					} else if (ux > ox && uy > oy) { //坐标轴下半部的右
+					} else if (ux > ox && uy > oy) { //鍧愭爣杞翠笅鍗婇儴鐨勫彸
 						rawX = bp.posX + (float) x;
 						rawY = bp.posY + (float) y;
 						rightMotionKey = true;
 						//	Log.e(TAG, "axis negtiveleft part");
-					} else if (ux == ox && uy < oy) { //Y轴变�?
+					} else if (ux == ox && uy < oy) { //Y杞村彉鍖?
 						rawX = bp.posX;
 						rawY = bp.posY - (float)y;
 						rightMotionKey = true;
 						//	Log.e(TAG, "axis Y < 0x7f");
-					} else if (ux == ox && uy > oy) { //Y轴变�?
+					} else if (ux == ox && uy > oy) { //Y杞村彉鍖?
 						rawX = bp.posX;
 						rawY = bp.posY + (float) y;
 						rightMotionKey = true;
 						//	Log.e(TAG, "axis Y > 0x7f");
-					} else if (ux < ox && uy == oy) { //X轴变�?
+					} else if (ux < ox && uy == oy) { //X杞村彉鍖?
 						rawX = bp.posX - (float)x;
 						rawY = bp.posY;
 						rightMotionKey = true;
 						//Log.e(TAG, "axis X < 0x7f");
-					} else if (ux > ox && uy == oy) { //X轴变�?
+					} else if (ux > ox && uy == oy) { //Xè½´å˜åŒ?
 						rawX = bp.posX + (float) x;
 						rawY = bp.posY;
 						rightMotionKey = true;
 						//Log.e(TAG, "axis X  > 0x7f");
 					} else if (ux == ox && uy == oy && rightMotionKey) {
 						//Log.e(TAG, "right  you release map");
-						pw.print(posString(bp.posX, bp.posY, JoyStickTypeF.RIGHT_JOYSTICK_TAG, MotionEvent.ACTION_MOVE));
-						pw.flush();
-						pw.print(posString(bp.posX, bp.posY, JoyStickTypeF.RIGHT_JOYSTICK_TAG, MotionEvent.ACTION_UP));
+						pw.print(posString(rightJoystickCurrentPosX, rightJoystickCurrentPosY, JoyStickTypeF.RIGHT_JOYSTICK_TAG, MotionEvent.ACTION_UP));
 						pw.flush();
 						rightMotionKey = false;
 						RightJoystickPresed = false;
@@ -443,22 +442,32 @@ public class SendEvent {
 						{
 							pw.print(posString(bp.posX, bp.posY, JoyStickTypeF.RIGHT_JOYSTICK_TAG, MotionEvent.ACTION_DOWN));
 							pw.flush();
+							try {
+								Thread.sleep(50);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							pw.print(posString(rawX, rawY, JoyStickTypeF.RIGHT_JOYSTICK_TAG, MotionEvent.ACTION_MOVE));
+							pw.flush();
+							rightJoystickCurrentPosX = rawX;
+							rightJoystickCurrentPosY = rawY;
 							RightJoystickPresed = true;								
 						}
 
 						if(RightJoystickPresed)
 						{
-							if((rawX != rightJoystickCurrentPosX) || (rawY != rightJoystickCurrentPosY))
-								if(System.currentTimeMillis() - last_right_press_time > STICK_MOVE_IRQ_TIME)
-								{		
-									pw.print(posString(rawX, rawY, JoyStickTypeF.RIGHT_JOYSTICK_TAG, MotionEvent.ACTION_MOVE));
-									pw.flush();
-									last_right_press_time = System.currentTimeMillis();
-								}
+							if((Math.abs(rawX - rightJoystickCurrentPosX) > bp.posR / 5) || 
+									(Math.abs(rawY -rightJoystickCurrentPosY)) >  bp.posR / 5)
+							{		
+								pw.print(posString(rawX, rawY, JoyStickTypeF.RIGHT_JOYSTICK_TAG, MotionEvent.ACTION_MOVE));
+								pw.flush();
+								System.currentTimeMillis();
+								rightJoystickCurrentPosX = rawX;
+								rightJoystickCurrentPosY = rawY;
+							}
 						}
 					}
-					rightJoystickCurrentPosX = rawX;
-					rightJoystickCurrentPosY = rawY;
 				}
 			}
 		}
@@ -635,15 +644,15 @@ public class SendEvent {
 		 */
 	}
 	/**
-	 * ???????????,
+	 * 处理操控器左摇杆的数据，
 	 * 
-	 * <p>??????????????????jnsinput????????
+	 * <p>处理完成后会跟根据配置文件直接发送到jnsinput或者是注入到应用
 	 * 
 	 * @author Steven.xu
 	 * 
-	 * @param i ???????????,-127 ~ 127
-	 * @param j ??????????? ?-127 ~ 127
-	 * @param deviceId ????device??id,?????????????0
+	 * @param i 操控着摇杆的横向便宜量，-127 ~ 127
+	 * @param j 操控器摇杆的纵向偏移量 。-127 ~ 127
+	 * @param deviceId 操控器在device中的id,程序中没有去获取可以直接输0
 	 */
 	private void processLeftJoystickData(int i, int j, int deviceId) { // x = buffer[3] y = buffer[4]
 		int ox = 0x7f;
@@ -673,51 +682,57 @@ public class SendEvent {
 					float rawX = 0.0f;
 					float rawY = 0.0f;
 					//Log.d(TAG, "ox ="+x+",ux="+ux+",oy="+y+",uy="+uy);
-					if (ux < ox && uy < oy) {  //坐标轴上半部的左
+					if (ux < ox && uy < oy) {  //åæ ‡è½´ä¸ŠåŠéƒ¨çš„å·¦
 						rawX = bp.posX - (float)x;
 						rawY = bp.posY - (float)y;
 						leftMotionKey = true;
 						//Log.d(TAG, "axis positive left part");
-					} else if (ux > ox && uy < oy) {  //坐标轴上半部的右
+					} else if (ux > ox && uy < oy) {  //åæ ‡è½´ä¸ŠåŠéƒ¨çš„å³
 						rawX = bp.posX + (float) x;
 						rawY = bp.posY - (float) y;
 						leftMotionKey = true;
 						//Log.d(TAG, "axis positive right part");
-					} else if (ux < ox && uy > oy) { //坐标轴下半部的左
+					} else if (ux < ox && uy > oy) { //åæ ‡è½´ä¸‹åŠéƒ¨çš„å·¦
 						rawX = bp.posX  - (float) x;
 						rawY = bp.posY + (float) y;
 						leftMotionKey = true;
 						//Log.d(TAG, "axis negtive left part");
-					} else if (ux > ox && uy > oy) { //坐标轴下半部的右
+					} else if (ux > ox && uy > oy) { //åæ ‡è½´ä¸‹åŠéƒ¨çš„å³
 						rawX = bp.posX + (float) x;
 						rawY = bp.posY + (float) y;
 						leftMotionKey = true;
 						//Log.d(TAG, "axis negtiveleft part");
-					} else if (ux == ox && uy < oy) { //Y轴变�?
+					} else if (ux == ox && uy < oy) { //Yè½´å˜åŒ?
 						rawX = bp.posX;
 						rawY = bp.posY - (float)y;
 						leftMotionKey = true;
 						//Log.d(TAG, "axis Y < 0x7f");
-					} else if (ux == ox && uy > oy) { //Y轴变�?
+					} else if (ux == ox && uy > oy) { //Yè½´å˜åŒ?
 						rawX = bp.posX;
 						rawY = bp.posY + (float) y;
 						leftMotionKey = true;
 						//Log.d(TAG, "axis Y > 0x7f");
-					} else if (ux < ox && uy == oy) { //X轴变�?
+					} else if (ux < ox && uy == oy) { //Xè½´å˜åŒ?
 						rawX = bp.posX - (float)x;
 						rawY = bp.posY;
 						leftMotionKey = true;
 						//Log.d(TAG, "axis X < 0x7f");
-					} else if (ux > ox && uy == oy) { //X轴变�?
+					} else if (ux > ox && uy == oy) { //Xè½´å˜åŒ?
 						rawX = bp.posX + (float) x;
 						rawY = bp.posY;
 						leftMotionKey = true;
 						//Log.d(TAG, "axis X  > 0x7f");
 					} else if (ux == ox && uy == oy && leftMotionKey) {
 						//Log.e(TAG, "left joystick you release map");
-						pw.print(posString(bp.posX, bp.posY, JoyStickTypeF.LEFT_JOYSTICK_TAG, MotionEvent.ACTION_MOVE));
-						pw.flush();
-						pw.print(posString(bp.posX, bp.posY, JoyStickTypeF.LEFT_JOYSTICK_TAG, MotionEvent.ACTION_UP));
+					//	pw.print(posString(bp.posX, bp.posY, JoyStickTypeF.LEFT_JOYSTICK_TAG, MotionEvent.ACTION_MOVE));
+					//	pw.flush();
+					//	try {
+					//		Thread.sleep(50);
+					//	} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+					//		e.printStackTrace();
+					//	}
+						pw.print(posString(leftJoystickCurrentPosX, leftJoystickCurrentPosY, JoyStickTypeF.LEFT_JOYSTICK_TAG, MotionEvent.ACTION_UP));
 						pw.flush();
 						leftMotionKey = false;
 						LeftJoystickPresed = false;
@@ -730,32 +745,35 @@ public class SendEvent {
 						//Log.d(TAG, "LeftJoystickPresed="+LeftJoystickPresed);
 						if(!LeftJoystickPresed)
 						{	
-							//pw.print(posString(bp.posX, bp.posY, JoyStickTypeF.LEFT_JOYSTICK_TAG, MotionEvent.ACTION_DOWN));
-							//pw.flush();
+							pw.print(posString(bp.posX, bp.posY, JoyStickTypeF.LEFT_JOYSTICK_TAG, MotionEvent.ACTION_DOWN));
+							pw.flush();
 							try {
-								socket.getOutputStream().write(posString(bp.posX, bp.posY, JoyStickTypeF.LEFT_JOYSTICK_TAG, MotionEvent.ACTION_DOWN).getBytes());
-							} catch (IOException e) {
+								Thread.sleep(50);
+							} catch (InterruptedException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
+							pw.print(posString(rawX, rawY, JoyStickTypeF.LEFT_JOYSTICK_TAG, MotionEvent.ACTION_MOVE));
+							pw.flush();
+							leftJoystickCurrentPosX = rawX;
+							leftJoystickCurrentPosY = rawY;
 							LeftJoystickPresed = true;
 						}
-						
+
 						if(LeftJoystickPresed)
 						{
-							if((rawX != leftJoystickCurrentPosX) || (rawY != leftJoystickCurrentPosY))
-								
-								if(System.currentTimeMillis() - last_left_press_time > STICK_MOVE_IRQ_TIME)
-								{	
-									pw.print(posString(rawX, rawY, JoyStickTypeF.LEFT_JOYSTICK_TAG, MotionEvent.ACTION_MOVE));
-									pw.flush();
-									last_left_press_time = System.currentTimeMillis();
-								}
+							if((Math.abs(rawX - leftJoystickCurrentPosX) > bp.posR / 5) || 
+									(Math.abs(rawY -leftJoystickCurrentPosY)) >  bp.posR / 5)
+							{	
+								pw.print(posString(rawX, rawY, JoyStickTypeF.LEFT_JOYSTICK_TAG, MotionEvent.ACTION_MOVE));
+								pw.flush();
+								System.currentTimeMillis();
+								leftJoystickCurrentPosX = rawX;
+								leftJoystickCurrentPosY = rawY;
+							}
 						}
 
 					}
-					leftJoystickCurrentPosX = rawX;
-					leftJoystickCurrentPosY = rawY;
 				}
 			}
 		}
@@ -765,9 +783,9 @@ public class SendEvent {
 			int x = ux;
 			int y = uy;
 			RawEvent keyevent;
-			// ???????????
+			// 将右摇杆转化成按键映射
 
-			// ????
+			// 摇杆上移
 			if(JnsIMECoreService.keyMap.containsKey(JoyStickTypeF.BUTTON_XP_SCANCODE))
 			{	
 				if(x > 200)
@@ -794,7 +812,7 @@ public class SendEvent {
 				}
 			}
 
-			// ????
+			// 摇杆下移
 			if(JnsIMECoreService.keyMap.containsKey(JoyStickTypeF.BUTTON_XI_SCANCODE))
 			{
 				if(x < 50)

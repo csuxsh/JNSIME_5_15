@@ -16,7 +16,9 @@ namespace android {
 #endif
 //-----InputAdapter-----
 
-
+extern  pthread_cond_t joyCond;
+extern  pthread_mutex_t joyMutex;
+extern bool waitForgetJoy;
 void InputAdapter::release() {
 	mEventHub->release();
 }
@@ -46,7 +48,7 @@ void *getEventThread(void *p) {
 		memset(mInputAdapter->mEventBuffer, 0, mInputAdapter->EVENT_BUFFER_SIZE);
 		mInputAdapter->getEventHub()->getEvents(0, mInputAdapter->mEventBuffer, mInputAdapter->EVENT_BUFFER_SIZE);
 		mInputAdapter->processRawEventLocked(mInputAdapter->mEventBuffer);
-	//	LOGE("[%s][%d] ==> getevent thread is NULL", __FUNCTION__, __LINE__);
+		//	LOGE("[%s][%d] ==> getevent thread is NULL", __FUNCTION__, __LINE__);
 
 	}
 	return NULL;
@@ -155,6 +157,7 @@ void InputAdapter::dumpRawEvent(const RawEvent *event) {
 }
 
 void InputAdapter::processRawEventLocked(const RawEvent *eventBuffer) {
+	int joydevID = -1;
 	for (size_t i = 0; i < eventBuffer->count; i ++) {
 #if DEBUG_SWITCH
 		dumpRawEvent(eventBuffer);
@@ -168,14 +171,21 @@ void InputAdapter::processRawEventLocked(const RawEvent *eventBuffer) {
 		case EV_ABS:
 			//	LOGE("[%s][%d] ==> processJoyStick", __FUNCTION__, __LINE__);
 			mJoystick->joystickProcess(eventBuffer);
-			mJoystickChanged = 1;
-			mJoystick->joystickProcess(eventBuffer);
+			joydevID = eventBuffer->deviceId;
+			//mJoystick->joystickProcess(eventBuffer);
 			//LOGE("[%s][%d] ==> joystickchanged ok", __FUNCTION__, __LINE__);
 			break;
 		case EV_SYN:
-			if(per_EV == EV_ABS)
+			if(eventBuffer->deviceId == joydevID)
 			{
-
+				while(waitForgetJoy)
+				{
+					LOGE("[%s][%d] ==> waitForgetJoy", __FUNCTION__, __LINE__);
+				}
+				pthread_mutex_lock(&joyMutex);
+				mJoystickChanged = 1;
+				pthread_cond_signal(&joyCond);
+				pthread_mutex_unlock(&joyMutex);
 			}
 			break;
 		}
@@ -190,7 +200,7 @@ void InputAdapter::processRawEventLocked(const RawEvent *eventBuffer) {
 #else
 //---- InputAdapterThread-----
 InputAdapter::InputAdapterThread::InputAdapterThread(sp<InputAdapter> adapter):
-					Thread(true), mInputAdapter(adapter) {
+							Thread(true), mInputAdapter(adapter) {
 
 }
 
@@ -205,7 +215,7 @@ bool InputAdapter::InputAdapterThread::threadLoop() {
 
 //---- InputAdapterNotifierThread-----
 InputAdapter::InputAdapterNotifierThread::InputAdapterNotifierThread(sp<InputAdapter> adapter):
-					Thread(true), mInputAdapter(adapter) {
+							Thread(true), mInputAdapter(adapter) {
 
 }
 

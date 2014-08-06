@@ -29,13 +29,14 @@ public class AppHelper {
 		dbh  = DBHelper.getDBHelper(context);
 		this.context = context;
 	}
-    /**
-     * 向数据库插入一个应用的信息，并且将应用的图标半场到sdcard上。如果该应用已经存在于数据则先删除记录再插入
-     * 
-     * @param 应用的包名
-     * @param 应用是否已经安装
-     * @return 操作成功返回true,失败返回false
-     */
+	/**
+	 * 向数据库插入一个应用的信息，并且将应用的图标半场到sdcard上。如果该应用已经存在于数据则先删除记录再插入
+	 * 
+	 * @param 应用的包名
+	 * @param 应用是否已经安装
+	 * @return 操作成功返回true,失败返回false
+	 */
+	@SuppressLint("SdCardPath")
 	synchronized public boolean Insert(String name, String exists)
 	{
 		PackageManager pm = context.getPackageManager();
@@ -78,12 +79,19 @@ public class AppHelper {
 		}
 		return false;
 	}
-    /**
-     * 在数据库中删除一个应用。
-     * 
-     * @param 应用的包名
-     * @return 操作成功返回true,失败返回false
-     */
+	synchronized public boolean updateExit(String name, String value)
+	{
+		SQLiteDatabase db = dbh.getReadableDatabase();
+		String sql = "update _jns_ime set _exists='"  + value +"' where _name = '"+name+"';";
+		db.execSQL(sql);
+		return true;
+	}
+	/**
+	 * 在数据库中删除一个应用。
+	 * 
+	 * @param 应用的包名
+	 * @return 操作成功返回true,失败返回false
+	 */
 	synchronized public boolean delete(String name)
 	{
 		SQLiteDatabase db = dbh.getReadableDatabase();
@@ -110,7 +118,7 @@ public class AppHelper {
 		Cursor cursor = null;
 		try {
 			cursor = db.query(DBHelper.TABLE, null, selection,
-					null, null, null, "_description");
+					null, null, null, "_exists desc,_description");
 			if(cursor.moveToFirst())
 			{
 				System.out.println("cuisor has content");

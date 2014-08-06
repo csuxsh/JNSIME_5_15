@@ -30,7 +30,8 @@ public class JnsIMESettingActivity extends PreferenceActivity implements OnPrefe
 	public static final String TAG = "BlueoceanControllerActivity";
 	Preference quit;
 	Preference changeime;
-	Preference help; 
+	Preference help;
+	Preference devices;
 	static CheckBoxPreference cp;
 
 	@SuppressWarnings("deprecation")
@@ -41,11 +42,13 @@ public class JnsIMESettingActivity extends PreferenceActivity implements OnPrefe
 		quit = this.findPreference(this.getString(R.string.quit));
 		changeime = this.findPreference(this.getString(R.string.changeime));
 		help = this.findPreference(this.getString(R.string.help));
+		devices = this.findPreference(this.getString(R.string.device_state));
 		cp = (CheckBoxPreference) this.findPreference(this.getString(R.string.floatViewS));
 		quit.setOnPreferenceClickListener(this);
 		changeime.setOnPreferenceClickListener(this);
 		help.setOnPreferenceClickListener(this);
 		cp.setOnPreferenceChangeListener(this);
+		devices.setOnPreferenceClickListener(this);
 		JnsIMECoreService.activitys.add(this);
 		SharedPreferences pre = PreferenceManager.getDefaultSharedPreferences(this);
 		if(pre.getBoolean("floatViewS", false))
@@ -84,6 +87,12 @@ public class JnsIMESettingActivity extends PreferenceActivity implements OnPrefe
 		{
 			Intent intent = new Intent();
 			intent.setClass(this, com.viaplay.ime.JnsIMEHelpActivity.class);
+			this.startActivity(intent);
+		}
+		if(arg0.getKey().equals(devices.getKey()))
+		{
+			Intent intent = new Intent();
+			intent.setClass(this, com.viaplay.ime.JnsIMEControllerActivity.class);
 			this.startActivity(intent);
 		}
 		return false;

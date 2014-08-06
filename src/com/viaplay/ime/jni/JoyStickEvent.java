@@ -13,7 +13,7 @@ public class JoyStickEvent {
 	{
 		x = 0x7f;
 		y = 0x7f;
-		y = 0x7f;
+		z = 0x7f;
 		rz = 0x7f;
 		hat_x = 0;
 		hat_y =0;

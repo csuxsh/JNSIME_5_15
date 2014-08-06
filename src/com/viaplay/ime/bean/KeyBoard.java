@@ -12,6 +12,12 @@ import android.view.KeyEvent;
  */
 public class KeyBoard {
 	
+	private Map<String, Integer> keyMap = new HashMap<String, Integer>();
+	/**
+	 *  当前的键盘layout数组
+	 */
+	private String keyboardLayout[][];
+	
 	/**
 	 *  字母键盘的数据信息
 	 */
@@ -28,7 +34,7 @@ public class KeyBoard {
 	public static  final String keyboard_123[][]=
 	{
 		{"1","2","3","4","5","6","7","8","9","0"},
-		{"Esc","Tab","","","","","","Back","Inset","Del"},
+		{"Esc","Tab","-","=","","","","Back","Inset","Del"},
 		{"F1","F2","F3","F4","F5","F6","F7","F8","F9","F10"},
 		{"abc","F11","F12","","","","P-Up","P-Down","Home","End"}
 	};
@@ -46,8 +52,6 @@ public class KeyBoard {
 	public final static int LAYOUT_123_INDEX = 2;	
 	public final static int LAYOUT_GAMEPAD_INDEX = 3;
 	
-	private Map<String, Integer> keyMap = new HashMap<String, Integer>();
-	private String keyboardLayout[][];
 
 
 	public KeyBoard(int Layout_Indx)

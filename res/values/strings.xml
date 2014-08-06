@@ -1,8 +1,9 @@
 <resources>
 
-    <string name="app_name">Viaplay GameCenter</string>
+    <string name="app_name">Viaplay GameCenter-F</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
+     <string name="ime_name">Viaplay Mapping F </string>
     <string name="title_activity_main">Viaplay GameCenter</string>
     <string name="invalid_joystick_area">Invalid joystick area</string>
     <string name="has_right_joystick">has_right_joystick</string>
@@ -12,26 +13,50 @@
     <string name="perference_title">JnsIMESettings</string>
     <string name="about">About</string>
     <string name="version">version</string>
-    <string name="version_num">Viaplay GameCenter V 1.13 Powered by Viaplay Corporation</string>
-    <string name="quit">Quit</string>
-    <string name="help">Help</string>
+    <string name="version_num">Viaplay GameCenter-F V 1.21 Powered by Viaplay Corporation</string>
+    <string name="quit">Exit</string>
+    <string name="help">Quick User Guide</string>
     <string name="screen_shot">Waiting for ScreenShot</string>
     <string name="save_notice">Save this config?</string>
-    <string name="click_to_change">Click to change InputMethod</string>
+    <string name="click_to_change">Select to activate Touch Mapping</string>
     <string name="update_list">Game List has been updated</string>
     <string name="floating_notice">Use floating winows to capture screen?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+       <string name="alert_move">Please move the floating icon, if the game can not resume.</string>
+    <string name="alert_root">Viaplay GameCenter can not get root access!</string>
     <string name="root_notice">Viaplay GameCenter can not get root access. Touch mapping functionality will not be available until the device is rooted
     
     
         </string>
         <string name="floatViewS">Floating window option</string>
-        <string name="toogle_to_open">Check to show a floating window</string>
+        <string name="toogle_to_open">Select to activate Floating Icon</string>
         <string name="reboot_notice">The device needs to reboot, or can not properly use the mapping function of Viaplay GameCenter</string>
         <string name="i_get">I get it</string>
     <string name="changeime">Keyboard  &amp; Input Method</string>
-    <string name="Introduction">	    \n\t Introduction:\n\n
+    <string name="device_state">Controll state</string>
+    <string name="show_device_state">Paired devices</string>
+    <string name="Introduction">
+	\n\t
+         Viaplay GameCenter-F is a powerful touch/key mapping app for Android. It is available free on Google Play™ for Via-Gamepad F\n
+   \n\t  owners. With the Viaplay GameCenter-F, users can map specific touch areas of Android games to buttons on viaplay Smart Controllers,\n
+   \n\t  or remap keyboard presses to specific gamepad buttons on Viaplay Smart Controllers. When used with the Via-Remote F, Viaplay\n
+    \n\t GameCenter-F can add compatibility for touch-only Android games or HID games.\n\n
+    
+    \n\t  Touch Mapping Instruction:\n
+    \n\t 1. Enter Viaplay GameCenter-F , and go to “Touch Mapping”.\n
+    \n\t\t a) “Select to activate Touch Mapping” and change the input method to “Viaplay Mapping F”.\n
+    \n\t\t b) “Select to activate floating icon”.\n 
+    \n\t Note: “Touch Mapping” is a gaming input method for Viaplay smart controllers, not for text input. Please change back to the \n
+    \n\t\t\t\t  previous input method after use.\n	
+    \n\t 2. Touch Mapping should be performed within the desired game:\n
+    \n\t\t a) Start the game and navigate to the screen showing the desired touch mapping areas.\n
+    \n\t\t b) Click the floating Viaplay icon to capture a screenshot of the game screen. \n 
+    \n\t\t c) Select the desired touch point or virtual joystick on the screen, and then push the corresponding button on the controller.\n
+    \n\t\t d) Press “Save” and “Exit” to quit Touch Mapping and start gaming.\n
+    \n\t 3. After gaming, please long press the Viaplay floating icon to change to previous setting.\n
+   
+    <!-- \n\t Introduction:\n\n
 	    \t 1.Viaplay GameCenter requires a rooted device. Please note that rooting \n
 	    \t your device may void your warranty. Root at your own risk\n
 	   \t  2.Make sure Viaplay GameCenter is the current InputMethod.\n
@@ -42,7 +67,10 @@
 	    	\t \t       c. If you want to mapping either Joysticks,  touch at the center of the Virtual\n
 	    	\t \t        joystick,and then drag outward to adjust the area size. Move \n
 	    	\t \t       the jostick to confirm you Mapping.\n
-	    	\t \t       d. Click the save button to save you Mapping. \n</string>
+	    	\t \t       d. Click the save button to save you Mapping. \n	    	\t 4.Long Click the viaplay floating window will pop up a input method selection dialog, \n
+	    	\t\t you can choose another input method you want.\n
+		-->
+</string>
 <string name="root_device">
 	 \t Your device has not yet get root permissions, so can not use advanced functions like touch mapping, it would only support limited games. \n
 	
